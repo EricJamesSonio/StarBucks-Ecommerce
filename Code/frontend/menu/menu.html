@@ -1,0 +1,74 @@
+<!-- menu.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menu Page Tester</title>
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+  <header>
+    <button onclick="window.location.href='../cart/cart.html'">🛒 View Cart</button>
+    <button onclick="window.location.href='../history/history.html'">📜 Order History</button>
+     <button onclick="window.location.href='../../design/home/index.html'">Back</button> 
+
+    <button onclick="logout()">🚪 Logout</button>
+  </header>
+
+  <main>
+    <section id="categorySelect">
+      <h2>Choose a Category</h2>
+      <button onclick="loadCategory('Drink')">🥤 Drinks</button>
+      <button onclick="loadCategory('Sandwich')">🥪 Sandwiches</button>
+    </section>
+
+    <button id="backButton" onclick="showCategories()" style="display:none">🔙 Back</button>
+
+    <section id="itemList"></section>
+  </main>
+
+  <!-- Modal -->
+  <div id="itemModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h2 id="modalItemName"></h2>
+      <label>Size:
+        <select id="modalSize"></select>
+      </label>
+      <label>Quantity:
+        <input type="number" id="modalQuantity" value="1" min="1" />
+      </label>
+      <div class="modal-actions">
+        <button onclick="addToCart()">Add to Cart</button>
+        <button onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h3>🧾 Checkout</h3>
+      <p>Total: ₱<span id="paymentTotal">0.00</span></p>
+      <p>Discount: ₱<span id="paymentDiscount">0.00</span></p>
+      <p>Final: ₱<span id="finalAmount">0.00</span></p>
+      <label>Cash:
+        <input type="number" id="cashInput" placeholder="Enter cash" />
+      </label>
+      <label>Payment Type:
+        <select id="paymentType">
+          <option value="cash">Cash</option>
+          <option value="gcash">GCash</option>
+        </select>
+      </label>
+      <div class="modal-actions">
+        <button onclick="processPayment()">Pay</button>
+        <button onclick="closePaymentModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script type="module" src="../js/main.js"></script>
+    <script type="module" src="./menuMain.js"></script>
+</body>
+</html>

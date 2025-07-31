@@ -1,0 +1,139 @@
+/* Root and base styles */
+:root {
+  --main-color-green: #00bb68;
+  --main-color-darkgreen: #00361f;
+  --main-color-lightgreen: #006c3d;
+  --unique-color-yellow: #b9d401;
+  --font-main: 'Inter', sans-serif;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  font-size: 16px;
+  background-color: #00170e;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Header styling */
+header {
+  background-color: var(--main-color-darkgreen);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Container */
+.container {
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Item Box */
+.item-box {
+  background-color: var(--main-color-lightgreen);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.item-box:hover {
+  background-color: var(--main-color-green);
+  transform: translateY(-5px);
+}
+
+.item-box h3 {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.item-box p {
+  font-size: 0.95rem;
+  color: #f0f0f0;
+  margin: 0.25rem 0;
+}
+
+/* Back Button */
+.back-button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.back-button {
+  background-color: white;
+  color: var(--main-color-darkgreen);
+  padding: 12px 30px;
+  border-radius: 40px;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: var(--main-color-darkgreen);
+  color: white;
+}
+
+/* Navbar (optional top nav links) */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  background-color: #002c1a;
+  padding: 1rem 0;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: var(--main-color-green);
+}
+
+.nav-link.active {
+  background-color: var(--main-color-darkgreen);
+}
+
+/* Loading text */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--unique-color-yellow);
+}
+
+.item-image {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

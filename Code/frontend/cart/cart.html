@@ -1,0 +1,85 @@
+<!-- cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="cart.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header id="top">
+  <div style="display: flex; align-items: center;">
+    <img src="../assets/logo.png" alt="Logo">
+    <button class="back-btn" onclick="window.location.href='../menu/menu.html'">← Back</button>
+  </div>
+  <ul id="nav">
+    <li><a href="../menu/menu.html">Menu</a></li>
+    <li><a href="../history/history.html">History</a></li>
+    <li><a href="#" onclick="logout()">Logout</a></li>
+  </ul>
+</header>
+
+
+  <main>
+    <section id="cartSection">
+      <h2 class="title">🛒 Your Cart</h2>
+      <div id="cartItems"></div>
+      <div class="summary">
+        <p>Total: ₱<span id="cartTotal">0.00</span></p>
+        <p>Discount: ₱<span id="cartDiscount">0.00</span></p>
+        <button onclick="checkout()" class="checkout-btn">Checkout</button>
+      </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="paymentModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>🧾 Checkout</h3>
+        <p>Total: ₱<span id="paymentTotal">0.00</span></p>
+        <p>Discount: ₱<span id="paymentDiscount">0.00</span></p>
+        <p>Final: ₱<span id="finalAmount">0.00</span></p>
+        <label>Cash:
+          <input type="number" id="cashInput" placeholder="Enter cash" />
+        </label>
+        <label>Payment Type:
+          <select id="paymentType">
+            <option value="cash">Cash</option>
+            <option value="gcash">GCash</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button onclick="processPayment()">Pay</button>
+          <button onclick="closePaymentModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt -->
+    <div id="receiptContainer">
+      <div id="receiptBox">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="./cartMain.js"></script>
+  <script>
+    function logout() {
+      fetch('http://localhost/SOFTENG2/backend/api/index2.php/logout', {
+        method: 'POST',
+        credentials: 'include'
+      }).then(() => {
+        alert("Logged out successfully!");
+        window.location.href = '../login/login.html';
+      }).catch(() => {
+        alert("Logout failed.");
+      });
+    }
+
+    function closePaymentModal() {
+      document.getElementById("paymentModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
