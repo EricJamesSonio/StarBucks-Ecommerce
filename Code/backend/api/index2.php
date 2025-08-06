@@ -73,6 +73,11 @@ switch ($route) {
         require_once __DIR__ . '/routes/topselling.php';
         break;
 
+    case 'guest':
+        require_once __DIR__ . '/routes/guest.php';
+        break;
+
+
 
 
     default:

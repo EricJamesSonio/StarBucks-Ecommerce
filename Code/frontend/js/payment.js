@@ -1,12 +1,6 @@
 import { renderCartFromServer, fetchCartItems } from './cart.js';
 
 export function checkout() {
-  if (localStorage.getItem("isGuest") === "true" || localStorage.getItem("isLoggedIn") !== "true") {
-    alert("🔐 Please log in to continue.");
-    window.location.href = "../login/login.html";
-    return;
-  }
-
   // Step 1: Verify session
   fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
     credentials: 'include'

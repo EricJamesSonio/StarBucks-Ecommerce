@@ -31,15 +31,21 @@ async function login() {
       headers: { "Content-Type": "application/json" },
       credentials: "include", // for session cookies
       body: JSON.stringify({ email, password })
-
     });
 
     const data = await res.json();
 
     if (data.success) {
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
       localStorage.removeItem("isGuest");
+
+      // ✅ Save returned user data properly
+      const userData = {
+        id: data.account_id,
+        type: data.account_type
+      };
+      localStorage.setItem("loggedInUser", JSON.stringify(userData));
+
       alert("Login successful!");
       window.location.href = "../menu/menu.html";
     } else {
@@ -50,6 +56,7 @@ async function login() {
     showError("Server error. Please try again.");
   }
 }
+
 
 // ✅ SIGN UP
 async function signup() {

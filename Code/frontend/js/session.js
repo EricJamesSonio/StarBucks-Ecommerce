@@ -38,3 +38,12 @@ export function checkLoginOnLoad() {
 export function getSizes() {
   return sizes;
 }
+
+export function ensureGuestToken() {
+  let token = localStorage.getItem("guestToken");
+  if (!token) {
+    token = crypto.randomUUID(); // Or use your own generator
+    localStorage.setItem("guestToken", token);
+  }
+  return token;
+}

@@ -16,6 +16,7 @@
     order_item              --> contains the userorders to combine all and can get the total price etc.
     receipt                 --> Contains receipt of the order (payment, change etc.)
     discount                --> contains pwd, senior, store discounts apply to the total price!
+    cart items              --> 
 
 StarbucksItem -->
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -148,14 +149,26 @@ Receipts -->
         FOREIGN KEY (order_id) REFERENCES userorder(id) ON DELETE CASCADE
 
 Discount 
-    CREATE TABLE discount (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(50) NOT NULL, -- 'Senior', 'PWD', etc.
         description TEXT,
         discount_percentage DECIMAL(5,2) NOT NULL CHECK (discount_percentage >= 0.00 AND discount_percentage <= 100.00),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )
+    
+Cart items 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT,  -- Make this nullable
+        guest_token VARCHAR(64) DEFAULT NULL,  -- For guest users
+        item_id INT NOT NULL,
+        size_id INT,
+        quantity INT NOT NULL DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE SET NULL
 
 
 [scripts]

@@ -34,6 +34,7 @@ SOFTENG2/
 │       ├── Payment.php
 │       ├── Size.php
 │       └── User.php
+│       └── Cart.php
 │
 ├── database/
 │   ├── model/

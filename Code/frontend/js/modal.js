@@ -1,4 +1,4 @@
-import { getSizes } from './session.js';
+import { getSizes, ensureGuestToken } from './session.js';
 
 let currentItem = null;
 
@@ -37,13 +37,12 @@ export async function addToCart() {
   const unitPrice = basePrice + mod;
 
   // Build a payload for your API
-  const payload = {
-    item_id: currentItem.id,
-    size_id: sizeId,       // if you support sizes server‑side
-    quantity: qty,
-    unit_price: unitPrice  // optional, or recalc server‑side
-  };
-
+const payload = {
+  item_id: currentItem.id,
+  size_id: sizeId,
+  quantity: qty,
+  guest_token: ensureGuestToken() // ✅ attach this
+};
   try {
     const res = await fetch('http://localhost/SOFTENG2/backend/api/index2.php/cart', {
       method: 'POST',
