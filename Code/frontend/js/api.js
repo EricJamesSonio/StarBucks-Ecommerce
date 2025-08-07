@@ -1,5 +1,6 @@
 // frontend/js/api.js
 import { openModal } from './modal.js';
+import { API_BASE_PATH } from './config.js';
 
 const BASE_IMG_PATH = '../../frontend/menu/images/';
 
@@ -21,20 +22,17 @@ function getImageForItem(name) {
 }
 
 export function loadTopSelling(categoryName) {
-  // map human label → category_id
   const catId = categoryName === 'Drink' ? 1 : 2;
 
-  // hide other UI if desired
   document.getElementById('categorySelect')?.style.setProperty('display','none');
   document.getElementById('backButton')?.style.setProperty('display','block');
 
-  fetch('../../backend/api/index2.php/topselling', {
+  fetch(`${API_BASE_PATH}/topselling`, {
     credentials: 'include'
   })
     .then(r => r.json())
     .then(result => {
       if (!result.status) throw new Error('No data');
-      // filter by category_id before rendering
       const byCat = result.data.filter(item => item.category_id == catId);
       displayTopSelling(byCat);
     })
@@ -45,7 +43,6 @@ function displayTopSelling(items) {
   const ul = document.querySelector('#foodSelection ul');
   if (!ul) return;
 
-  // only keep the top 4 items
   const top4 = items.slice(0, 4);
 
   ul.innerHTML = top4.map(item => `
@@ -69,7 +66,7 @@ export function loadCategory(categoryName) {
   document.getElementById('categorySelect').style.display = 'none';
   document.getElementById('backButton').style.display = 'block';
 
-  fetch('../../backend/api/index2.php/items', {
+  fetch(`${API_BASE_PATH}/items`, {
     credentials: 'include'
   })
     .then(res => res.json())

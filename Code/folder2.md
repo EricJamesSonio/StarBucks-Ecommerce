@@ -1,4 +1,8 @@
-SOFTENG2/
+Main folder - Starbucks-ecommerce
+
+Code/
+├── api/
+│   ├── .htaccess
 ├── backend/
 │   ├── api/
 │   │   ├── controllers/
@@ -80,6 +84,7 @@ SOFTENG2/
 │   │   ├── payment.js
 │   │   ├── session.js
 │   │   ├── history.js
+│   │   ├── config.js - export const API_BASE_PATH = `${window.location.origin}/code/api/`;
 │   ├
 │   ├── menu/
 |   │   ├── images/

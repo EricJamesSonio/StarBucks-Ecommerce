@@ -1,5 +1,15 @@
+import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "./config.js";
 
-// ✅ Load dynamic components
+import { loadComponent } from "./utils.js";
+// At the bottom of auth.js
+window.login = login;
+window.signup = signup;
+
+
+
+
+
+
 window.showForm = async function (type) {
   const root = document.getElementById("component-root");
   root.innerHTML = ""; // Clear old content
@@ -39,7 +49,7 @@ async function login() {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.removeItem("isGuest");
 
-      // ✅ Save returned user data properly
+
       const userData = {
         id: data.account_id,
         type: data.account_type
@@ -139,3 +149,5 @@ function clearError() {
   const el = document.getElementById("errorMsg");
   if (el) el.textContent = "";
 }
+
+export { login, signup };

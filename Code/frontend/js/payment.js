@@ -1,8 +1,9 @@
 import { renderCartFromServer, fetchCartItems } from './cart.js';
+import { API_BASE_PATH } from './config.js';
 
 export function checkout() {
   // Step 1: Verify session
-  fetch('../../backend/api/index2.php/check_login', {
+  fetch(`${API_BASE_PATH}/check_login`, {
     credentials: 'include'
   })
     .then(r => {
@@ -61,7 +62,7 @@ export function processPayment() {
 
   const change = amt - final;
 
-  fetch('../../backend/api/index2.php/payment', {
+  fetch(`${API_BASE_PATH}/payment`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

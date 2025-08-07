@@ -1,3 +1,4 @@
-const BASE_URL = '../../backend/api/index2.php';
-const LOGIN_ENDPOINT = `${BASE_URL}/login`;
-const SIGNUP_ENDPOINT = `${BASE_URL}/signup`;
+import { API_BASE_PATH } from "../../js/config.js";
+
+export const LOGIN_ENDPOINT = `${API_BASE_PATH}/login`;
+export const SIGNUP_ENDPOINT = `${API_BASE_PATH}/signup`;

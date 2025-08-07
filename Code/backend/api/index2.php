@@ -22,7 +22,11 @@ $request = $_SERVER['REQUEST_URI'];
 $uri = parse_url($request, PHP_URL_PATH);
 $uri = explode('/', trim($uri, '/'));
 
-$route = isset($uri[4]) ? $uri[4] : '';
+$uri = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));
+$index = array_search('api', $uri);  // find where 'api' is in the path
+$route = isset($uri[$index + 1]) ? $uri[$index + 1] : '';
+
+
 
 switch ($route) {
     case 'items':
