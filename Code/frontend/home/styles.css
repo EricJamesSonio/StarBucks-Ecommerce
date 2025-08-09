@@ -9,6 +9,7 @@ body {
     background-color: #00170e;
     overflow-x: hidden;
 }
+
 :root {
     --main-color-green: #00bb68;
     --main-color-darkgreen: #00361f;
@@ -86,6 +87,8 @@ section {
     width: 2.5rem;
     height: 2rem;
     padding-left: 10px;
+    cursor: pointer;
+    
 }
 #contents {
     width: 100vw;
@@ -104,11 +107,11 @@ section {
 .title {
     text-transform: uppercase;
 }
-#intro1{
+#leftHome #intro1{
     font-size: 1.5rem;
     
 }
-#intro2 , #intro3{
+#leftHome #intro2 , #intro3{
     font-size: 4.5rem;
     font-weight: 900;
     color: white;
@@ -139,7 +142,12 @@ section {
     display: flex;
     align-items: center;
 }   
-
+#ratingVal {
+    font-size: 3rem;
+    color: var(--main-color-green);
+    font-weight: 550;
+    padding-left: .6vw;
+}
 .Cart {
     background-color: white;
     padding: .5rem 3rem;
@@ -179,31 +187,34 @@ section {
     width: 4.3vw;
     filter: drop-shadow( 4px 3px 4px rgb(0, 0, 0, .7));
 }
-#selection .inner-circle{
-
-    height: 10rem;
-    width: 10rem;
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#selection .inner-circle {
+  height: 10rem;
+  width: 10rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;  /* baseline */
+  transition: background-color 0.3s;
 }
 #selection .outer-circle {
-    height: 12rem;
-    width: 12rem;
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 12rem;
+  width: 12rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;  /* baseline */
+  transition: background-color 0.3s;
 }
-#selection li:hover {
-    .inner-circle {
-        background-color: white;
-        cursor: pointer;
-    }
-    .outer-circle {
-        background-color: var(--main-color-lightgreen);
-    }
+
+#selection li:hover .inner-circle {
+    background-color: white;
+    cursor: pointer;
+}
+
+#selection li:hover .outer-circle {
+    background-color: var(--main-color-lightgreen);
 }
 #rightHome {
     width: 30vw;
@@ -468,3 +479,29 @@ section {
 #unmatched p {
     position: absolute;
 }
+
+/* Ensure buttons inside nav tabs fill their container div exactly */
+#menu nav ul li > div > button {
+  all: unset;                     /* remove default button styles */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: large;
+}
+
+/* Inherit the same hover from the <li> background */
+#menu nav ul li:hover > div > button {
+  color: white;
+}
+
+/* Make sure the <button> text color matches the <a> by default */
+#menu nav ul li > div > button {
+  color: black;
+}
+
+

@@ -14,18 +14,24 @@
     <main>
         <section id="home">
         <nav id="top">
-            <img src="assets/starbucksLogo-white-nocircle.png" alt="logo">
-            <ul id="nav">
-                <li><a href="#LeftHome">ome</a></li>
-                <li><a href="Menu">Menu</a></li>
-                <li><a href="Rewards">Rewards</a></li>
-                <li><a href="Gift Cards">Gift Cards</a></li>
-            </ul>
-            <ul>
-                <li><img src="assets/user-default-nocircle.png" class="icon" alt="user-icon">
-                <li><img src="assets/shopping-cart-default-nocircle.png" class="icon" alt="cart-icon"></li>
-            </ul>
-        </nav>
+  <img src="assets/starbucksLogo-white-nocircle.png" alt="logo" />
+
+  <ul id="nav">
+    <li><a href="#LeftHome">Home</a></li>
+    <li><a href="../../frontend/menu/menu.html">Menu</a></li>
+    <li><a href="#">Rewards</a></li>
+    <li><a href="#">Gift Cards</a></li>
+  </ul>
+
+  <div style="display: flex; align-items: center; gap: 15px; margin-right: 2vw;">
+    <button onclick="window.location.href='../../frontend/login/login.html'"
+      style="padding: 8px 14px; background-color: white; color: #006241; font-weight: bold; border: none; border-radius: 20px; cursor: pointer;">
+      Login
+    </button>
+    <img src="assets/user-default-nocircle.png" id="user" class="icon" alt="user-icon" />
+    <img src="assets/shopping-cart-default-nocircle.png" id="cart" class="icon" alt="cart-icon" />
+  </div>
+</nav>
         <div id="contents">
         <div id="leftHome" href>
             <span class="title" id="intro1">Where Everycups tells a story.</span>
@@ -59,8 +65,9 @@
         <section id="menu">
             <nav>
             <ul>
-                <li><div><a href="drinks">drinks</a></div></li>
-                <li><div><a href="food">food</a></div></li>
+                <li><div><button onclick="loadTopSelling('Drink')">🔥 Top Drinks</button></div></li>
+                <li><div><button onclick="loadTopSelling('Sandwich')">🔥 Top Food</button></div></li>
+
                 <li><div><a href="atHome">atHome</a></div></li>
                 <li><div id="merch"><a href="merchandise">merchandise</a></div></li>
             </ul>
@@ -180,6 +187,9 @@
         </section>
         
     </main>
+
+
+    <script type="module" src="../../frontend/js/main.js"></script>
     
 </body>
 </html>
