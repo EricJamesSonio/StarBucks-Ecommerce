@@ -6,19 +6,23 @@ class Address {
         $this->con = $con;
     }
 
-    public function createAddress($type, $id, $street, $city, $province, $postal, $country) {
-        $stmt = $this->con->prepare("
-            INSERT INTO address (
-              addressable_type,
-              addressable_id,
-              street,
-              city,
-              province,
-              postal_code,
-              country
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->bind_param("sisssss", $type, $id, $street, $city, $province, $postal, $country);
-        return $stmt->execute();
-    }
+public function createAddress($type, $id, $street, $country_id, $province_id, $city_id) {
+    error_log("createAddress called with: type=$type, id=$id, street=$street, country_id=$country_id, province_id=$province_id, city_id=$city_id");
+
+    $stmt = $this->con->prepare("
+        INSERT INTO address (
+          addressable_type,
+          addressable_id,
+          street,
+          country_id,
+          province_id,
+          city_id
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param("sisiii", $type, $id, $street, $country_id, $province_id, $city_id);
+    return $stmt->execute();
 }
+
+
+
+    }

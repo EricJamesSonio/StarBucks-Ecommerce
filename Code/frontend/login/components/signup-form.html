@@ -6,9 +6,28 @@
 <input id="signupPass" type="password" placeholder="Password" />
 <input id="signupPhone" placeholder="Phone" />
 <input id="street" placeholder="Street" />
-<input id="city" placeholder="City" />
-<input id="province" placeholder="Province" />
-<input id="postalCode" placeholder="Postal Code" />
-<input id="country" placeholder="Country" />
-<button onclick="signup()">Sign Up</button>
+
+<!-- Address selection -->
+<div id="country-container">
+  <h3>Select Country <span id="selected-country" class="selected-label"></span></h3>
+  <div id="country-buttons"></div>
+</div>
+
+<div id="province-container" style="display:none;">
+  <h3>Select Province <span id="selected-province" class="selected-label"></span></h3>
+  <div id="province-buttons"></div>
+</div>
+
+<div id="city-container" style="display:none;">
+  <h3>Select City <span id="selected-city" class="selected-label"></span></h3>
+  <div id="city-buttons"></div>
+</div>
+
+<input id="postalCode" placeholder="Postal Code" readonly />
+
+<button onclick="submitSignup()">Sign Up</button>
+
 <button onclick="goBack()">Back</button>
+
+<!-- Load signup.js -->
+<script type="module" src="./js/signup.js"></script>

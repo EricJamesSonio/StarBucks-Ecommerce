@@ -81,6 +81,17 @@ switch ($route) {
         require_once __DIR__ . '/routes/guest.php';
         break;
 
+    case 'getCities':
+        require_once __DIR__ . '/routes/getCities.php';
+        break;
+
+    case 'getCountries':
+        require_once __DIR__ . '/routes/getCountries.php';
+        break;
+
+    case 'getProvince':
+        require_once __DIR__ . '/routes/getProvince.php';
+        break;
 
 
 

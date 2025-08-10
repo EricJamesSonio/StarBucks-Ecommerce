@@ -9,6 +9,19 @@ require_once dirname(__DIR__, 2) . '/model/Auth.php';
 require_once dirname(__DIR__, 2) . '/model/Address.php';
 require_once dirname(__DIR__, 2) . '/model/Contact.php';
 
+function getIdByName($con, $table, $name) {
+    $stmt = $con->prepare("SELECT id FROM $table WHERE name = ?");
+    $stmt->bind_param("s", $name);
+    $stmt->execute();
+    $stmt->bind_result($id);
+    if ($stmt->fetch()) {
+        $stmt->close();
+        return $id;
+    }
+    $stmt->close();
+    return null; // Not found
+}
+
 function handleSignup($con) {
     // Parse incoming JSON data
     $data = json_decode(file_get_contents('php://input'), true);
@@ -52,18 +65,27 @@ function handleSignup($con) {
         echo json_encode(["success" => false, "message" => "Failed to create auth record"]);
         return;
     }
-
+$addressModel = new Address($con);
     // 3) Save address
-    $addressModel = new Address($con);
-    $addressCreated = $addressModel->createAddress(
-        'user',
-        $userId,
-        $data['street'],
-        $data['city'],
-        $data['province'],
-        $data['postal_code'],
-        $data['country']
-    );
+$country_id = getIdByName($con, 'country', $data['country']);
+$province_id = getIdByName($con, 'province', $data['province']);
+$city_id = getIdByName($con, 'city', $data['city']);
+
+if (!$country_id || !$province_id || !$city_id) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Invalid address data"]);
+    return;
+}
+
+$addressCreated = $addressModel->createAddress(
+    'user',
+    $userId,
+    $data['street'],
+    $country_id,
+    $province_id,
+    $city_id
+);
+
 
     if (!$addressCreated) {
         http_response_code(500);

@@ -16,7 +16,7 @@ class Cart {
               ci.quantity,
               ci.size_id,
               sz.name        AS size_name
-            FROM cart_items ci
+            FROM cart_item ci
             JOIN starbucksitem si ON ci.item_id = si.id
             LEFT JOIN size sz ON ci.size_id = sz.id
             WHERE ci.user_id = ?
@@ -42,7 +42,7 @@ class Cart {
         : "user_id IS NULL AND guest_token = ?";
 
     $check = $this->con->prepare(
-        "SELECT id FROM cart_items WHERE $sqlWhere AND item_id = ? AND (size_id <=> ?)"
+        "SELECT id FROM cart_item WHERE $sqlWhere AND item_id = ? AND (size_id <=> ?)"
     );
 
     if ($userId !== null) {
@@ -57,7 +57,7 @@ class Cart {
 
     if ($exists) {
         $upd = $this->con->prepare(
-            "UPDATE cart_items SET quantity = ? WHERE id = ?"
+            "UPDATE cart_item SET quantity = ? WHERE id = ?"
         );
         $upd->bind_param("ii", $quantity, $exists['id']);
         $ok = $upd->execute();
@@ -65,7 +65,7 @@ class Cart {
         return $ok;
     } else {
         $ins = $this->con->prepare(
-            "INSERT INTO cart_items (user_id, guest_token, item_id, size_id, quantity)
+            "INSERT INTO cart_item (user_id, guest_token, item_id, size_id, quantity)
              VALUES (?, ?, ?, ?, ?)"
         );
         $ins->bind_param("isiii", $userId, $guestToken, $itemId, $sizeId, $quantity);
@@ -78,7 +78,7 @@ class Cart {
 
     public function removeCartItem(int $userId, int $itemId, ?int $sizeId): bool {
         $stmt = $this->con->prepare(
-            "DELETE FROM cart_items WHERE user_id = ? AND item_id = ? AND (size_id <=> ?)"
+            "DELETE FROM cart_item WHERE user_id = ? AND item_id = ? AND (size_id <=> ?)"
         );
         $stmt->bind_param("iii", $userId, $itemId, $sizeId);
         $ok = $stmt->execute();
@@ -88,7 +88,7 @@ class Cart {
 
     public function clearCart(int $userId): bool {
         $stmt = $this->con->prepare(
-            "DELETE FROM cart_items WHERE user_id = ?"
+            "DELETE FROM cart_item WHERE user_id = ?"
         );
         $stmt->bind_param("i", $userId);
         $ok = $stmt->execute();
@@ -106,7 +106,7 @@ class Cart {
             ci.quantity,
             ci.size_id,
             sz.name        AS size_name
-        FROM cart_items ci
+        FROM cart_item ci
         JOIN starbucksitem si ON ci.item_id = si.id
         LEFT JOIN size sz ON ci.size_id = sz.id
         WHERE ci.guest_token = ?

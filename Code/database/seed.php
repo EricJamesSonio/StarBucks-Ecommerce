@@ -12,13 +12,16 @@ require_once(__DIR__ . '/model/contacts.php');
 require_once(__DIR__ . '/model/users.php');
 require_once(__DIR__ . '/model/admins.php');
 require_once(__DIR__ . '/model/auth.php');
-require_once(__DIR__ . '/model/address.php');
 require_once(__DIR__ . '/model/user_order.php');
 require_once(__DIR__ . '/model/size.php');      // also creates item_size
 require_once(__DIR__ . '/model/orderitems.php');
 require_once(__DIR__ . '/model/receipts.php');
 require_once(__DIR__ . '/model/cart_items.php');
 require_once(__DIR__ . '/model/discount.php');
+require_once(__DIR__ . '/model/country.php');
+require_once(__DIR__ . '/model/province.php');
+require_once(__DIR__ . '/model/city.php');
+require_once(__DIR__ . '/model/address.php');
 
 // --- DATA SEEDING ---
 // 1) core lookups & static data

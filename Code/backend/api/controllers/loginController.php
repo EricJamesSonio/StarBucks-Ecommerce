@@ -31,7 +31,7 @@ if (!empty($_SESSION['guest_token'])) {
 
     // Migrate guest cart to user
     $stmt = $con->prepare("
-        UPDATE cart_items
+        UPDATE cart_item
         SET user_id = ?, guest_token = NULL
         WHERE guest_token = ?
     ");

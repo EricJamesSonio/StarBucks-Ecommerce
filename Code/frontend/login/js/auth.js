@@ -5,11 +5,6 @@ import { loadComponent } from "./utils.js";
 window.login = login;
 window.signup = signup;
 
-
-
-
-
-
 window.showForm = async function (type) {
   const root = document.getElementById("component-root");
   root.innerHTML = ""; // Clear old content
@@ -18,10 +13,21 @@ window.showForm = async function (type) {
     await loadComponent("components/login-form.html", "component-root");
   } else if (type === "signup") {
     await loadComponent("components/signup-form.html", "component-root");
+    
+    // Dynamically load signup.js AFTER HTML injected
+    const existingScript = document.getElementById('signup-script');
+    if (existingScript) existingScript.remove(); // Remove old if any
+
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.id = 'signup-script';
+    script.src = './js/signup.js'; // Adjust path as needed
+    document.body.appendChild(script);
   }
 
   clearError();
 };
+
 
 window.goBack = async function () {
   const root = document.getElementById("component-root");
@@ -68,22 +74,7 @@ async function login() {
 }
 
 
-// ✅ SIGN UP
-async function signup() {
-  const userData = {
-    first_name: document.getElementById("firstName").value.trim(),
-    middle_name: document.getElementById("middleName").value.trim(),
-    last_name: document.getElementById("lastName").value.trim(),
-    email: document.getElementById("signupEmail").value.trim(),
-    password: document.getElementById("signupPass").value,
-    phone: document.getElementById("signupPhone").value.trim(),
-    street: document.getElementById("street").value.trim(),
-    city: document.getElementById("city").value.trim(),
-    province: document.getElementById("province").value.trim(),
-    postal_code: document.getElementById("postalCode").value.trim(),
-    country: document.getElementById("country").value.trim(),
-  };
-
+async function signup(userData) {
   try {
     const res = await fetch(SIGNUP_ENDPOINT, {
       method: "POST",
@@ -104,6 +95,7 @@ async function signup() {
     showError("Server error during signup.");
   }
 }
+
 
 // 🚪 Guest Access
 window.continueWithoutAccount = function () {

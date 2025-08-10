@@ -2,7 +2,7 @@ Main folder - Starbucks-ecommerce
 
 Code/
 ├── api/
-│   ├── .htaccess
+│   ├── .htaccess 
 ├── backend/
 │   ├── api/
 │   │   ├── controllers/
@@ -111,12 +111,14 @@ Code/
 |   │   │   ├── config.js
 |   │   │   ├── auth.js
 |   │   │   ├── init.js
+|   │   │   ├── signup.js
 |   │ 
 |   │   ├── components/
 |   │   │   
 |   │   │   ├── login-form.html
 |   │   │   ├── signup-form.html
 |   │   │   ├── start-screen.html
+
 
 
 

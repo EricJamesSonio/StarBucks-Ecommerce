@@ -116,3 +116,91 @@ button:hover {
   background-color: var(--main-color-green);
   color: white;
 }
+
+/* Container boxes for selectors */
+#country-container, 
+#province-container, 
+#city-container {
+  width: 220px;
+  margin: 0 auto 20px;
+  background-color: #004b2b;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 187, 104, 0.3);
+  text-align: center;
+  color: white;
+  font-size: 1.1rem;
+}
+
+/* Buttons container: fixed height + scroll */
+#country-buttons,
+#province-buttons,
+#city-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  
+  max-height: 150px;    /* limit height */
+  overflow-y: auto;     /* vertical scrollbar */
+  padding-right: 5px;   /* spacing for scrollbar */
+}
+
+/* Individual buttons */
+#country-buttons button,
+#province-buttons button,
+#city-buttons button {
+  background-color: var(--main-color-green);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 80px;
+  white-space: nowrap;
+}
+
+#country-buttons button:hover,
+#province-buttons button:hover,
+#city-buttons button:hover {
+  background-color: var(--main-color-lightgreen);
+}
+
+/* Label showing selected item */
+.selected-label {
+  font-weight: 600;
+  color: var(--unique-color-yellow, #b9d401);
+  margin-left: 10px;
+}
+
+/* Make selectors smaller & scrollable */
+#country-buttons, #province-buttons, #city-buttons {
+  max-height: 150px; /* height you want */
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#country-buttons button,
+#province-buttons button,
+#city-buttons button {
+  flex: 1 1 45%; /* roughly two buttons per row */
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--main-color-green, #00bb68);
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+#country-buttons button:hover,
+#province-buttons button:hover,
+#city-buttons button:hover {
+  background-color: var(--main-color-lightgreen, #006c3d);
+}

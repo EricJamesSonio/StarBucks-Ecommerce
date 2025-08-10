@@ -86,11 +86,11 @@ if (empty($cart)) {
     // 8. Deduct inventory
     $this->deductItemQuantities($orderId);
 
-    // 9. Clear cart_items for this user
-    $stmt = $this->con->prepare("DELETE FROM cart_items WHERE user_id = ?");
+  
+    $stmt = $this->con->prepare("DELETE FROM cart_item WHERE user_id = ?");
     $stmt->bind_param("i", $userId);
     if (!$stmt->execute()) {
-        error_log("❌ Failed to clear cart_items for user $userId: " . $stmt->error);
+        error_log("❌ Failed to clear cart_item for user $userId: " . $stmt->error);
     }
     $stmt->close();
 

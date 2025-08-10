@@ -2,8 +2,8 @@
 require_once(__DIR__ . '/../db2.php');
 require_once(__DIR__ . '/../scripts/function.php');
 
-createTable($con, 'cart_items', "
-    CREATE TABLE cart_items (
+createTable($con, 'cart_item', "
+    CREATE TABLE cart_item (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT,  -- Make this nullable
         guest_token VARCHAR(64) DEFAULT NULL,  -- For guest users
