@@ -1,4 +1,6 @@
-import { getSizes } from './session.js';
+// modal.js
+import { getSizes, ensureGuestToken } from './session.js';
+import { API_BASE_PATH } from './config.js';
 
 let currentItem = null;
 
@@ -30,29 +32,33 @@ export async function addToCart() {
   if (qty < 1) return;
 
   const sizeSelect = document.getElementById('modalSize');
-  const sizeId   = sizeSelect.value;
-  const sizeText = sizeSelect.options[sizeSelect.selectedIndex].text;
-  const mod      = parseFloat(sizeSelect.options[sizeSelect.selectedIndex].dataset.modifier);
+  const sizeId = sizeSelect.value;
+  const mod = parseFloat(sizeSelect.options[sizeSelect.selectedIndex].dataset.modifier);
   const basePrice = parseFloat(currentItem.price);
   const unitPrice = basePrice + mod;
 
-  // Build a payload for your API
   const payload = {
     item_id: currentItem.id,
-    size_id: sizeId,       // if you support sizes server‑side
+    size_id: sizeId,
     quantity: qty,
-    unit_price: unitPrice  // optional, or recalc server‑side
+    guest_token: ensureGuestToken()
   };
 
   try {
-    const res = await fetch('http://localhost/SOFTENG2/backend/api/index2.php/cart', {
+    const res = await fetch(`${API_BASE_PATH}/cart`, {
       method: 'POST',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(payload)
     });
+
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || data.message || res.statusText);
+
+    if (!res.ok) {
+      throw new Error(data.error || data.message || res.statusText);
+    }
 
     alert(`✅ Added ${currentItem.name} ×${qty} to your cart.`);
   } catch (err) {

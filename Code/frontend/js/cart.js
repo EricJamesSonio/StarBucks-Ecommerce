@@ -1,6 +1,8 @@
 // cart.js
+import { API_BASE_PATH } from './config.js';
+
 export async function fetchCartItems() {
-  const res = await fetch('http://localhost/SOFTENG2/backend/api/index2.php/cart', {
+  const res = await fetch(`${API_BASE_PATH}/cart`, {
     credentials: 'include'
   });
   if (!res.ok) throw new Error("Failed to load cart");
@@ -26,4 +28,3 @@ export function renderCartFromServer(items) {
   document.getElementById('cartTotal').textContent    = total.toFixed(2);
   document.getElementById('cartDiscount').textContent = '0.00';
 }
-

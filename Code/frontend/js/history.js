@@ -1,8 +1,14 @@
+// history.js
+import { API_BASE_PATH } from './config.js';
+
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("history-container");
 
   try {
-    const response = await fetch("http://localhost/SOFTENG2/backend/api/routes/history.php");
+    const response = await fetch(`${API_BASE_PATH}/history`, {
+      credentials: 'include' // optional, depending on whether session is required
+    });
+
     const historyData = await response.json();
 
     if (!historyData.status || !Array.isArray(historyData.history) || historyData.history.length === 0) {
@@ -14,7 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const div = document.createElement("div");
       div.classList.add("receipt-box");
 
-      // Convert items into badge spans
       const itemBadges = receipt.items
         .split('\n')
         .map(item => `<span class="receipt-item">${item}</span>`)
@@ -27,6 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <p><strong>Total:</strong> ₱${receipt.total}</p>
         <hr>
       `;
+
       container.appendChild(div);
     });
 

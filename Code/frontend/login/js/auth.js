@@ -1,5 +1,15 @@
+import { LOGIN_ENDPOINT, SIGNUP_ENDPOINT } from "./config.js";
 
-// ✅ Load dynamic components
+import { loadComponent } from "./utils.js";
+// At the bottom of auth.js
+window.login = login;
+window.signup = signup;
+
+
+
+
+
+
 window.showForm = async function (type) {
   const root = document.getElementById("component-root");
   root.innerHTML = ""; // Clear old content
@@ -31,15 +41,21 @@ async function login() {
       headers: { "Content-Type": "application/json" },
       credentials: "include", // for session cookies
       body: JSON.stringify({ email, password })
-
     });
 
     const data = await res.json();
 
     if (data.success) {
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
       localStorage.removeItem("isGuest");
+
+
+      const userData = {
+        id: data.account_id,
+        type: data.account_type
+      };
+      localStorage.setItem("loggedInUser", JSON.stringify(userData));
+
       alert("Login successful!");
       window.location.href = "../menu/menu.html";
     } else {
@@ -50,6 +66,7 @@ async function login() {
     showError("Server error. Please try again.");
   }
 }
+
 
 // ✅ SIGN UP
 async function signup() {
@@ -132,3 +149,5 @@ function clearError() {
   const el = document.getElementById("errorMsg");
   if (el) el.textContent = "";
 }
+
+export { login, signup };

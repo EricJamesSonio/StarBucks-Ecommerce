@@ -9,17 +9,16 @@
 </head>
 <body>
   <header id="top">
-  <div style="display: flex; align-items: center;">
-    <img src="../assets/logo.png" alt="Logo">
-    <button class="back-btn" onclick="window.location.href='../menu/menu.html'">← Back</button>
-  </div>
-  <ul id="nav">
-    <li><a href="../menu/menu.html">Menu</a></li>
-    <li><a href="../history/history.html">History</a></li>
-    <li><a href="#" onclick="logout()">Logout</a></li>
-  </ul>
-</header>
-
+    <div style="display: flex; align-items: center;">
+      <img src="../assets/logo.png" alt="Logo">
+      <button class="back-btn" onclick="window.location.href='../menu/menu.html'">← Back</button>
+    </div>
+    <ul id="nav">
+      <li><a href="../menu/menu.html">Menu</a></li>
+      <li><a href="../history/history.html">History</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </header>
 
   <main>
     <section id="cartSection">
@@ -64,22 +63,5 @@
   </main>
 
   <script type="module" src="./cartMain.js"></script>
-  <script>
-    function logout() {
-      fetch('http://localhost/SOFTENG2/backend/api/index2.php/logout', {
-        method: 'POST',
-        credentials: 'include'
-      }).then(() => {
-        alert("Logged out successfully!");
-        window.location.href = '../login/login.html';
-      }).catch(() => {
-        alert("Logout failed.");
-      });
-    }
-
-    function closePaymentModal() {
-      document.getElementById("paymentModal").style.display = "none";
-    }
-  </script>
 </body>
 </html>

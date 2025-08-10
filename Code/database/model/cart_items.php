@@ -5,7 +5,8 @@ require_once(__DIR__ . '/../scripts/function.php');
 createTable($con, 'cart_items', "
     CREATE TABLE cart_items (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id INT,  -- Make this nullable
+        guest_token VARCHAR(64) DEFAULT NULL,  -- For guest users
         item_id INT NOT NULL,
         size_id INT,
         quantity INT NOT NULL DEFAULT 1,
@@ -17,4 +18,5 @@ createTable($con, 'cart_items', "
         FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE SET NULL
     )
 ");
+
 ?>

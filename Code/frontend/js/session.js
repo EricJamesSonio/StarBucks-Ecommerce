@@ -1,9 +1,9 @@
-
+import { API_BASE_PATH } from './config.js';
 // session.js
 let sizes = [];
 
 export function loadSizes() {
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/sizes', {
+  fetch(`${API_BASE_PATH}/sizes`, {
     credentials: 'include'
   })
     .then(res => res.json())
@@ -17,7 +17,7 @@ export function loadSizes() {
 export function checkLoginOnLoad() {
   if (localStorage.getItem("isGuest")) return;
 
-  fetch('http://localhost/SOFTENG2/backend/api/index2.php/check_login', {
+  fetch(`${API_BASE_PATH}/check_login`, {
     credentials: 'include'
   })
     .then(res => {
@@ -37,4 +37,13 @@ export function checkLoginOnLoad() {
 
 export function getSizes() {
   return sizes;
+}
+
+export function ensureGuestToken() {
+  let token = localStorage.getItem("guestToken");
+  if (!token) {
+    token = crypto.randomUUID(); // Or use your own generator
+    localStorage.setItem("guestToken", token);
+  }
+  return token;
 }
