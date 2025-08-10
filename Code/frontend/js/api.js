@@ -66,18 +66,14 @@ export function loadCategory(categoryName) {
   document.getElementById('categorySelect').style.display = 'none';
   document.getElementById('backButton').style.display = 'block';
 
-  fetch(`${API_BASE_PATH}/items`, {
-    credentials: 'include'
-  })
-    .then(res => res.json())
-    .then(data => {
-      const filtered = data.filter(item =>
-        (categoryName === 'Drink'   && item.category_id == 1) ||
-        (categoryName === 'Sandwich'&& item.category_id == 2)
-      );
-      displayItems(filtered);
-    })
-    .catch(err => console.error('Could not load items:', err));
+  // Hide subcategory section initially (it will be shown by loadSubcategories)
+  document.getElementById('subcategorySelect').style.display = 'none';
+
+  // Map categoryName to categoryId (hardcoded or fetch dynamically if you want)
+  const catId = categoryName === 'Drink' ? 1 : 2;
+
+  // Load subcategories for selected category
+  loadSubcategories(catId);
 }
 
 function displayItems(items) {
@@ -101,6 +97,58 @@ function displayItems(items) {
 
 export function showCategories() {
   document.getElementById('categorySelect').style.display = 'block';
+  document.getElementById('subcategorySelect').style.display = 'none';
   document.getElementById('itemList').innerHTML = '';
   document.getElementById('backButton').style.display = 'none';
+}
+
+// Load subcategories for a given category ID
+export function loadSubcategories(categoryId) {
+  // Show subcategory section, hide item list initially
+  document.getElementById('subcategorySelect').style.display = 'block';
+  document.getElementById('subcategoryButtons').innerHTML = 'Loading...';
+  document.getElementById('itemList').innerHTML = '';
+
+  fetch(`${API_BASE_PATH}/subcategories?category_id=${categoryId}`, {
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (!result.status) throw new Error('No subcategories found');
+    displaySubcategories(result.data);
+  })
+  .catch(err => {
+    console.error('Could not load subcategories:', err);
+    document.getElementById('subcategoryButtons').innerHTML = 'Failed to load subcategories';
+  });
+}
+
+function displaySubcategories(subcategories) {
+  const container = document.getElementById('subcategoryButtons');
+  container.innerHTML = '';
+
+  subcategories.forEach(subcat => {
+    const btn = document.createElement('button');
+    btn.textContent = subcat.name;
+    btn.onclick = () => loadItemsBySubcategory(subcat.id);
+    container.appendChild(btn);
+  });
+}
+
+// Load items filtered by subcategory ID
+function loadItemsBySubcategory(subcategoryId) {
+  document.getElementById('itemList').innerHTML = 'Loading items...';
+  
+  fetch(`${API_BASE_PATH}/items?subcategory_id=${subcategoryId}`, {
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (!result.status) throw new Error('No items found');
+    displayItems(result.data);
+  })
+  .catch(err => {
+    console.error('Could not load items for subcategory:', err);
+    document.getElementById('itemList').innerHTML = 'Failed to load items';
+  });
 }

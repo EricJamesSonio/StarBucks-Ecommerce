@@ -93,6 +93,10 @@ switch ($route) {
         require_once __DIR__ . '/routes/getProvince.php';
         break;
 
+    case 'subcategories':
+        require __DIR__ . '/routes/subcategories.php';
+        break;
+
 
 
     default:
