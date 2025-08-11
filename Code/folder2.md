@@ -83,9 +83,26 @@ Code/
 |   │   │   ├── panel.js
 │   ├
 │   │   ├── inventory/
-|   │   │   ├── inventory.html
+|   │   │   ├── inventory.html --> entry point of the inventory manegement choices
+|   │   │   |
+|   │   │   ├── components/
+|   │   │   |   ├── threshold.html
+|   │   │   |   ├── item_management.html
+|   │   │   | 
+|   │   │   ├── css/
+|   │   │   ├── item_management.css
 |   │   │   ├── inventory.css
-|   │   │   ├── inventory.js
+|   │   │   ├── threshold.css
+|   │   │   | 
+|   │   │   ├── js/
+|   │   │   ├── item_management.js
+|   │   │   ├── threshold.js
+|   │   │  
+│   │   ├── salesreport/
+|   │   │   ├── salesreport.html
+|   │   │   ├── components/
+|   │   │   ├── css/
+|   │   │   ├── js/
 │   ├
 │   ├── js/
 │   │   ├── api.js

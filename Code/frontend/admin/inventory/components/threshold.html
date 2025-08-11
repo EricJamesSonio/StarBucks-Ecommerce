@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inventory — Global Threshold</title>
+  <link rel="stylesheet" href="../css/threshold.css">
+</head>
+<body>
+  <h1>Inventory — Global Threshold</h1>
+
+  <!-- Back Button -->
+  <div style="margin-bottom: 20px;">
+    <button onclick="window.location.href='../inventory.html'">
+      ← Back to Admin Panel
+    </button>
+  </div>
+
+  <div>
+    <label>Global threshold:</label>
+    <input id="threshold" type="number" min="0" />
+    <button id="btnSet">Set Threshold</button>
+  </div>
+
+  <h2>Low-stock items</h2>
+  <ul id="lowStockList"></ul>
+
+  <script src="../js/config.js"></script> 
+  <script src="../js/threshold.js"></script>
+</body>
+</html>

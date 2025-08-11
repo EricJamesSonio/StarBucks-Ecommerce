@@ -7,7 +7,6 @@
     starbucksitem           --> Base Item
     subcategory             --> Drinks = Expresso
     contacts                --> Email, Phone
-    supplier                --> Base Details of Ingredient Suppliers
     user                    --> User of website "Customer"
     admin                   --> Manager
     auth                    --> Logins (user, admin)
@@ -16,6 +15,10 @@
     order_item              --> contains the userorders to combine all and can get the total price etc.
     receipt                 --> Contains receipt of the order (payment, change etc.)
     discount                --> contains pwd, senior, store discounts apply to the total price!
+    city                    --> Used in address 
+    province                --> used in address
+    country                 --> used in address
+    inventory setting       --> global scope of threshold for items
 
 StarbucksItem -->
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,14 +61,8 @@ Item Attributes -->
         FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
         FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
 
-Supplier -->
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        info TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
 Admin -->
+        CREATE TABLE admin (
         id INT AUTO_INCREMENT PRIMARY KEY,
         first_name VARCHAR(50) NOT NULL,
         middle_name VARCHAR(50),
@@ -83,6 +80,7 @@ User -->
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
 Auth -->
+        CREATE TABLE auth (
         id INT AUTO_INCREMENT PRIMARY KEY,
         account_type ENUM('user', 'admin') NOT NULL,
         account_id INT NOT NULL,
@@ -94,6 +92,7 @@ Auth -->
         INDEX idx_auth_type_id (account_type, account_id)
 
 Contact -->
+        CREATE TABLE contact (
         id INT AUTO_INCREMENT PRIMARY KEY,
         contactable_type ENUM( 'user', 'admin') NOT NULL,
         contactable_id INT NOT NULL,
@@ -104,6 +103,7 @@ Contact -->
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
 Address -->
+        CREATE TABLE address (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         addressable_type ENUM('user','admin') NOT NULL,
         addressable_id INT UNSIGNED NOT NULL,
@@ -117,6 +117,7 @@ Address -->
         FOREIGN KEY (city_id) REFERENCES city(id) ON DELETE SET NULL
 
 Userorder --> 
+        CREATE TABLE userorder (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
         total_amount DECIMAL(10,2) DEFAULT 0,
@@ -126,6 +127,7 @@ Userorder -->
         FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         
 Orderitem -->
+        CREATE TABLE order_item (
         id INT AUTO_INCREMENT PRIMARY KEY,
         order_id INT NOT NULL,
         item_id INT NOT NULL,
@@ -137,7 +139,8 @@ Orderitem -->
         FOREIGN KEY (order_id) REFERENCES `userorder`(id) ON DELETE CASCADE,
         FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE
 
-Receipts -->
+Receipt -->
+        CREATE TABLE receipt (
         id INT AUTO_INCREMENT PRIMARY KEY,
         order_id INT NOT NULL,
         discount_type ENUM('none', 'senior', 'store_card', 'custom') DEFAULT 'none',
@@ -160,6 +163,7 @@ Discount
     )
 
 City -->
+        CREATE TABLE city
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         province_id INT UNSIGNED NOT NULL,
         name VARCHAR(100) NOT NULL,
@@ -167,60 +171,23 @@ City -->
         FOREIGN KEY (province_id) REFERENCES province(id) ON DELETE CASCADE
 
 Country -->
-
+        CREATE TABLE country
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL UNIQUE
 
 Province -->
-
+        CREATE TABLE province
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         country_id INT UNSIGNED NOT NULL,
         name VARCHAR(100) NOT NULL,
         FOREIGN KEY (country_id) REFERENCES country(id) ON DELETE CASCADE
 
-
-
-
-
-
-
-[scripts]
-
-db.php          --> Database creation 
-
-set.php         --> Executing the creation of TABLES and pre defined fields in DATABASE
-
-[functions]
-
-createTable     --> Create The Tables in the Database only Onced and Updates for deleted rows or added rows   
-insertData      --> Insert pre defined fields only onced
-upsertData      --> Can be use for manually updating Tables
-getIDbyName     --> Get id from different tables by name (Used for creating tables that is required foreign keys)
-
-
-**************************************** NORMALIZATION DESIGN DATABASE *************************************
-
-[User] -----------------|----------------------|
-                        |                      |----[Auth] --> Logins
-[Admin]-----------------|----------------------|
-                        |-------- [Contacts] --> Phones, Emails ---- [Address]
-[Supplier]--------------|
-
---------------------------------------------------------------------------------
-[Contacts] --- Phone, Emails
-        [User],[Admin],[Supplier]
-
-[Auth] --- Login Password username 
-        [User], [Admin]
-
-[Address] -- Location
-        [User], [Admin]
-
----------------------------------------------------------------------------------
-
-[item attributes]
-
---> [attribute templates] 
-        --> cafeine level etc. default to medium
+Inventory Settings -->
+    CREATE TABLE inventory_settings 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        global_threshold INT NOT NULL,
+        updated_by INT,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (updated_by) REFERENCES admin(id) ON DELETE SET NULL
 
 

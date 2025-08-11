@@ -21,37 +21,70 @@ class Item {
         return $items;
     }
 
-    public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
-        $sql = "SELECT * FROM starbucksitem WHERE 1=1";
-        $types = "";
-        $params = [];
+public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
+    $sql = "
+        SELECT i.id, i.name, i.price, i.quantity, 
+               i.description, i.category_id, i.subcategory_id,
+               c.name AS category_name,
+               s.name AS subcategory_name
+        FROM starbucksitem i
+        LEFT JOIN category c ON i.category_id = c.id
+        LEFT JOIN subcategory s ON i.subcategory_id = s.id
+        WHERE 1=1
+    ";
+    $types = "";
+    $params = [];
 
-        if ($category_id) {
-            $sql .= " AND category_id = ?";
-            $types .= "i";
-            $params[] = $category_id;
-        }
-
-        if ($subcategory_id) {
-            $sql .= " AND subcategory_id = ?";
-            $types .= "i";
-            $params[] = $subcategory_id;
-        }
-
-        $stmt = $this->conn->prepare($sql);
-
-        if ($params) {
-            $stmt->bind_param($types, ...$params);
-        }
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $items = [];
-        while ($row = $result->fetch_assoc()) {
-            $items[] = $row;
-        }
-        return $items;
+    if ($category_id) {
+        $sql .= " AND i.category_id = ?";
+        $types .= "i";
+        $params[] = $category_id;
     }
+
+    if ($subcategory_id) {
+        $sql .= " AND i.subcategory_id = ?";
+        $types .= "i";
+        $params[] = $subcategory_id;
+    }
+
+    $stmt = $this->conn->prepare($sql);
+
+    if ($params) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $items = [];
+    while ($row = $result->fetch_assoc()) {
+        $items[] = $row;
+    }
+    return $items;
+}
+
+
+public function addItem($name, $price, $quantity, $category_id, $subcategory_id, $description) {
+    $sql = "INSERT INTO starbucksitem (name, price, quantity, category_id, subcategory_id, description)
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("sdiiss", $name, $price, $quantity, $category_id, $subcategory_id, $description);
+    return $stmt->execute();
+}
+
+public function updateItem($id, $name, $price, $quantity, $description) {
+    $sql = "UPDATE starbucksitem SET name=?, price=?, quantity=?, description=? WHERE id=?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("sdssi", $name, $price, $quantity, $description, $id);
+    return $stmt->execute();
+}
+
+public function deleteItem($id) {
+    $sql = "DELETE FROM starbucksitem WHERE id=?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
+
 }
 ?>

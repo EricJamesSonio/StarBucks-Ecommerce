@@ -1,18 +1,27 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>Inventory — Global Threshold</title></head>
-<link rel="stylesheet" href="inventory.css">
+<head>
+  <meta charset="utf-8">
+  <title>Inventory Management</title>
+  <link rel="stylesheet" href="css/inventory.css">
+</head>
 <body>
-  <h1>Inventory — Global Threshold</h1>
-  <div>
-    <label>Global threshold:</label>
-    <input id="threshold" type="number" min="0" />
-    <button id="btnSet">Set Threshold</button>
-  </div>
-  <h2>Low-stock items</h2>
-  <ul id="lowStockList"></ul>
+  <h1>Inventory Management</h1>
 
-  <script src="../js/config.js"></script> <!-- must set API_BASE_PATH -->
-  <script src="inventory.js"></script>
+  <!-- Back to Admin Panel -->
+  <div style="margin-bottom: 20px;">
+    <button onclick="window.location.href='../panel/panel.html'">
+      ← Back to Admin Panel
+    </button>
+  </div>
+
+  <div class="inventory-menu">
+    <button onclick="window.location.href='components/threshold.html'">
+      Inventory Settings (Threshold)
+    </button>
+    <button onclick="window.location.href='components/item_management.html?action=add'">
+      Item Management
+    </button>
+  </div>
 </body>
 </html>
