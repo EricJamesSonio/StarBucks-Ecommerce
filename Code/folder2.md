@@ -76,6 +76,17 @@ Code/
 │   │   ├── session.js
 │   │   ├── history.js
 ├── frontend/ -- used for directing buttons in design/ home
+│   ├── admin/
+│   │   ├── panel/
+|   │   │   ├── panel.html
+|   │   │   ├── panel.css
+|   │   │   ├── panel.js
+│   ├
+│   │   ├── inventory/
+|   │   │   ├── inventory.html
+|   │   │   ├── inventory.css
+|   │   │   ├── inventory.js
+│   ├
 │   ├── js/
 │   │   ├── api.js
 │   │   ├── cart.js

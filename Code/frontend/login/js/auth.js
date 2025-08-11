@@ -36,7 +36,6 @@ window.goBack = async function () {
   clearError();
 };
 
-// ✅ LOGIN
 async function login() {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPass").value.trim();
@@ -45,17 +44,18 @@ async function login() {
     const res = await fetch(LOGIN_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // for session cookies
+      credentials: "include", // ✅ keep session cookies
       body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
 
     if (data.success) {
+      // Save login state
       localStorage.setItem("isLoggedIn", "true");
       localStorage.removeItem("isGuest");
 
-
+      // Save user info for later
       const userData = {
         id: data.account_id,
         type: data.account_type
@@ -63,7 +63,13 @@ async function login() {
       localStorage.setItem("loggedInUser", JSON.stringify(userData));
 
       alert("Login successful!");
-      window.location.href = "../menu/menu.html";
+
+      // ✅ Redirect based on account type
+      if (data.account_type && data.account_type.toLowerCase() === "admin") {
+        window.location.href = "../admin/panel/panel.html";
+      } else {
+        window.location.href = "../menu/menu.html";
+      }
     } else {
       showError(data.message || "Login failed.");
     }

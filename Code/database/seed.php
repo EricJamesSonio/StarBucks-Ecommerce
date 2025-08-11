@@ -22,6 +22,7 @@ require_once(__DIR__ . '/model/country.php');
 require_once(__DIR__ . '/model/province.php');
 require_once(__DIR__ . '/model/city.php');
 require_once(__DIR__ . '/model/address.php');
+require_once(__DIR__ . '/model/inventory_setting.php');
 
 // --- DATA SEEDING ---
 // 1) core lookups & static data
@@ -36,6 +37,7 @@ require_once(__DIR__ . '/scripts/data/contacts.php');
 require_once(__DIR__ . '/scripts/data/auth.php');
 require_once(__DIR__ . '/scripts/data/address.php');
 require_once(__DIR__ . '/scripts/data/discounts.php');
+require_once(__DIR__ . '/scripts/data/inventory_setting.php');
 
 // 2) seed sizes lookup  
 require_once(__DIR__ . '/scripts/data/size.php');

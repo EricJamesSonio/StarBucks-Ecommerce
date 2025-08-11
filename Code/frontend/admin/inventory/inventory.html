@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Inventory — Global Threshold</title></head>
+<link rel="stylesheet" href="inventory.css">
+<body>
+  <h1>Inventory — Global Threshold</h1>
+  <div>
+    <label>Global threshold:</label>
+    <input id="threshold" type="number" min="0" />
+    <button id="btnSet">Set Threshold</button>
+  </div>
+  <h2>Low-stock items</h2>
+  <ul id="lowStockList"></ul>
+
+  <script src="../js/config.js"></script> <!-- must set API_BASE_PATH -->
+  <script src="inventory.js"></script>
+</body>
+</html>
