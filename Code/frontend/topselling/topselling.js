@@ -1,21 +1,20 @@
-// top-items.js or relevant script file
-import { API_BASE_PATH } from '../config.js';
+import { API_BASE_PATH, IMAGES_BASE_PATH } from '../js/config.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("top-items-container");
 
   function getImageForItem(itemName) {
     const images = {
-      "Iced Americano": "../menu/images/americano.jpg",
-      "Caffè Latte": "../menu/images/latte.jpg",
-      "Matcha Green Tea Latte": "../menu/images/matcha.jpg",
-      "Very Berry Hibiscus Refresher": "../menu/images/refresher.jpg",
-      "Egg Sandwich": "../menu/images/egg.jpg",
-      "Bacon & Cheese Sandwich": "../menu/images/bacon.jpg",
-      "Cheddar Melt Sandwich": "../menu/images/cheddar.jpg",
-      "Ice Starbucks Purple Cream": "../menu/images/cream.jpg"
+      "Iced Americano": IMAGES_BASE_PATH + "americano.jpg",
+      "Caffè Latte": IMAGES_BASE_PATH + "latte.jpg",
+      "Matcha Green Tea Latte": IMAGES_BASE_PATH + "matcha.jpg",
+      "Very Berry Hibiscus Refresher": IMAGES_BASE_PATH + "refresher.jpg",
+      "Egg Sandwich": IMAGES_BASE_PATH + "egg.jpg",
+      "Bacon & Cheese Sandwich": IMAGES_BASE_PATH + "bacon.jpg",
+      "Cheddar Melt Sandwich": IMAGES_BASE_PATH + "cheddar.jpg",
+      "Ice Starbucks Purple Cream": IMAGES_BASE_PATH + "cream.jpg"
     };
-    return images[itemName] || "../menu/images/ClassicCup.png"; // fallback image
+    return images[itemName] || IMAGES_BASE_PATH + "ClassicCup.png"; // fallback image
   }
 
   try {

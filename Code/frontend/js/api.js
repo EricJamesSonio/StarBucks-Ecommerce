@@ -1,8 +1,7 @@
-// frontend/js/api.js
 import { openModal } from './modal.js';
-import { API_BASE_PATH } from './config.js';
+import { API_BASE_PATH, IMAGES_BASE_PATH } from './config.js';  // <-- import IMAGES_BASE_PATH
 
-const BASE_IMG_PATH = '../../frontend/menu/images/';
+const BASE_IMG_PATH = IMAGES_BASE_PATH;  // Use the imported path
 
 const IMAGE_MAP = {
   "Iced Americano":                 BASE_IMG_PATH + "americano.jpg",
@@ -81,12 +80,16 @@ function displayItems(items) {
   itemList.innerHTML = '';
 
   items.forEach(item => {
+    console.log(`Item: ${item.name}`);
+
+    const imageUrl = getImageForItem(item.name);
+
     const card = document.createElement('div');
     card.className = 'item-card';
     card.onclick = () => openModal(item);
 
     card.innerHTML = `
-      <img src="images/${item.image_url || 'default.jpg'}" class="item-img" alt="${item.name}">
+      <img src="${imageUrl}" class="item-img" alt="${item.name}">
       <div class="item-name">${item.name}</div>
       <div class="item-description">${item.description}</div>
       <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
@@ -104,7 +107,6 @@ export function showCategories() {
 
 // Load subcategories for a given category ID
 export function loadSubcategories(categoryId) {
-  // Show subcategory section, hide item list initially
   document.getElementById('subcategorySelect').style.display = 'block';
   document.getElementById('subcategoryButtons').innerHTML = 'Loading...';
   document.getElementById('itemList').innerHTML = '';
