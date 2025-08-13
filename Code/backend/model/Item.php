@@ -86,5 +86,26 @@ public function deleteItem($id) {
     return $stmt->execute();
 }
 
+public function searchByName($query) {
+    $sql = "SELECT id, name, price, image_url 
+            FROM starbucksitem 
+            WHERE name LIKE CONCAT('%', ?, '%') 
+            LIMIT 10";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("s", $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $items = [];
+    while ($row = $result->fetch_assoc()) {
+        $items[] = $row;
+    }
+    return $items;
 }
+
+
+}
+
+
 ?>

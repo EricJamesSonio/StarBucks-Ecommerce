@@ -82,6 +82,11 @@ switch ($route) {
         require __DIR__ . '/routes/salesreport.php';
         break;
 
+    case 'search':
+        require __DIR__ . '/routes/search.php';
+        break;
+
+
     default:
         http_response_code(404);
         echo json_encode(["status" => false, "message" => "Route not found"]);

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 2) . '/model/item.php';
+require_once dirname(__DIR__, 2) . '/model/Item.php';
 
 function getItems($con) {
     $category_id = isset($_GET['category_id']) ? intval($_GET['category_id']) : 0;
@@ -51,4 +51,22 @@ function deleteItem($con) {
     $success = $itemModel->deleteItem($id);
 
     echo json_encode(["status" => $success]);
+}
+
+function searchItems($con) {
+    $query = isset($_GET['query']) ? trim($_GET['query']) : '';
+
+    if ($query === '') {
+        echo json_encode(["status" => false, "message" => "No search query"]);
+        return;
+    }
+
+    $itemModel = new Item($con);
+    $results = $itemModel->searchByName($query);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        "status" => true,
+        "data" => $results
+    ]);
 }

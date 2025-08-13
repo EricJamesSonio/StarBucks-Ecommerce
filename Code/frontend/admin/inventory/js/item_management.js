@@ -192,6 +192,60 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+const searchInput = document.getElementById('searchInput');
+const suggestionsBox = document.getElementById('suggestionsBox');
+let searchTimeout = null;
+
+searchInput?.addEventListener('input', function () {
+  const query = this.value.trim();
+
+  if (query.length < 1) {
+    // if empty search → reload all items
+    loadItems();
+    return;
+  }
+
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    fetch(`${basePath}/search?query=${encodeURIComponent(query)}`, {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(response => {
+        const tbody = document.querySelector("#itemTable tbody");
+
+        if (response.status && Array.isArray(response.data) && response.data.length > 0) {
+          tbody.innerHTML = response.data.map(item => `
+            <tr data-id="${item.id}">
+              <td><input value="${item.name}" class="edit-name"></td>
+              <td><input type="number" value="${item.price}" step="0.01" class="edit-price"></td>
+              <td><input type="number" value="${item.quantity}" class="edit-qty"></td>
+              <td>${item.category_name || ''}</td>
+              <td>${item.subcategory_name || ''}</td>
+              <td><textarea class="edit-desc">${item.description || ""}</textarea></td>
+              <td>
+                <button class="btnUpdate">Update</button>
+                <button class="btnDelete">Delete</button>
+              </td>
+            </tr>
+          `).join("");
+        } else {
+          tbody.innerHTML = `<tr><td colspan="7">No results found</td></tr>`;
+        }
+      })
+      .catch(err => {
+        console.error('Search error:', err);
+      });
+  }, 300);
+});
+
+
+document.addEventListener('click', (event) => {
+  if (!event.target.closest('.search-container')) {
+    suggestionsBox.style.display = 'none';
+  }
+});
+
 
 /** Init page */
 loadCategories().then(loadItems);

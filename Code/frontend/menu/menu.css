@@ -150,3 +150,39 @@ button:hover {
     align-items: center;
   }
 }
+
+.search-container {
+  position: relative;
+  width: 300px;
+  margin: 10px auto;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.suggestions {
+  position: absolute;
+  top: 36px;
+  width: 100%;
+  background: rgb(185, 64, 64);
+  border: 1px solid #ccc;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  z-index: 10;
+}
+
+.suggestions div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestions div:hover {
+  background-color: #0a0303;
+}
+

@@ -76,3 +76,32 @@ div > button:hover {
     max-width: 300px;
   }
 }
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+/* Search input styling */
+.search-container input[type="text"] {
+  width: 250px;
+  padding: 10px 15px;
+  border: 2px solid #00bb68;
+  border-radius: 25px;
+  outline: none;
+  font-size: 14px;
+  background-color: #fff;
+  transition: 0.3s ease;
+}
+
+/* Placeholder color */
+.search-container input[type="text"]::placeholder {
+  color: #888;
+}
+
+/* On focus */
+.search-container input[type="text"]:focus {
+  border-color: #006c3d;
+  box-shadow: 0 0 8px rgba(0, 187, 104, 0.4);
+}
