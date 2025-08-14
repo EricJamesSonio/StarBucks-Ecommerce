@@ -1,123 +1,119 @@
+// signup.js
 import { API_BASE_PATH } from "./config.js";
 
-let selectedCountry = null;
-let selectedProvince = null;
-let selectedCity = null;
+class SignupManager {
+    constructor(apiBasePath) {
+        this.apiBasePath = apiBasePath;
+        this.selectedCountry = null;
+        this.selectedProvince = null;
+        this.selectedCity = null;
 
-console.log("signup.js loaded, running init code");
+        this.countryContainer = document.getElementById("country-buttons");
+        this.provinceContainer = document.getElementById("province-buttons");
+        this.cityContainer = document.getElementById("city-buttons");
 
-const countryContainer = document.getElementById("country-buttons");
-const provinceContainer = document.getElementById("province-buttons");
-const cityContainer = document.getElementById("city-buttons");
+        console.log("signup.js loaded, initializing...");
+        this.loadCountries();
+    }
 
-fetch(`${API_BASE_PATH}/getCountries`)
-  .then(res => res.json())
-  .then(countries => {
-    countryContainer.innerHTML = "";
-    countries.forEach(c => {
-      const btn = document.createElement("button");
-      btn.textContent = c.name;
-      btn.onclick = () => selectCountry(c);
-      countryContainer.appendChild(btn);
-    });
-  })
-  .catch(err => console.error("Error fetching countries:", err));
+    async loadCountries() {
+        try {
+            const res = await fetch(`${this.apiBasePath}/getCountries`);
+            const countries = await res.json();
+            this.renderButtons(this.countryContainer, countries, country => this.selectCountry(country));
+        } catch (err) {
+            console.error("Error fetching countries:", err);
+        }
+    }
 
-function selectCountry(country) {
-  selectedCountry = country;
-  selectedProvince = null;
-  selectedCity = null;
+    async selectCountry(country) {
+        this.selectedCountry = country;
+        this.selectedProvince = null;
+        this.selectedCity = null;
 
-  // Display selected country
-  document.getElementById("selected-country").textContent = country.name;
-  // Clear and hide province & city selections
-  document.getElementById("selected-province").textContent = "";
-  document.getElementById("selected-city").textContent = "";
-  document.getElementById("postalCode").value = "";
+        document.getElementById("selected-country").textContent = country.name;
+        document.getElementById("selected-province").textContent = "";
+        document.getElementById("selected-city").textContent = "";
+        document.getElementById("postalCode").value = "";
 
-  // Hide country container (auto close)
-  document.getElementById("country-container").style.display = "none";
+        document.getElementById("country-container").style.display = "none";
+        document.getElementById("province-container").style.display = "block";
 
-  // Show province container
-  const provinceDiv = document.getElementById("province-container");
-  provinceDiv.style.display = "block";
+        try {
+            const res = await fetch(`${this.apiBasePath}/getProvince?country_id=${country.id}`);
+            const provinces = await res.json();
+            this.renderButtons(this.provinceContainer, provinces, province => this.selectProvince(province));
+        } catch (err) {
+            console.error("Error fetching provinces:", err);
+        }
+    }
 
-  // Load provinces
-  fetch(`${API_BASE_PATH}/getProvince?country_id=${country.id}`)
-    .then(res => res.json())
-    .then(provinces => {
-      provinceContainer.innerHTML = "";
-      provinces.forEach(p => {
-        const btn = document.createElement("button");
-        btn.textContent = p.name;
-        btn.onclick = () => selectProvince(p);
-        provinceContainer.appendChild(btn);
-      });
-    });
+    async selectProvince(province) {
+        this.selectedProvince = province;
+        this.selectedCity = null;
+
+        document.getElementById("selected-province").textContent = province.name;
+        document.getElementById("selected-city").textContent = "";
+        document.getElementById("postalCode").value = "";
+
+        document.getElementById("province-container").style.display = "none";
+        document.getElementById("city-container").style.display = "block";
+
+        try {
+            const res = await fetch(`${this.apiBasePath}/getCities?province_id=${province.id}`);
+            const cities = await res.json();
+            this.renderButtons(this.cityContainer, cities, city => this.selectCity(city));
+        } catch (err) {
+            console.error("Error fetching cities:", err);
+        }
+    }
+
+    selectCity(city) {
+        this.selectedCity = city;
+        document.getElementById("selected-city").textContent = city.name;
+        document.getElementById("city-container").style.display = "none";
+        document.getElementById("postalCode").value = city.postal_code || "";
+    }
+
+    renderButtons(container, items, onClick) {
+        container.innerHTML = "";
+        items.forEach(item => {
+            const btn = document.createElement("button");
+            btn.textContent = item.name;
+            btn.onclick = () => onClick(item);
+            container.appendChild(btn);
+        });
+    }
+
+    submitSignup() {
+        const payload = {
+            first_name: document.getElementById('firstName').value.trim(),
+            middle_name: document.getElementById('middleName').value.trim(),
+            last_name: document.getElementById('lastName').value.trim(),
+            email: document.getElementById('signupEmail').value.trim(),
+            password: document.getElementById('signupPass').value,
+            phone: document.getElementById('signupPhone').value.trim(),
+            street: document.getElementById('street').value.trim(),
+            city: this.selectedCity?.name || '',
+            province: this.selectedProvince?.name || '',
+            postal_code: document.getElementById('postalCode').value.trim(),
+            country: this.selectedCountry?.name || ''
+        };
+
+        signup(payload); // Assuming signup is globally available
+    }
+
+    goBack() {
+        history.back();
+    }
 }
 
-function selectProvince(province) {
-  selectedProvince = province;
-  selectedCity = null;
+// Create singleton
+export const signupManager = new SignupManager(API_BASE_PATH);
 
-  // Display selected province
-  document.getElementById("selected-province").textContent = province.name;
-  // Clear city selection
-  document.getElementById("selected-city").textContent = "";
-  document.getElementById("postalCode").value = "";
-
-  // Hide province container (auto close)
-  document.getElementById("province-container").style.display = "none";
-
-  // Show city container
-  const cityDiv = document.getElementById("city-container");
-  cityDiv.style.display = "block";
-
-  // Load cities
-  fetch(`${API_BASE_PATH}/getCities?province_id=${province.id}`)
-    .then(res => res.json())
-    .then(cities => {
-      cityContainer.innerHTML = "";
-      cities.forEach(c => {
-        const btn = document.createElement("button");
-        btn.textContent = c.name;
-        btn.onclick = () => selectCity(c);
-        cityContainer.appendChild(btn);
-      });
-    });
-}
-
-function selectCity(city) {
-  selectedCity = city;
-
-  // Display selected city
-  document.getElementById("selected-city").textContent = city.name;
-
-  // Hide city container (auto close)
-  document.getElementById("city-container").style.display = "none";
-
-  // Show postal code
-  document.getElementById("postalCode").value = city.postal_code || "";
-}
-
-window.submitSignup = function () {
-  const payload = {
-    first_name: document.getElementById('firstName').value.trim(),
-    middle_name: document.getElementById('middleName').value.trim(),
-    last_name: document.getElementById('lastName').value.trim(),
-    email: document.getElementById('signupEmail').value.trim(),
-    password: document.getElementById('signupPass').value,
-    phone: document.getElementById('signupPhone').value.trim(),
-    street: document.getElementById('street').value.trim(),
-    city: selectedCity?.name || '',
-    province: selectedProvince?.name || '',
-    postal_code: document.getElementById('postalCode').value.trim(),
-    country: selectedCountry?.name || ''
-  };
-
-  signup(payload);
-};
-
-window.goBack = function () {
-  history.back();
-};
+// Keep compatibility with existing HTML event attributes
+window.selectCountry = (country) => signupManager.selectCountry(country);
+window.selectProvince = (province) => signupManager.selectProvince(province);
+window.selectCity = (city) => signupManager.selectCity(city);
+window.submitSignup = () => signupManager.submitSignup();
+window.goBack = () => signupManager.goBack();

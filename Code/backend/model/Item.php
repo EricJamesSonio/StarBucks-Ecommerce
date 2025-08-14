@@ -104,6 +104,32 @@ public function searchByName($query) {
     return $items;
 }
 
+public function searchInventoryByName($query) {
+    $sql = "
+        SELECT i.id, i.name, i.price, i.quantity, 
+               i.description, i.category_id, i.subcategory_id,
+               c.name AS category_name,
+               s.name AS subcategory_name
+        FROM starbucksitem i
+        LEFT JOIN category c ON i.category_id = c.id
+        LEFT JOIN subcategory s ON i.subcategory_id = s.id
+        WHERE i.name LIKE CONCAT('%', ?, '%')
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("s", $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $items = [];
+    while ($row = $result->fetch_assoc()) {
+        $items[] = $row;
+    }
+    return $items;
+}
+
+
+
 
 }
 

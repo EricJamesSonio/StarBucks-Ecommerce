@@ -1,10 +1,9 @@
 import { API_BASE_PATH, IMAGES_BASE_PATH } from '../js/config.js';
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const container = document.getElementById("top-items-container");
-
-  function getImageForItem(itemName) {
-    const images = {
+class TopSellingManager {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.imageMap = {
       "Iced Americano": IMAGES_BASE_PATH + "americano.jpg",
       "Caffè Latte": IMAGES_BASE_PATH + "latte.jpg",
       "Matcha Green Tea Latte": IMAGES_BASE_PATH + "matcha.jpg",
@@ -14,40 +13,54 @@ document.addEventListener("DOMContentLoaded", async () => {
       "Cheddar Melt Sandwich": IMAGES_BASE_PATH + "cheddar.jpg",
       "Ice Starbucks Purple Cream": IMAGES_BASE_PATH + "cream.jpg"
     };
-    return images[itemName] || IMAGES_BASE_PATH + "ClassicCup.png"; // fallback image
   }
 
-  try {
-    const response = await fetch(`${API_BASE_PATH}/topselling`, {
-      credentials: 'include'
-    });
-    const result = await response.json();
+  getImageForItem(itemName) {
+    return this.imageMap[itemName] || IMAGES_BASE_PATH + "ClassicCup.png";
+  }
 
-    if (!result.status || result.data.length === 0) {
-      container.innerHTML = "<p>No top-selling data available.</p>";
-      return;
+  async fetchTopSelling() {
+    try {
+      const res = await fetch(`${API_BASE_PATH}/topselling`, { credentials: 'include' });
+      const result = await res.json();
+
+      if (!result.status || !Array.isArray(result.data) || result.data.length === 0) {
+        this.showMessage("No top-selling data available.");
+        return;
+      }
+
+      this.renderItems(result.data);
+    } catch (err) {
+      console.error("Error fetching top-selling items:", err);
+      this.showMessage("Failed to load data.");
     }
+  }
 
-    container.innerHTML = "";
+  renderItems(items) {
+    this.container.innerHTML = "";
 
-    result.data.forEach(item => {
+    items.forEach(item => {
       const div = document.createElement("div");
       div.classList.add("item-box");
 
-      const imageUrl = getImageForItem(item.name);
-
       div.innerHTML = `
-        <img src="${imageUrl}" alt="${item.name}" class="item-image" />
+        <img src="${this.getImageForItem(item.name)}" alt="${item.name}" class="item-image" />
         <h3>${item.name}</h3>
         <p><strong>Price:</strong> ₱${parseFloat(item.price).toFixed(2)}</p>
         <p><strong>Total Sold:</strong> ${item.total_sold}</p>
       `;
 
-      container.appendChild(div);
+      this.container.appendChild(div);
     });
-
-  } catch (err) {
-    console.error("Error fetching top-selling items:", err);
-    container.innerHTML = "<p>Failed to load data.</p>";
   }
+
+  showMessage(msg) {
+    this.container.innerHTML = `<p>${msg}</p>`;
+  }
+}
+
+// Initialize on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+  const topSelling = new TopSellingManager("top-items-container");
+  topSelling.fetchTopSelling();
 });

@@ -6,8 +6,16 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        getItems($con);
+        $action = $_GET['action'] ?? '';
+        if ($action === 'searchInventory') {
+            searchInventoryItems($con);
+        } elseif ($action === 'search') {
+            searchItems($con);
+        } else {
+            getItems($con);
+        }
         break;
+
 
     case 'POST':
         $action = $_GET['action'] ?? '';

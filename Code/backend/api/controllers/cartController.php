@@ -7,107 +7,118 @@ error_reporting(E_ALL);
 require_once dirname(__DIR__, 2) . '/model/Cart.php';
 require_once dirname(__DIR__, 3) . '/database/db2.php';
 
-function handleCart($con) {
-    session_start();
+class CartController {
+    private $cartModel;
+    private $isLoggedIn;
+    private $userId;
+    private $guestToken;
 
-    $method = $_SERVER['REQUEST_METHOD'];
-    $isLoggedIn = isset($_SESSION['user_id']);
-    $userId = $isLoggedIn ? (int) $_SESSION['user_id'] : null;
-
-    $cartModel = new Cart($con);
-
-    switch ($method) {
-        case 'GET':
-    if ($isLoggedIn) {
-        echo json_encode($cartModel->getCartItems($userId));
-    } else if (!empty($_SESSION['guest_token'])) {
-        echo json_encode($cartModel->getCartItemsByGuestToken($_SESSION['guest_token']));
-    } else {
-        echo json_encode([]);
+    public function __construct($dbConnection) {
+        session_start();
+        $this->cartModel = new Cart($dbConnection);
+        $this->isLoggedIn = isset($_SESSION['user_id']);
+        $this->userId = $this->isLoggedIn ? (int) $_SESSION['user_id'] : null;
+        $this->guestToken = $_SESSION['guest_token'] ?? null;
     }
-    return;
 
+    private function respond(array $data, int $status = 200): void {
+        http_response_code($status);
+        echo json_encode($data);
+        exit;
+    }
 
-        case 'POST':
-            $payload = json_decode(file_get_contents('php://input'), true);
+    public function handleRequest(): void {
+        $method = $_SERVER['REQUEST_METHOD'];
+        switch ($method) {
+            case 'GET':
+                $this->handleGet();
+                break;
+            case 'POST':
+                $this->handlePost();
+                break;
+            case 'DELETE':
+                $this->handleDelete();
+                break;
+            default:
+                $this->respond(["error" => "Method not allowed"], 405);
+        }
+    }
 
-            if (!is_array($payload)) {
-                http_response_code(400);
-                echo json_encode(["error" => "Invalid JSON payload"]);
-                return;
+    private function handleGet(): void {
+        if ($this->isLoggedIn) {
+            $this->respond($this->cartModel->getCartItems($this->userId));
+        } elseif (!empty($this->guestToken)) {
+            $this->respond($this->cartModel->getCartItemsByGuestToken($this->guestToken));
+        } else {
+            $this->respond([]);
+        }
+    }
+
+    private function handlePost(): void {
+        $payload = json_decode(file_get_contents('php://input'), true);
+
+        if (!is_array($payload)) {
+            $this->respond(["error" => "Invalid JSON payload"], 400);
+        }
+
+        $itemId = filter_var($payload['item_id'] ?? null, FILTER_VALIDATE_INT);
+        $sizeId = isset($payload['size_id']) ? filter_var($payload['size_id'], FILTER_VALIDATE_INT) : null;
+        $quantity = filter_var($payload['quantity'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $unitPrice = filter_var($payload['unit_price'] ?? null, FILTER_VALIDATE_FLOAT);
+
+        if (!$itemId || !$quantity) {
+            $this->respond(["error" => "Missing item_id or quantity"], 400);
+        }
+
+        // Ensure guest token exists
+        if (!$this->isLoggedIn && !$this->guestToken) {
+            $this->guestToken = bin2hex(random_bytes(16));
+            $_SESSION['guest_token'] = $this->guestToken;
+        }
+
+        // Logged-in or guest DB cart
+        if ($this->userId !== null || $this->guestToken !== null) {
+            $ok = $this->cartModel->addOrUpdateCartItem($this->userId, $this->guestToken, $itemId, $sizeId, $quantity);
+            if ($ok) {
+                $this->respond(["success" => true, "message" => "Item added to cart"]);
+            } else {
+                $this->respond(["error" => "Failed to add item"], 500);
             }
+        } else {
+            // Guest session-only cart
+            if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 
-            $itemId   = filter_var($payload['item_id'] ?? null, FILTER_VALIDATE_INT);
-            $sizeId   = isset($payload['size_id']) ? filter_var($payload['size_id'], FILTER_VALIDATE_INT) : null;
-            $quantity = filter_var($payload['quantity'] ?? null, FILTER_VALIDATE_INT, [
-                'options' => ['min_range' => 1]
-            ]);
-            $unitPrice = filter_var($payload['unit_price'] ?? null, FILTER_VALIDATE_FLOAT);
-
-            if (!$itemId || !$quantity) {
-                http_response_code(400);
-                echo json_encode(["error" => "Missing item_id or quantity"]);
-                return;
-            }
-
-            $guestToken = $_SESSION['guest_token'] ?? null;
-if (!$isLoggedIn) {
-    if (!$guestToken) {
-        $guestToken = bin2hex(random_bytes(16)); // ✅ generate once
-        $_SESSION['guest_token'] = $guestToken;
-    }
-}
-
-// Now save to database regardless of login:
-if ($userId !== null || $guestToken !== null) {
-    $ok = $cartModel->addOrUpdateCartItem($userId, $guestToken, $itemId, $sizeId, $quantity);
-    if ($ok) {
-        echo json_encode(["success" => true, "message" => "Item added to cart"]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["error" => "Failed to add item"]);
-    }
-    return;
-}
-
-      
-             else {
-                // 🧑 Guest: save to session only
-                if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-
-                $found = false;
-                foreach ($_SESSION['cart'] as &$item) {
-                    if ($item['item_id'] === $itemId && ($item['size_id'] ?? null) === $sizeId) {
-                        $item['quantity'] += $quantity;
-                        $found = true;
-                        break;
-                    }
+            $found = false;
+            foreach ($_SESSION['cart'] as &$item) {
+                if ($item['item_id'] === $itemId && ($item['size_id'] ?? null) === $sizeId) {
+                    $item['quantity'] += $quantity;
+                    $found = true;
+                    break;
                 }
-
-                if (!$found) {
-                    $_SESSION['cart'][] = [
-                        "item_id" => $itemId,
-                        "size_id" => $sizeId,
-                        "quantity" => $quantity,
-                        "price" => $unitPrice
-                    ];
-                }
-
-                echo json_encode(["success" => true, "message" => "Item added to guest cart"]);
-                return;
             }
 
-        case 'DELETE':
-            if ($isLoggedIn && $userId !== null) {
-                $cartModel->clearCart($userId);
+            if (!$found) {
+                $_SESSION['cart'][] = [
+                    "item_id" => $itemId,
+                    "size_id" => $sizeId,
+                    "quantity" => $quantity,
+                    "price" => $unitPrice
+                ];
             }
-            unset($_SESSION['cart']); // Clear guest cart too
-            echo json_encode(["success" => true, "message" => "Cart cleared"]);
-            return;
 
-        default:
-            http_response_code(405);
-            echo json_encode(["error" => "Method not allowed"]);
-            return;
+            $this->respond(["success" => true, "message" => "Item added to guest cart"]);
+        }
+    }
+
+    private function handleDelete(): void {
+        if ($this->isLoggedIn && $this->userId !== null) {
+            $this->cartModel->clearCart($this->userId);
+        }
+        unset($_SESSION['cart']); // Clear guest cart too
+        $this->respond(["success" => true, "message" => "Cart cleared"]);
     }
 }
+
+// Run the controller
+$controller = new CartController($con);
+$controller->handleRequest();

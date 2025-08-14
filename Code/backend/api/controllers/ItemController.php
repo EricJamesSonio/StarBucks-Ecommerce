@@ -70,3 +70,21 @@ function searchItems($con) {
         "data" => $results
     ]);
 }
+
+function searchInventoryItems($con) {
+    $query = isset($_GET['query']) ? trim($_GET['query']) : '';
+
+    if ($query === '') {
+        echo json_encode(["status" => false, "message" => "No search query"]);
+        return;
+    }
+
+    $itemModel = new Item($con);
+    $results = $itemModel->searchInventoryByName($query);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        "status" => true,
+        "data" => $results
+    ]);
+}
