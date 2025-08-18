@@ -40,11 +40,15 @@ class ItemManager {
 
   async loadSubcategories(categoryId) {
     try {
-      const res = await fetch(`${this.API_ITEMS}?action=getSubcategories&category_id=${categoryId}`);
-      const subs = await res.json();
+      // Correct endpoint: dedicated subcategories route
+      const res = await fetch(`${this.basePath}/subcategories?category_id=${categoryId}`, { credentials: 'include' });
+      const result = await res.json();
 
-      const subList = Array.isArray(subs.data) ? subs.data : subs;
-      this.subcategorySelect.innerHTML = subList
+      if (!result || result.status === false || !Array.isArray(result.data)) {
+        throw new Error('Invalid subcategories data');
+      }
+
+      this.subcategorySelect.innerHTML = result.data
         .map(sc => `<option value="${sc.id}">${sc.name}</option>`)
         .join("");
     } catch (err) {
