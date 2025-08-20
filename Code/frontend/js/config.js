@@ -1,4 +1,4 @@
-export const API_BASE_PATH = `${window.location.origin}/starbucks-ecommerce/code/api`;
+export const API_BASE_PATH = `${window.location.origin}/starbucks-ecommerce/Code/backend/api`;
 export const IMAGES_BASE_PATH = `${window.location.origin}/starbucks-ecommerce/Code/frontend/menu/images/`;
 
 // For convenience in global scope if needed

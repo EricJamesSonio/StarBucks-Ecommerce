@@ -23,7 +23,7 @@ class Item {
 
 public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
     $sql = "
-        SELECT i.id, i.name, i.price, i.quantity, 
+        SELECT i.id, i.name, i.price,
                i.description, i.category_id, i.subcategory_id,
                c.name AS category_name,
                s.name AS subcategory_name
@@ -32,25 +32,18 @@ public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
         LEFT JOIN subcategory s ON i.subcategory_id = s.id
         WHERE 1=1
     ";
-    $types = "";
-    $params = [];
+    $stmt = $this->conn->prepare($sql
+        . ($category_id ? " AND i.category_id = ?" : "")
+        . ($subcategory_id ? " AND i.subcategory_id = ?" : "")
+    );
 
-    if ($category_id) {
-        $sql .= " AND i.category_id = ?";
-        $types .= "i";
-        $params[] = $category_id;
-    }
-
-    if ($subcategory_id) {
-        $sql .= " AND i.subcategory_id = ?";
-        $types .= "i";
-        $params[] = $subcategory_id;
-    }
-
-    $stmt = $this->conn->prepare($sql);
-
-    if ($params) {
-        $stmt->bind_param($types, ...$params);
+    // Bind explicitly to avoid issues with variadics and by-reference requirements
+    if ($category_id && $subcategory_id) {
+        $stmt->bind_param("ii", $category_id, $subcategory_id);
+    } elseif ($category_id) {
+        $stmt->bind_param("i", $category_id);
+    } elseif ($subcategory_id) {
+        $stmt->bind_param("i", $subcategory_id);
     }
 
     $stmt->execute();
@@ -64,18 +57,18 @@ public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
 }
 
 
-public function addItem($name, $price, $quantity, $category_id, $subcategory_id, $description) {
-    $sql = "INSERT INTO starbucksitem (name, price, quantity, category_id, subcategory_id, description)
-            VALUES (?, ?, ?, ?, ?, ?)";
+public function addItem($name, $price, $category_id, $subcategory_id, $description) {
+    $sql = "INSERT INTO starbucksitem (name, price, category_id, subcategory_id, description)
+            VALUES (?, ?, ?, ?, ?)";
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("sdiiss", $name, $price, $quantity, $category_id, $subcategory_id, $description);
+    $stmt->bind_param("sdiis", $name, $price, $category_id, $subcategory_id, $description);
     return $stmt->execute();
 }
 
-public function updateItem($id, $name, $price, $quantity, $description) {
-    $sql = "UPDATE starbucksitem SET name=?, price=?, quantity=?, description=? WHERE id=?";
+public function updateItem($id, $name, $price, $description) {
+    $sql = "UPDATE starbucksitem SET name=?, price=?, description=? WHERE id=?";
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("sdssi", $name, $price, $quantity, $description, $id);
+    $stmt->bind_param("sdsi", $name, $price, $description, $id);
     return $stmt->execute();
 }
 
@@ -106,7 +99,7 @@ public function searchByName($query) {
 
 public function searchInventoryByName($query) {
     $sql = "
-        SELECT i.id, i.name, i.price, i.quantity, 
+        SELECT i.id, i.name, i.price,
                i.description, i.category_id, i.subcategory_id,
                c.name AS category_name,
                s.name AS subcategory_name
