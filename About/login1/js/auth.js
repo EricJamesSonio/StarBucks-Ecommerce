@@ -4,7 +4,7 @@ import { loadComponent } from "./utils.js";
 class AuthController {
   constructor() {
     this.errorEl = document.getElementById("errorMsg");
-    this.rootEl = document.getElementById("con1");
+    this.rootEl = document.getElementById("component-root");
   }
 
   // 🔔 UI Helpers
@@ -33,9 +33,9 @@ class AuthController {
     this.rootEl.innerHTML = "";
 
     if (type === "login") {
-      await loadComponent("components/login-form.html", "con1");
+      await loadComponent("components/login-form.html", "component-root");
     } else if (type === "signup") {
-      await loadComponent("components/signup-form.html", "con1");
+      await loadComponent("components/signup-form.html", "component-root");
 
       const existingScript = document.getElementById('signup-script');
       if (existingScript) existingScript.remove();
@@ -53,14 +53,14 @@ class AuthController {
   async goBack() {
     if (!this.rootEl) return;
     this.rootEl.innerHTML = "";
-    await loadComponent("components/start-screen.html", "con1");
+    await loadComponent("components/start-screen.html", "component-root");
     this.clearError();
   }
 
   // 🔐 Authentication
   async login() {
-    const email = document.getElementById("email")?.value.trim() || "";
-    const password = document.getElementById("password")?.value.trim() || "";
+    const email = document.getElementById("loginEmail")?.value.trim() || "";
+    const password = document.getElementById("loginPass")?.value.trim() || "";
 
     if (!email || !password) {
       this.showError("Email and password are required.");

@@ -1,120 +1,224 @@
-/* login.css - redesigned to match the modern green UI */
+/* General */
 
-:root {
-  --main-color-green: #00bb68;
-  --main-color-darkgreen: #00361f;
-  --main-color-lightgreen: #006c3d;
-  --unique-color-yellow: #b9d401;
+*, body, html {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+
 }
-
-*, html, body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
+:root {
+    --main-color-green: #00bb68;
+    --main-color-darkgreen: #00361f;
+    --main-color-lightgreen: #006c3d;
+    --sec-color-grey: rgb(235, 235, 235);
+    --unique-color-yellow: #b9d401;
+    --big-font-size: 4.06rem;
+    --biggest-font-size: 8rem;
 }
 
 body {
-  background-color: #00170e;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
+    overflow-x: hidden;
+    background-color: var(--main-color-darkgreen);
 }
 
-/* Centered login card */
-.container {
-  background-color: var(--main-color-darkgreen);
-  padding: 40px 30px;
-  border-radius: 16px;
-  box-shadow: 0 0 40px rgba(0, 255, 157, 0.1);
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-}
+/* top */
 
-/* Header */
-h2 {
-  color: var(--main-color-green);
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-bottom: 30px;
-}
+.icon {
+    filter: invert(1) brightness(1000%);
+    height: 1.5rem;
+    width: 1.5rem;
 
-/* Input Fields */
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 14px 16px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 10px;
-  background-color: #00361f;
-  color: white;
-  font-size: 0.95rem;
-  transition: background-color 0.3s ease, border 0.3s ease;
+    position:relative;
+    top: 2px;
 }
-
-input:focus {
-  outline: none;
-  background-color: #004b2b;
-  border: 2px solid var(--main-color-green);
+.icon:hover {
+    filter: blur(.9px) invert(1) brightness(1000%);
+    cursor: pointer;
 }
-
-/* Submit Button */
 button {
-  width: 100%;
-  padding: 14px;
-  background-color: var(--main-color-green);
-  border: none;
-  border-radius: 100px;
-  color: white;
-  font-weight: 700;
-  font-size: 1rem;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+    border-radius: 20px;
+    background-color: rgb(240, 240, 240);
+    padding: 0.3rem 1.5rem;
+    font-weight: 700;
+    font-size: .8rem;
+    color: var(--main-color-darkgreen);
+    text-transform: uppercase;
 }
-
 button:hover {
-  background-color: var(--main-color-lightgreen);
-  transform: translateY(-2px);
+    background-color: var(--main-color-lightgreen);
+    color: rgb(243, 243, 243);
+    cursor: pointer;
 }
 
-/* Error Message */
-.error-msg {
-  margin-top: 15px;
-  color: #ff4d4d;
-  background-color: rgba(255, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  display: none;
+
+#head-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    height: 15vh;
+    width: 80%;
+    margin: auto;
 }
 
-.back-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background-color: transparent;
-  color: white;
-  border: 2px solid var(--main-color-green);
-  border-radius: 30px;
-  padding: 8px 18px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  z-index: 1000;
+.logo {
+    height: 5rem;
+    width: 5rem;
+    filter: invert(1) brightness(1000%);
 }
 
-.back-button:hover {
-  background-color: var(--main-color-green);
-  color: white;
+.nav-list nav {
+    background-color: white;
+    padding: .6rem 1rem;
+    border-radius: 20px;
+}
+.nav-list nav a{
+    font-size: .9rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--main-color-darkgreen);
+    padding: .5rem 1.5rem;
+    border-radius: 20px;
+}
+.nav-list nav a:hover{
+    background-color: var(--main-color-darkgreen);
+    color: white;
+    font-weight: 600;
+    background-color: #00361f;
+}
+#icon-list{ 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style: None;
+    gap: .6rem;
+} 
+#line {
+    width: 100%;
+    height: 2px;
+    background-color: #f1f5f2;
+    opacity: .1;
+    position: relative;
+    top: 2px;
+}
+
+/* Layout */
+.root-container {
+    display: flex;
+    height: 84vh;
+
+}
+
+.container {
+    width: 50%;
+    background-color: #f1f5f2;
+    padding:  15vh 10vw;
+}
+
+.image-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.image-section img {
+    width: 400px;
+    filter: brightness(1000);
+}
+
+/* Form styling */
+.form-section h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.form-section p {
+    margin-bottom: 20px;
+}
+
+.form-section p a {
+    color: #0b3d0b;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.password-container {
+    position: relative;
+}
+
+.show-pass {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+.options input {
+    height: 15px;
+    width: 15px;
+    margin-right: 10px;
+}
+.options #save-acct {
+    display: flex;
+}
+
+.signin-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #0b3d0b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    margin-top: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #777;
+}
+
+.google-btn,
+.fb-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    background-color: white;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.fb-btn {
+    background-color: white;
 }
 
 /* Container boxes for selectors */
