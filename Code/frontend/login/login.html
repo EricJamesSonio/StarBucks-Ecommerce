@@ -1,20 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Starbucks POS – Login or Sign Up</title>
-   
-  <link rel="stylesheet" href="login.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starbucks Sign In</title>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-  <button class="back-button" onclick="window.location.href='../../design/home/index.html'">Back</button>
 
-  <div class="container">
-    <div id="component-root"></div>
-    <div id="errorMsg" class="error-msg"></div>
-  </div>
+    <!-- Navbar -->
+   <ul id="head-nav">
+        <li>
+            <img class="logo" src="../assets/starbucksLogo-nocircle.png" alt="starbucks">
+        </li>
+        <li class="nav-list">
+            <nav>
+                <a href="">Home</a>
+                <a href="">Menu</a>
+                <a href="">About Us</a>
+            </nav>
+        </li>
+        <li >
+            <ul id="icon-list">
+            <li>
+                <img class="icon" src="../assets/shopping-cart.png" alt="cart">
+            </li>
+            <li>
+                <img class="icon" src="../assets/user.png" alt="user">
+            </li>
+            <button><span>SIGN UP</span></button>
+            </ul>
+        </li>
+    </ul>
 
-  <!-- Load init script -->
-<script type="module" src="js/init.js"></script>
+    <!-- Main Content -->   
+     <div id="line"></div>
+    <main class="root-container">
+        <!-- Left Form -->
+        <section class="container">
+        <div id="con1"></div>
+
+        </section>
+
+        <!-- Right Image -->
+        <section class="image-section">
+            <img src="../assets/starbucksLogo-nocircle.png" alt="Starbucks Logo">
+        </section>
+    </main>
+
+    <script type="module" src="js/init.js"></script>
+
 </body>
 </html>

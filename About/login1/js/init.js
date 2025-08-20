@@ -5,7 +5,7 @@ import { API_BASE_PATH } from "../../js/config.js";
 
 // ✅ Just use the imported loadComponent here
 async function init() {
-  await loadComponent("components/login-form.html", "con1");
+  await loadComponent("components/start-screen.html", "container");
 }
 
 init();

@@ -1,5 +1,24 @@
-<h2>Login</h2>
-<input type="email" id="loginEmail" placeholder="Email" required />
-<input type="password" id="loginPass" placeholder="Password" required />
-<button onclick="login()">Login</button>
-<button onclick="goBack()">Back</button>
+
+<h1>Sign in</h1>
+<p>Don't have an account? <a href="#" onclick="showForm('signup')">Create now</a></p>
+
+<label>Email</label>
+<input type="email" id="email" placeholder="Email" required>
+
+<label>Password</label>
+<div class="password-container">
+    <input type="password" id="password"placeholder="Password" required/>
+</div>
+
+<div class="options">
+    <label id="save-acct"><input type="checkbox">  Save account</label>
+    <a href="#">Forgot Password?</a>
+</div>
+
+<button class="signin-btn" onclick="login()" >Log In</button>
+
+<div class="divider">or</div>
+
+<button class="google-btn">Continue with Google</button>
+<button class="fb-btn" onclick="continueWithoutAccount()">Continue as a Guest</button>
+
