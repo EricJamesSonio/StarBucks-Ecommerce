@@ -3,17 +3,26 @@
 require_once dirname(__DIR__, 2) . '/model/Item.php';
 
 function getItems($con) {
-    $category_id = isset($_GET['category_id']) ? intval($_GET['category_id']) : 0;
-    $subcategory_id = isset($_GET['subcategory_id']) ? intval($_GET['subcategory_id']) : 0;
-
-    $itemModel = new Item($con);
-    $items = $itemModel->getFilteredItems($category_id, $subcategory_id);
-
     header('Content-Type: application/json');
-    echo json_encode([
-        "status" => true,
-        "data" => $items
-    ]);
+    try {
+        $category_id = isset($_GET['category_id']) ? intval($_GET['category_id']) : 0;
+        $subcategory_id = isset($_GET['subcategory_id']) ? intval($_GET['subcategory_id']) : 0;
+
+        $itemModel = new Item($con);
+        $items = $itemModel->getFilteredItems($category_id, $subcategory_id);
+
+        echo json_encode([
+            "status" => true,
+            "data" => $items
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to load items",
+            "error" => $e->getMessage()
+        ]);
+    }
 }
 
 function addItem($con) {
@@ -22,7 +31,6 @@ function addItem($con) {
     $success = $itemModel->addItem(
         $data['name'],
         floatval($data['price']),
-        intval($data['quantity']),
         intval($data['category_id']),
         intval($data['subcategory_id']),
         $data['description']
@@ -38,7 +46,6 @@ function updateItem($con) {
         intval($data['id']),
         $data['name'],
         floatval($data['price']),
-        intval($data['quantity']),
         $data['description']
     );
 
@@ -88,3 +95,4 @@ function searchInventoryItems($con) {
         "data" => $results
     ]);
 }
+

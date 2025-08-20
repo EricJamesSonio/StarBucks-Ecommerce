@@ -1,8 +1,10 @@
 class ItemManager {
   constructor() {
-    this.basePath = (typeof window !== 'undefined' && window.API_BASE_PATH)
-      ? window.API_BASE_PATH.replace(/\/+$/, '')
-      : `${window.location.origin}/starbucks-ecommerce/code/api`;
+    if (!window.API_BASE_PATH) {
+      throw new Error("API_BASE_PATH is not defined. Ensure config.js is loaded before item_management.js");
+    }
+
+    this.basePath = window.API_BASE_PATH.replace(/\/+$/, '');
     this.API_ITEMS = `${this.basePath}/items`;
 
     this.categorySelect = document.getElementById("categorySelect");
@@ -40,9 +42,8 @@ class ItemManager {
 
   async loadSubcategories(categoryId) {
     try {
-      // Correct endpoint: dedicated subcategories route
-      const res = await fetch(`${this.basePath}/subcategories?category_id=${categoryId}`, { credentials: 'include' });
-      const result = await res.json();
+      const res = await fetch(`${this.API_ITEMS}?action=getSubcategories&category_id=${categoryId}`);
+      const subs = await res.json();
 
       if (!result || result.status === false || !Array.isArray(result.data)) {
         throw new Error('Invalid subcategories data');
@@ -76,7 +77,6 @@ class ItemManager {
       <tr data-id="${item.id}">
         <td><input value="${item.name}" class="edit-name"></td>
         <td><input type="number" value="${item.price ?? 0}" step="0.01" class="edit-price"></td>
-        <td><input type="number" value="${item.quantity ?? 0}" class="edit-qty"></td>
         <td>${item.category_name || ''}</td>
         <td>${item.subcategory_name || ''}</td>
         <td><textarea class="edit-desc">${item.description || ""}</textarea></td>
@@ -150,7 +150,7 @@ class ItemManager {
       if (response.status && Array.isArray(response.data) && response.data.length > 0) {
         this.renderItems(response.data);
       } else {
-        this.itemTableBody.innerHTML = `<tr><td colspan="7">No results found</td></tr>`;
+        this.itemTableBody.innerHTML = `<tr><td colspan="6">No results found</td></tr>`;
       }
     } catch (err) {
       console.error('Search error:', err);
@@ -166,18 +166,15 @@ class ItemManager {
   }
 
   bindEvents() {
-    // Category change → load subcategories
     this.categorySelect.addEventListener("change", (e) => {
       this.loadSubcategories(e.target.value);
     });
 
-    // Add item form submit
     this.addItemForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const newItem = {
         name: document.getElementById("itemName").value,
         price: document.getElementById("itemPrice").value,
-        quantity: document.getElementById("itemQuantity").value,
         category_id: this.categorySelect.value,
         subcategory_id: this.subcategorySelect.value,
         description: document.getElementById("itemDescription").value
@@ -185,7 +182,6 @@ class ItemManager {
       this.addItem(newItem);
     });
 
-    // Update / delete buttons
     document.querySelector("#itemTable").addEventListener("click", (e) => {
       const row = e.target.closest("tr");
       if (!row) return;
@@ -196,7 +192,6 @@ class ItemManager {
           id,
           name: row.querySelector(".edit-name").value,
           price: row.querySelector(".edit-price").value,
-          quantity: row.querySelector(".edit-qty").value,
           description: row.querySelector(".edit-desc").value
         };
         this.updateItem(updated);
@@ -209,7 +204,6 @@ class ItemManager {
       }
     });
 
-    // Search input
     this.searchInput?.addEventListener('input', () => {
       const query = this.searchInput.value.trim();
       if (query.length < 1) {
@@ -222,14 +216,12 @@ class ItemManager {
       }, 300);
     });
 
-    // Back button
     document.getElementById("btnBack").addEventListener("click", () => {
       window.location.href = "../inventory.html";
     });
   }
 }
 
-// Initialize
 document.addEventListener("DOMContentLoaded", () => {
   const manager = new ItemManager();
   manager.init();
