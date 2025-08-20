@@ -21,13 +21,23 @@
     inventory setting       --> global scope of threshold for items
 
 StarbucksItem -->
+    CREATE TABLE IF NOT EXISTS starbucksitem (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
-        price DECIMAL(10,2) NOT NULL,
-        quantity INT DEFAULT 0,
+        price DECIMAL(10,2) NOT NULL,               -- base price before size modifier
         category_id INT NOT NULL,
         subcategory_id INT NOT NULL,
         description TEXT,
+        image_url VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,StarbucksItem -->
+    CREATE TABLE IF NOT EXISTS starbucksitem (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        price DECIMAL(10,2) NOT NULL,               -- base price before size modifier
+        category_id INT NOT NULL,
+        subcategory_id INT NOT NULL,
+        description TEXT,
+        image_url VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (category_id) REFERENCES category(id),
@@ -60,6 +70,109 @@ Item Attributes -->
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
         FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
+
+ingredient 
+        CREATE TABLE IF NOT EXISTS item_ingredient
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        quantity_in_stock DECIMAL(10, 2) DEFAULT 0, -- bulk stock in base unit
+        stock_unit VARCHAR(20),                     -- 'kg', 'L', 'pcs'
+        supplier_id INT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+Item_ingredient
+    CREATE TABLE IF NOT EXISTS item_ingredient (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        item_id INT NOT NULL,
+        ingredient_id INT NOT NULL,
+        quantity_value DECIMAL(10, 2) NOT NULL,  -- amount per item
+        quantity_unit VARCHAR(20) NOT NULL,      -- e.g., 'g', 'ml', 'pcs'
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (ingredient_id) REFERENCES ingredient(id) ON DELETE CASCADE,
+        UNIQUE (item_id, ingredient_id)
+
+ready_item_stock
+    CREATE TABLE IF NOT EXISTS ready_item_stock (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        item_id INT NOT NULL,
+        size_id INT NOT NULL,
+        quantity INT NOT NULL DEFAULT 0, -- how many ready-to-sell items
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE,
+        UNIQUE (item_id, size_id)
+ 
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (category_id) REFERENCES category(id),
+        FOREIGN KEY (subcategory_id) REFERENCES subcategory(id)
+
+Category -->
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(50) NOT NULL
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+Subcategory --> 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        category_id INT NOT NULL,
+        FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+
+Attribute Templates -->
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+Item Attributes --> 
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        item_id INT NOT NULL,
+        attribute_template_id INT NOT NULL,
+        attribute_value VARCHAR(30) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
+
+ingredient 
+        CREATE TABLE IF NOT EXISTS item_ingredient
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        quantity_in_stock DECIMAL(10, 2) DEFAULT 0, -- bulk stock in base unit
+        stock_unit VARCHAR(20),                     -- 'kg', 'L', 'pcs'
+        supplier_id INT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+Item_ingredient
+    CREATE TABLE IF NOT EXISTS item_ingredient (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        item_id INT NOT NULL,
+        ingredient_id INT NOT NULL,
+        quantity_value DECIMAL(10, 2) NOT NULL,  -- amount per item
+        quantity_unit VARCHAR(20) NOT NULL,      -- e.g., 'g', 'ml', 'pcs'
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (ingredient_id) REFERENCES ingredient(id) ON DELETE CASCADE,
+        UNIQUE (item_id, ingredient_id)
+
+ready_item_stock
+    CREATE TABLE IF NOT EXISTS ready_item_stock (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        item_id INT NOT NULL,
+        size_id INT NOT NULL,
+        quantity INT NOT NULL DEFAULT 0, -- how many ready-to-sell items
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
+        FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE,
+        UNIQUE (item_id, size_id)
+
 
 Admin -->
         CREATE TABLE admin (

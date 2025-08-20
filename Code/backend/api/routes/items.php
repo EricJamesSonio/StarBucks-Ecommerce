@@ -12,32 +12,41 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        $action = $_GET['action'] ?? '';
-        if ($action === 'searchInventory') {
-            searchInventoryItems($con);
-        } elseif ($action === 'search') {
-            searchItems($con);
-        } else {
-            getItems($con);
-        }
-        break;
+    $action = $_GET['action'] ?? '';
+    if ($action === 'searchInventory') {
+        searchInventoryItems($con);
+    } elseif ($action === 'search') {
+        searchItems($con);
+    } elseif ($action === 'getStocks') {   // <-- new route
+        getAllStocks($con);
+    } elseif ($action == 'searchStocks') {searchReadyStocks($con);
+    } else {
+        getItems($con);
+    }
+    break;
+
 
 
     case 'POST':
-        $action = $_GET['action'] ?? '';
-        if ($action === 'add') {
-            addItem($con);
-        } elseif ($action === 'update') {
-            updateItem($con);
-        } else {
-            http_response_code(400);
-            echo json_encode(["message" => "Invalid action"]);
-        }
-        break;
+    $action = $_GET['action'] ?? '';
+    if ($action === 'add') {
+        addItem($con);
+    } elseif ($action === 'update') {
+        updateItem($con);
+    } elseif ($action === 'addStock') {   // ✅ new route
+        addStock($con);
+    } else {
+        http_response_code(400);
+        echo json_encode(["message" => "Invalid action"]);
+    }
+    break;
+
 
     case 'DELETE':
         deleteItem($con);
         break;
+
+    
 
     default:
         http_response_code(405);

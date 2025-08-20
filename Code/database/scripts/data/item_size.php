@@ -2,37 +2,54 @@
 require_once(__DIR__ . '/../../db2.php');
 require_once(__DIR__ . '/../function.php');
 
-// Gather all size IDs
+// Gather all sizes
 $sizeIds = [];
-$res = mysqli_query($con, "SELECT id FROM size");
+$res = mysqli_query($con, "SELECT id, name FROM size");
 while ($r = mysqli_fetch_assoc($res)) {
-    $sizeIds[] = $r['id'];
+    $sizeIds[$r['name']] = $r['id'];
 }
 
-// Gather all drink-item IDs
-$drinkItemIds = [];
-$res = mysqli_query($con, "
-  SELECT s.id
-  FROM starbucksitem s
-  JOIN category c ON s.category_id = c.id
-  WHERE LOWER(c.name) = 'drink'
-");
-while ($r = mysqli_fetch_assoc($res)) {
-    $drinkItemIds[] = $r['id'];
-}
-
-if (empty($sizeIds) || empty($drinkItemIds)) {
-    echo "⚠️ Skipping item_size seeder—no sizes or no drinks exist yet.<br>";
+if (empty($sizeIds)) {
+    echo "⚠️ Skipping item_size seeder—no sizes exist yet.<br>";
     return;
 }
 
-// Link every drink to every size
+// Gather all items
+$drinkItemIds = [];
+$otherItemIds = [];
+
+$res = mysqli_query($con, "
+  SELECT s.id, LOWER(c.name) AS category
+  FROM starbucksitem s
+  JOIN category c ON s.category_id = c.id
+");
+while ($r = mysqli_fetch_assoc($res)) {
+    if ($r['category'] === 'drink') {
+        $drinkItemIds[] = $r['id'];
+    } else {
+        $otherItemIds[] = $r['id'];
+    }
+}
+
 $rows = [];
+
+// Drinks → all sizes (Tall, Grande, Venti)
 foreach ($drinkItemIds as $itemId) {
-  foreach ($sizeIds    as $sizeId) {
-    $rows[] = [$itemId, $sizeId];
+  foreach ($sizeIds as $name => $sizeId) {
+    if ($name !== 'Default') { // exclude Default
+        $rows[] = [$itemId, $sizeId];
+    }
   }
 }
 
-insertData($con, 'item_size', ['item_id','size_id'], $rows);
-echo "✅ Inserted ".count($rows)." rows into item_size.<br>";
+// Non-drinks → Default size only
+foreach ($otherItemIds as $itemId) {
+  $rows[] = [$itemId, $sizeIds['Default']];
+}
+
+if (!empty($rows)) {
+    insertData($con, 'item_size', ['item_id','size_id'], $rows);
+    echo "✅ Inserted ".count($rows)." rows into item_size.<br>";
+} else {
+    echo "⚠️ No item_size rows inserted.<br>";
+}

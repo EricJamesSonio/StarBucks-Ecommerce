@@ -4,12 +4,14 @@
   <meta charset="utf-8">
   <title>Inventory — Item Management</title>
   <link rel="stylesheet" href="../css/item_management.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <h1>Item Management</h1>
-  <button id="btnBack">← Back to Inventory Menu</button>
 
-
+  <div class="header-controls">
+    <button id="btnBack">← Back to Inventory Menu</button>
+  </div>
 
   <!-- Add Item Form -->
   <section id="addItemSection">
@@ -24,10 +26,11 @@
     </form>
   </section>
 
+  <!-- Search -->
   <div class="search-container">
-  <input type="text" id="searchInput" placeholder="Search items...">
-  <div id="suggestionsBox" class="suggestions"></div>
-</div>
+    <input type="text" id="searchInput" placeholder="Search items...">
+    <div id="suggestionsBox" class="suggestions"></div>
+  </div>
 
   <!-- Item List -->
   <section id="itemListSection">
@@ -47,8 +50,10 @@
     </table>
   </section>
 
-<script type="module" src="../../../js/config.js"></script>
 
+  <!-- Config must load first so window.API_BASE_PATH is set -->
+  <script type="module" src="../../../js/config.js"></script>
+  <!-- App logic -->
   <script src="../js/item_management.js"></script>
 </body>
 </html>

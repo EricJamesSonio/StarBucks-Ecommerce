@@ -25,4 +25,23 @@ class Size
         }
         return $out;
     }
+
+    public function getByItem(int $itemId)
+    {
+        $sql = "SELECT s.id, s.name, s.price_modifier
+                FROM size s
+                JOIN item_size isz ON isz.size_id = s.id
+                WHERE isz.item_id = ?
+                ORDER BY s.id";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        $out = [];
+        while ($row = $res->fetch_assoc()) {
+            $out[] = $row;
+        }
+        return $out;
+    }
 }

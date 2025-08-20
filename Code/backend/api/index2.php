@@ -87,6 +87,11 @@ switch ($route) {
         require __DIR__ . '/routes/search.php';
         break;
 
+    case 'stocks':
+        require __DIR__ . '/routes/stocks.php';
+        break;
+
+
 
     default:
         http_response_code(404);
