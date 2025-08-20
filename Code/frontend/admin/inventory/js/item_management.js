@@ -40,22 +40,23 @@ class ItemManager {
     }
   }
 
-  async loadSubcategories(categoryId) {
-    try {
-      const res = await fetch(`${this.API_ITEMS}?action=getSubcategories&category_id=${categoryId}`);
-      const subs = await res.json();
+async loadSubcategories(categoryId) {
+  try {
+    const res = await fetch(`${this.API_ITEMS}?action=getSubcategories&category_id=${categoryId}`);
+    const result = await res.json();   // ✅ fix here
 
-      if (!result || result.status === false || !Array.isArray(result.data)) {
-        throw new Error('Invalid subcategories data');
-      }
-
-      this.subcategorySelect.innerHTML = result.data
-        .map(sc => `<option value="${sc.id}">${sc.name}</option>`)
-        .join("");
-    } catch (err) {
-      console.error("Error loading subcategories:", err);
+    if (!result || result.status === false || !Array.isArray(result.data)) {
+      throw new Error('Invalid subcategories data');
     }
+
+    this.subcategorySelect.innerHTML = result.data
+      .map(sc => `<option value="${sc.id}">${sc.name}</option>`)
+      .join("");
+  } catch (err) {
+    console.error("Error loading subcategories:", err);
   }
+}
+
 
   async loadItems() {
     try {
@@ -171,16 +172,34 @@ class ItemManager {
     });
 
     this.addItemForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const newItem = {
-        name: document.getElementById("itemName").value,
-        price: document.getElementById("itemPrice").value,
-        category_id: this.categorySelect.value,
-        subcategory_id: this.subcategorySelect.value,
-        description: document.getElementById("itemDescription").value
-      };
-      this.addItem(newItem);
-    });
+  e.preventDefault();
+
+  const name = document.getElementById("itemName").value.trim();
+  const price = parseFloat(document.getElementById("itemPrice").value);
+
+  // ✅ Validate name (letters, spaces, dashes only)
+  if (!/^[A-Za-z\s\-]+$/.test(name)) {
+    this.showMessage("Item name must only contain letters, spaces, or dashes.", "error");
+    return;
+  }
+
+  // ✅ Validate price (must not be negative)
+  if (isNaN(price) || price < 0) {
+    this.showMessage("Price must be a positive number!", "error");
+    return;
+  }
+
+  const newItem = {
+    name,
+    price,
+    category_id: this.categorySelect.value,
+    subcategory_id: this.subcategorySelect.value,
+    description: document.getElementById("itemDescription").value
+  };
+
+  this.addItem(newItem);
+});
+
 
     document.querySelector("#itemTable").addEventListener("click", (e) => {
       const row = e.target.closest("tr");
