@@ -14,8 +14,8 @@
         </li>
         <li class="nav-list">
             <nav>
-                <a href="">Home</a>
-                <a href="">Menu</a>
+                <a href="../home/home.html">Home</a>
+                <a href="../menu/menu.html">Menu</a>
                 <a href="">About Us</a>
             </nav>
         </li>
@@ -25,7 +25,7 @@
                 <img class="icon" src="../assets/shopping-cart.png" alt="cart">
                 <img class="icon" src="../assets/user.png" alt="user">
             </li>
-            <button><span>SIGN UP</span></button>
+            <button onclick="window.location.href='../../frontend/login/login.html'">SIGN UP</button>
             </ul>
         </li>
     </ul>
@@ -42,120 +42,10 @@
                     <button id="rm-btn">remove</button>
                 </div>
 
-                <div class="items-list">
+                <div id="cart-container">
                     <div class="prod">
-                        <div class="image-checkbox">
-                            <input type="checkbox">
-                            <div class="img">
-                                <img src="https://images.pexels.com/photos/3646111/pexels-photo-3646111.jpeg" alt="Coffee drink">
-                            </div>
-                        </div>
-                        <div class="prod-info">
-                            <h2 class="prod-name">Prod Name</h2>
-                            <div class="prod-att-con">
-                                <ul>
-                                    <li class="prod-att">
-                                        <span>Cold</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <span class="prod-price">₱50.99</span>
-                        </div>
-                        <div class="end-config">
-                            <div class="cross"></div>
-                            <div class="qty-config">
-                                <button class="add-qty">+</button>
-                                <span class="qty">1</span>
-                                <button class="minus-qty">-</button>
-                            </div>
-                        </div>
-                        <div class="border-bot"></div>
+                        
                     </div>
-                    <div class="prod">
-                        <div class="image-checkbox">
-                            <input type="checkbox">
-                            <div class="img">
-                                <img src="https://images.pexels.com/photos/3646111/pexels-photo-3646111.jpeg" alt="Coffee drink">
-                            </div>
-                        </div>
-                        <div class="prod-info">
-                            <h2 class="prod-name">Prod Name</h2>
-                            <div class="prod-att-con">
-                                <ul>
-                                    <li class="prod-att">
-                                        <span>Cold</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <span class="prod-price">₱50.99</span>
-                        </div>
-                        <div class="end-config">
-                            <div class="cross"></div>
-                            <div class="qty-config">
-                                <button class="add-qty">+</button>
-                                <span class="qty">1</span>
-                                <button class="minus-qty">-</button>
-                            </div>
-                        </div>
-                        <div class="border-bot"></div>
-                    </div>
-                    <div class="prod">
-                        <div class="image-checkbox">
-                            <input type="checkbox">
-                            <div class="img">
-                                <img src="https://images.pexels.com/photos/3646111/pexels-photo-3646111.jpeg" alt="Coffee drink">
-                            </div>
-                        </div>
-                        <div class="prod-info">
-                            <h2 class="prod-name">Prod Name</h2>
-                            <div class="prod-att-con">
-                                <ul>
-                                    <li class="prod-att">
-                                        <span>Cold</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <span class="prod-price">₱50.99</span>
-                        </div>
-                        <div class="end-config">
-                            <div class="cross"></div>
-                            <div class="qty-config">
-                                <button class="add-qty">+</button>
-                                <span class="qty">1</span>
-                                <button class="minus-qty">-</button>
-                            </div>
-                        </div>
-                        <div class="border-bot"></div>
-                    </div>
-                    <div class="prod">
-                        <div class="image-checkbox">
-                            <input type="checkbox">
-                            <div class="img">
-                                <img src="https://images.pexels.com/photos/3646111/pexels-photo-3646111.jpeg" alt="Coffee drink">
-                            </div>
-                        </div>
-                        <div class="prod-info">
-                            <h2 class="prod-name">Prod Name</h2>
-                            <div class="prod-att-con">
-                                <ul>
-                                    <li class="prod-att">
-                                        <span>Cold</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <span class="prod-price">₱50.99</span>
-                        </div>
-                        <div class="end-config">
-                            <div class="cross"></div>
-                            <div class="qty-config">
-                                <button class="add-qty">+</button>
-                                <span class="qty">1</span>
-                                <button class="minus-qty">-</button>
-                            </div>
-                        </div>
-                        <div class="border-bot"></div>
-                    </div>
-                </div>
             </div>
             <div id="right">
                 <h2>order summary</h2>
@@ -166,15 +56,15 @@
                 <div id="details">
                     <ul class="pinfo">
                         <li>Subtotal</li>
-                        <li>₱50.99</li>
+                        <li >₱<span id="cartTotal">50.99</span></li>
                     </ul>
                     <ul class="del-info">
                         <li>Delivery fee</li>
                         <li>₱25.00</li>
                     </ul>
                     <ul class="couponinfo">
-                        <li>Service fee</li>
-                        <li>₱5.00</li>
+                        <li>Discount Amount</li>
+                        <li>₱<span id="cartDiscount">5.00</span></li>
                     </ul>
                 </div>
                 <div id="line"></div>
