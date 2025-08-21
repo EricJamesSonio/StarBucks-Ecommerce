@@ -1,5 +1,5 @@
 // history.js
-import { API_BASE_PATH } from './config.js';
+import { API_BASE_PATH, IMAGES_BASE_PATH } from './config.js';
 
 class HistoryService {
     constructor(apiBasePath) {
@@ -33,15 +33,24 @@ class HistoryUI {
             const div = document.createElement("div");
             div.classList.add("receipt-box");
 
-            const itemBadges = receipt.items
-                .split('\n')
-                .map(item => `<span class="receipt-item">${item}</span>`)
-                .join(' ');
+            // Render items properly with IMAGES_BASE_PATH
+            const itemBadges = receipt.items.map(item => {
+                const imgPath = item.image_url 
+                    ? `${IMAGES_BASE_PATH}/${item.image_url}` 
+                    : null;
+
+                return `
+                    <div class="receipt-item">
+                        ${imgPath ? `<img src="${imgPath}" alt="${item.name}" class="item-img">` : ""}
+                        <span>${item.qty} × ${item.name} - ₱${item.price}</span>
+                    </div>
+                `;
+            }).join('');
 
             div.innerHTML = `
                 <h3>Receipt ID: ${receipt.id}</h3>
                 <p><strong>Date:</strong> ${receipt.date}</p>
-                <p><strong>Items:</strong><br>${itemBadges}</p>
+                <div><strong>Items:</strong><br>${itemBadges}</div>
                 <p><strong>Total:</strong> ₱${receipt.total}</p>
                 <hr>
             `;

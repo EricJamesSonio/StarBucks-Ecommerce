@@ -14,27 +14,28 @@ class OrderHistory {
     }
 
     public function getHistory(): array {
-        if (!$this->userId) {
-            http_response_code(401);
-            echo json_encode(["status" => false, "message" => "Unauthorized"]);
-            exit;
-        }
-
-        $history = [];
-        $orders = $this->fetchOrders();
-
-        foreach ($orders as $order) {
-            $items = $this->fetchOrderItems($order['order_id']);
-            $history[] = [
-                "id" => $order['order_id'],
-                "date" => $order['date'],
-                "total" => number_format($order['total'], 2),
-                "items" => implode("\n", $items)
-            ];
-        }
-
-        return $history;
+    if (!$this->userId) {
+        http_response_code(401);
+        echo json_encode(["status" => false, "message" => "Unauthorized"]);
+        exit;
     }
+
+    $history = [];
+    $orders = $this->fetchOrders();
+
+    foreach ($orders as $order) {
+        $items = $this->fetchOrderItems($order['order_id']);
+        $history[] = [
+            "id" => $order['order_id'],
+            "date" => $order['date'],
+            "total" => number_format($order['total'], 2),
+            "items" => $items
+        ];
+    }
+
+    return $history;
+}
+
 
     private function fetchOrders(): array {
         $sql = "
@@ -65,30 +66,32 @@ class OrderHistory {
     }
 
     private function fetchOrderItems(int $orderId): array {
-        $sql = "
-            SELECT i.name, oi.quantity, oi.unit_price
-            FROM order_item oi
-            JOIN starbucksitem i ON oi.item_id = i.id
-            WHERE oi.order_id = ?
-        ";
+    $sql = "
+        SELECT i.name, i.image_url, oi.quantity, oi.unit_price
+        FROM order_item oi
+        JOIN starbucksitem i ON oi.item_id = i.id
+        WHERE oi.order_id = ?
+    ";
 
-        $stmt = $this->db->prepare($sql);
-        if (!$stmt) return []; // Skip if issue
+    $stmt = $this->db->prepare($sql);
+    if (!$stmt) return [];
 
-        $stmt->bind_param("i", $orderId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $stmt->bind_param("i", $orderId);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $itemsList = [];
-        while ($item = $result->fetch_assoc()) {
-            $name = htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8');
-            $qty = (int)$item['quantity'];
-            $price = number_format((float)$item['unit_price'], 2);
-            $itemsList[] = "{$name} x{$qty} - ₱{$price}";
-        }
-
-        return $itemsList;
+    $itemsList = [];
+    while ($item = $result->fetch_assoc()) {
+        $itemsList[] = [
+            "name" => htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8'),
+            "qty"  => (int)$item['quantity'],
+            "price" => number_format((float)$item['unit_price'], 2),
+            "image_url" => $item['image_url'] ?? null
+        ];
     }
+
+    return $itemsList;
+}
 }
 
 // Instantiate and return JSON
