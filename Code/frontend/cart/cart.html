@@ -70,10 +70,45 @@
                     <li>Total</li>
                     <li>₱80.99</li>
                 </ul>
-                <button id="order">place order</button>
+                <button id="order" onclick="checkout()">place order</button>
             </div>
         </div>
     </div>
+
+
+        <!-- Modal -->
+    <div id="paymentModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>🧾 Checkout</h3>
+        <p>Total: ₱<span id="paymentTotal">0.00</span></p>
+        <p>Discount: ₱<span id="paymentDiscount">0.00</span></p>
+        <p>Final: ₱<span id="finalAmount">0.00</span></p>
+        <label>Cash:
+          <input type="number" id="cashInput" placeholder="Enter cash" />
+        </label>
+        <label>Payment Type:
+          <select id="paymentType">
+            <option value="cash">Cash</option>
+            <option value="gcash">GCash</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button onclick="processPayment()">Pay</button>
+          <button onclick="closePaymentModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt -->
+    <div id="receiptContainer">
+      <div id="receiptBox">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </main>
+
+
+  
     <script type="module" src="./cartMain.js"></script>
     <script type="module" src="./end-config.js"></script>
 </body>
