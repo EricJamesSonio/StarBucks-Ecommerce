@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inventory — Ingredient Management</title>
+  <link rel="stylesheet" href="../css/ingredient_management.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>Ingredient Management</h1>
+
+  <div class="header-controls">
+    <button id="btnBack">← Back to Inventory Menu</button>
+    <button id="btnRefreshIngredients">🔄 Refresh All Ingredients</button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search ingredients by name...">
+    <div id="suggestionsBox" class="suggestions"></div>
+  </div>
+
+  <!-- Add Ingredient Stock Form -->
+  <section id="addIngredientSection">
+    <h2>Add Ingredient Stock</h2>
+    <form id="addIngredientForm">
+      <select id="ingredientSelect" required>
+        <option value="">Select Ingredient</option>
+      </select>
+      <input type="number" id="stockQuantity" placeholder="Quantity" min="0" step="0.01" required>
+      <select id="unitSelect" required>
+        <option value="">Select Unit</option>
+        <option value="kg">Kilograms (kg)</option>
+        <option value="g">Grams (g)</option>
+        <option value="l">Liters (l)</option>
+        <option value="ml">Milliliters (ml)</option>
+        <option value="pcs">Pieces (pcs)</option>
+        <option value="cups">Cups</option>
+        <option value="tbsp">Tablespoons</option>
+        <option value="tsp">Teaspoons</option>
+      </select>
+      <button type="submit">Add Ingredient Stock</button>
+    </form>
+  </section>
+
+  <!-- Current Ingredient Stocks Display -->
+  <section id="ingredientListSection">
+    <h2>Current Ingredient Stock Levels</h2>
+    <div id="ingredientsContainer">
+      <div class="ingredient-empty">Loading ingredients...</div>
+    </div>
+  </section>
+
+  <!-- Low Ingredient Stock Alerts -->
+  <section id="lowIngredientSection">
+    <h2>Low Ingredient Stock Alerts</h2>
+    <div id="lowIngredientContainer">
+      <div class="ingredient-empty">Loading low ingredient stock alerts...</div>
+    </div>
+  </section>
+
+  <!-- Add New Ingredient Section -->
+  <section id="newIngredientSection">
+    <h2>Add New Ingredient</h2>
+    <form id="newIngredientForm">
+      <input type="text" id="newIngredientName" placeholder="Ingredient Name" required>
+
+      <!-- Stock unit (optional) -->
+      <select id="newIngredientUnit">
+        <option value="">Select Stock Unit (optional)</option>
+        <option value="kg">Kilograms (kg)</option>
+        <option value="g">Grams (g)</option>
+        <option value="l">Liters (l)</option>
+        <option value="ml">Milliliters (ml)</option>
+        <option value="pcs">Pieces (pcs)</option>
+      </select>
+
+      <!-- Supplier (optional) -->
+      <select id="newIngredientSupplier">
+        <option value="">Select Supplier (optional)</option>
+        <option value="1">Supplier A</option>
+        <option value="2">Supplier B</option>
+      </select>
+
+      <button type="submit">Add New Ingredient</button>
+    </form>
+  </section>
+
+  <!-- Config must load first so window.API_BASE_PATH is set -->
+  <script type="module" src="../../../js/config.js"></script>
+  <!-- App logic -->
+  <script src="../js/ingredient_management.js"></script>
+</body>
+</html>

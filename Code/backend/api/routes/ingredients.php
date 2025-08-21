@@ -16,7 +16,7 @@ try {
             case 'getAll':
                 getAllIngredients($con);
                 break;
-                
+
             case 'getForItem':
                 $itemId = $_GET['item_id'] ?? '';
                 if (empty($itemId)) {
@@ -28,7 +28,15 @@ try {
                 }
                 getIngredientsForItem($con, $itemId);
                 break;
-                
+
+            case 'getStock':  // NEW: Get ingredient stock
+                getIngredientStock($con);
+                break;
+            case 'getLowStock':   // <-- add this
+    getLowStock($con);
+    break;
+
+
             default:
                 getAllIngredients($con);
                 break;
@@ -39,17 +47,27 @@ try {
                 $input = json_decode(file_get_contents('php://input'), true);
                 updateItemIngredient($con, $input);
                 break;
-                
+
             case 'addItemIngredient':
                 $input = json_decode(file_get_contents('php://input'), true);
                 addItemIngredient($con, $input);
                 break;
-                
+
             case 'removeItemIngredient':
                 $input = json_decode(file_get_contents('php://input'), true);
                 removeItemIngredient($con, $input);
                 break;
-                
+
+            case 'addStock':  // NEW: Add ingredient stock
+                $input = json_decode(file_get_contents('php://input'), true);
+                addIngredientStock($con, $input);
+                break;
+            case 'createIngredient':
+    $input = json_decode(file_get_contents('php://input'), true);
+    createIngredient($con, $input);
+    break;
+
+
             default:
                 echo json_encode([
                     'status' => false,

@@ -180,3 +180,158 @@ function removeItemIngredient($con, $data) {
         ]);
     }
 }
+
+function getIngredientStock($con) {
+    try {
+        $sql = "SELECT id, name, stock_unit, quantity_in_stock FROM ingredient ORDER BY name ASC";
+        $result = $con->query($sql);
+
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode([
+            "status" => true,
+            "data" => $data
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to load ingredient stock",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+// Add stock to ingredient
+function addIngredientStock($con, $data) {
+    try {
+        if (empty($data['ingredient_id']) || !isset($data['quantity']) || empty($data['unit'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Ingredient ID, quantity, and unit are required"
+            ]);
+            return;
+        }
+
+        // Update quantity_in_stock
+        $sql = "UPDATE ingredient SET quantity_in_stock = quantity_in_stock + ?, stock_unit = ? WHERE id = ?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("dsi", $data['quantity'], $data['unit'], $data['ingredient_id']);
+        $success = $stmt->execute();
+
+        echo json_encode([
+            "status" => $success,
+            "message" => $success ? "Stock updated successfully" : "Failed to update stock"
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to add ingredient stock",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+function getLowStock($con) {
+    try {
+        // 1️⃣ Get the global threshold
+        $thresholdRes = $con->query("SELECT global_threshold FROM inventory_settings ORDER BY id DESC LIMIT 1");
+        $thresholdRow = $thresholdRes->fetch_assoc();
+        $threshold = $thresholdRow['global_threshold'] ?? 0;
+
+        // 2️⃣ Get ingredients below threshold
+        $sql = "SELECT id, name, stock_unit, quantity_in_stock 
+                FROM ingredient 
+                WHERE quantity_in_stock <= ?
+                ORDER BY name ASC";
+
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("d", $threshold);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode([
+            "status" => true,
+            "data" => $data
+        ]);
+
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to load low stock ingredients",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+function createIngredient($con, $data) {
+    try {
+        if (empty($data['name'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Ingredient name is required"
+            ]);
+            return;
+        }
+
+        $stock_unit = $data['stock_unit'] ?? null;
+        $supplierId = $data['supplier_id'] ?? null;
+
+        $sql = "INSERT INTO ingredient (name, stock_unit, supplier_id) VALUES (?, ?, ?)";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("ssi", $data['name'], $stock_unit, $supplierId);
+        $success = $stmt->execute();
+
+        echo json_encode([
+            "status" => $success,
+            "message" => $success ? "Ingredient created successfully" : "Failed to create ingredient"
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to create ingredient",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Fetch all ingredients from ingredient table with quantity_in_stock
+ */
+function getAllIngredientStocks($con) {
+    try {
+        $sql = "SELECT id, name, stock_unit, quantity_in_stock FROM ingredient ORDER BY name ASC";
+        $result = $con->query($sql);
+
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode([
+            "status" => true,
+            "data" => $data
+        ]);
+
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to fetch ingredient stocks",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+
