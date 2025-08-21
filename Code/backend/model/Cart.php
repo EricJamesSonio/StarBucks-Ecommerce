@@ -7,37 +7,37 @@ class Cart {
     }
 
     public function getCartItems(int $userId): array {
-        $sql = "
-            SELECT
-              ci.id           AS cart_item_id,
-              si.id           AS item_id,
-              si.name,
-              si.price        AS base_price,
-              COALESCE(sz.price_modifier, 0) AS size_modifier,
-              (si.price + COALESCE(sz.price_modifier, 0)) AS price,
-              ci.quantity,
-              ci.size_id,
-              sz.name        AS size_name
-            FROM cart_item ci
-            JOIN starbucksitem si ON ci.item_id = si.id
-            LEFT JOIN size sz ON ci.size_id = sz.id
-            WHERE ci.user_id = ?
-        ";
-        $stmt = $this->con->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $this->con->error);
-        }
-
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-
-        $res = $stmt->get_result();
-        $rows = $res->fetch_all(MYSQLI_ASSOC);
-
-        $stmt->close();
-        return $rows;
+    $sql = "
+        SELECT
+          ci.id           AS cart_item_id,
+          si.id           AS item_id,
+          si.name,
+          si.image_url,   -- ✅ include the image
+          si.price        AS base_price,
+          COALESCE(sz.price_modifier, 0) AS size_modifier,
+          (si.price + COALESCE(sz.price_modifier, 0)) AS price,
+          ci.quantity,
+          ci.size_id,
+          sz.name        AS size_name
+        FROM cart_item ci
+        JOIN starbucksitem si ON ci.item_id = si.id
+        LEFT JOIN size sz ON ci.size_id = sz.id
+        WHERE ci.user_id = ?
+    ";
+    $stmt = $this->con->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->con->error);
     }
 
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+
+    $res = $stmt->get_result();
+    $rows = $res->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+    return $rows;
+}
     public function addOrUpdateCartItem(?int $userId, ?string $guestToken, int $itemId, ?int $sizeId, int $quantity): bool {
     $sqlWhere = $userId !== null
         ? "user_id = ? AND guest_token IS NULL"
@@ -98,12 +98,14 @@ class Cart {
         return $ok;
     }
 
-       public function getCartItemsByGuestToken(string $guestToken): array {
+    
+public function getCartItemsByGuestToken(string $guestToken): array {
     $sql = "
         SELECT
             ci.id           AS cart_item_id,
             si.id           AS item_id,
             si.name,
+            si.image_url,   -- ✅ include the image
             si.price        AS base_price,
             COALESCE(sz.price_modifier, 0) AS size_modifier,
             (si.price + COALESCE(sz.price_modifier, 0)) AS price,
@@ -127,6 +129,7 @@ class Cart {
     $stmt->close();
     return $rows;
 }
+
 
 }
 

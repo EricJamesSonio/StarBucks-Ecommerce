@@ -1,6 +1,5 @@
 <?php
 
-
 class TopSelling {
     private $conn;
 
@@ -14,11 +13,12 @@ class TopSelling {
                 si.id,
                 si.name,
                 si.price,
-                si.category_id,           -- <<< added
+                si.category_id,
+                si.image_url,              -- ✅ include image
                 SUM(oi.quantity) AS total_sold
             FROM order_item oi
             JOIN starbucksitem si ON oi.item_id = si.id
-            GROUP BY si.id
+            GROUP BY si.id, si.name, si.price, si.category_id, si.image_url
             ORDER BY total_sold DESC
             LIMIT 10
         ";
@@ -33,6 +33,3 @@ class TopSelling {
         return $items;
     }
 }
-
-?>
-

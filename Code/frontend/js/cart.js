@@ -1,5 +1,5 @@
 // cart.js
-import { API_BASE_PATH } from './config.js';
+import { API_BASE_PATH , IMAGES_BASE_PATH} from './config.js';
 
 class CartService {
     constructor(apiBasePath) {
@@ -26,7 +26,7 @@ class CartUI {
 
         this.container.innerHTML = '';
 
-        let total = 0;
+    let total = 0;
 
         items.forEach((item, index) => {
             const lineTotal = item.quantity * parseFloat(item.price || 0);
@@ -51,7 +51,7 @@ class CartUI {
             <label for="prods" class='prod-label'> 
             <div class="image-checkbox">
                 <div class="img">
-                    <img src="${item.imgPath || ''}" alt="${item.name}">
+                    <img src="${item.image_url || ''}" alt="${item.name}">
                 </div>
             </div>
             <div class="prod-info">
@@ -90,7 +90,6 @@ class CartUI {
         }
     }
 }
-
 
 
 class CartController {

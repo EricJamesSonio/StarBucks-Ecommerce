@@ -564,3 +564,28 @@ label {
         width: 120px;
     }
 }
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  background-color: #001f13;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.cart-item-left {
+  flex: 0 0 70px;
+}
+
+.cart-item-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.cart-item-right {
+  flex: 1;
+  margin-left: 15px;
+}

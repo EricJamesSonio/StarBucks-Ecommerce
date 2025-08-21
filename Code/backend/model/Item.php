@@ -25,6 +25,7 @@ public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
     $sql = "
         SELECT i.id, i.name, i.price,
                i.description, i.category_id, i.subcategory_id,
+               i.image_url,
                c.name AS category_name,
                s.name AS subcategory_name
         FROM starbucksitem i
@@ -37,7 +38,6 @@ public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
         . ($subcategory_id ? " AND i.subcategory_id = ?" : "")
     );
 
-    // Bind explicitly to avoid issues with variadics and by-reference requirements
     if ($category_id && $subcategory_id) {
         $stmt->bind_param("ii", $category_id, $subcategory_id);
     } elseif ($category_id) {
@@ -57,13 +57,16 @@ public function getFilteredItems($category_id = 0, $subcategory_id = 0) {
 }
 
 
-public function addItem($name, $price, $category_id, $subcategory_id, $description) {
-    $sql = "INSERT INTO starbucksitem (name, price, category_id, subcategory_id, description)
-            VALUES (?, ?, ?, ?, ?)";
+
+public function addItem($name, $price, $category_id, $subcategory_id, $description, $image_url) {
+    $sql = "INSERT INTO starbucksitem (name, price, category_id, subcategory_id, description, image_url)
+            VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("sdiis", $name, $price, $category_id, $subcategory_id, $description);
+    $stmt->bind_param("sdiiss", $name, $price, $category_id, $subcategory_id, $description, $image_url);
+
     return $stmt->execute();
 }
+
 
 public function updateItem($id, $name, $price, $description) {
     $sql = "UPDATE starbucksitem SET name=?, price=?, description=? WHERE id=?";
@@ -99,7 +102,7 @@ public function searchByName($query) {
 
 public function searchInventoryByName($query) {
     $sql = "
-        SELECT i.id, i.name, i.price,
+        SELECT i.id, i.name, i.price, i.image_url,
                i.description, i.category_id, i.subcategory_id,
                c.name AS category_name,
                s.name AS subcategory_name
@@ -120,6 +123,7 @@ public function searchInventoryByName($query) {
     }
     return $items;
 }
+
 
 public function getItemsWithIngredients() {
     $sql = "
