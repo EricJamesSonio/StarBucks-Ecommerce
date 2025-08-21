@@ -121,8 +121,87 @@ public function searchInventoryByName($query) {
     return $items;
 }
 
+public function getItemsWithIngredients() {
+    $sql = "
+        SELECT i.id AS item_id, i.name AS item_name, i.description,
+               ing.name AS ingredient_name,
+               ii.quantity_value, ii.quantity_unit
+        FROM starbucksitem i
+        LEFT JOIN item_ingredient ii ON i.id = ii.item_id
+        LEFT JOIN ingredient ing ON ii.ingredient_id = ing.id
+        ORDER BY i.name ASC
+    ";
 
+    $result = $this->conn->query($sql);
 
+    $items = [];
+    while ($row = $result->fetch_assoc()) {
+        $id = $row['item_id'];
+        if (!isset($items[$id])) {
+            $items[$id] = [
+                "id" => $row['item_id'],              // ✅ ADD THIS LINE
+                "item_id" => $row['item_id'],         // ✅ ADD THIS LINE (for compatibility)
+                "item_name" => $row['item_name'],
+                "description" => $row['description'], // ✅ ADD THIS LINE
+                "ingredients" => []
+            ];
+        }
+        if ($row['ingredient_name']) {
+            $items[$id]['ingredients'][] = [
+                "name" => $row['ingredient_name'],
+                "quantity" => $row['quantity_value'],
+                "unit" => $row['quantity_unit']
+            ];
+        }
+    }
+
+    // Re-index to numeric array
+    return array_values($items);
+}
+
+// Also fix the search method
+public function searchRecipesByIngredient($query) {
+    $sql = "
+        SELECT DISTINCT i.id AS item_id, i.name AS item_name, i.description,
+               ing.name AS ingredient_name,
+               ii.quantity_value, ii.quantity_unit
+        FROM starbucksitem i
+        LEFT JOIN item_ingredient ii ON i.id = ii.item_id
+        LEFT JOIN ingredient ing ON ii.ingredient_id = ing.id
+        WHERE (ing.name LIKE CONCAT('%', ?, '%') 
+               OR i.name LIKE CONCAT('%', ?, '%'))
+        ORDER BY i.name ASC
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ss", $query, $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $items = [];
+    while ($row = $result->fetch_assoc()) {
+        $id = $row['item_id'];
+        if (!isset($items[$id])) {
+            $items[$id] = [
+                "id" => $row['item_id'],              // ✅ ADD THIS LINE
+                "item_id" => $row['item_id'],         // ✅ ADD THIS LINE
+                "item_name" => $row['item_name'],
+                "description" => $row['description'], // ✅ ADD THIS LINE
+                "ingredients" => []
+            ];
+        }
+        if ($row['ingredient_name']) {
+            $items[$id]['ingredients'][] = [
+                "name" => $row['ingredient_name'],
+                "quantity" => $row['quantity_value'],
+                "unit" => $row['quantity_unit']
+            ];
+        }
+    }
+
+    // Re-index to numeric array
+    return array_values($items);
+}
 
 }
 

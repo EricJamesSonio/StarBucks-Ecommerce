@@ -91,6 +91,15 @@ switch ($route) {
         require __DIR__ . '/routes/stocks.php';
         break;
 
+    case 'recipes':
+        require __DIR__ . '/routes/recipes.php';
+        break;
+
+    case 'ingredients':
+        require __DIR__ . '/routes/ingredients.php';
+        break;
+
+
 
 
     default:
