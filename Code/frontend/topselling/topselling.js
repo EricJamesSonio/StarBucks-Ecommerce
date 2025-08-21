@@ -3,20 +3,11 @@ import { API_BASE_PATH, IMAGES_BASE_PATH } from '../js/config.js';
 class TopSellingManager {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
-    this.imageMap = {
-      "Iced Americano": IMAGES_BASE_PATH + "americano.jpg",
-      "Caffè Latte": IMAGES_BASE_PATH + "latte.jpg",
-      "Matcha Green Tea Latte": IMAGES_BASE_PATH + "matcha.jpg",
-      "Very Berry Hibiscus Refresher": IMAGES_BASE_PATH + "refresher.jpg",
-      "Egg Sandwich": IMAGES_BASE_PATH + "egg.jpg",
-      "Bacon & Cheese Sandwich": IMAGES_BASE_PATH + "bacon.jpg",
-      "Cheddar Melt Sandwich": IMAGES_BASE_PATH + "cheddar.jpg",
-      "Ice Starbucks Purple Cream": IMAGES_BASE_PATH + "cream.jpg"
-    };
   }
 
-  getImageForItem(itemName) {
-    return this.imageMap[itemName] || IMAGES_BASE_PATH + "ClassicCup.png";
+  getImageForItem(imageUrl) {
+    // Use database image_url, fallback to default
+    return imageUrl ? IMAGES_BASE_PATH + imageUrl : IMAGES_BASE_PATH + "ClassicCup.png";
   }
 
   async fetchTopSelling() {
@@ -44,7 +35,7 @@ class TopSellingManager {
       div.classList.add("item-box");
 
       div.innerHTML = `
-        <img src="${this.getImageForItem(item.name)}" alt="${item.name}" class="item-image" />
+        <img src="${this.getImageForItem(item.image_url)}" alt="${item.name}" class="item-image" />
         <h3>${item.name}</h3>
         <p><strong>Price:</strong> ₱${parseFloat(item.price).toFixed(2)}</p>
         <p><strong>Total Sold:</strong> ${item.total_sold}</p>

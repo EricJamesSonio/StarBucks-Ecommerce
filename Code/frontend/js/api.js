@@ -1,30 +1,23 @@
 import { openModal } from './modal.js';
 import { API_BASE_PATH, IMAGES_BASE_PATH } from './config.js';
 
+// =========================
+// ImageManager
+// =========================
 class ImageManager {
     constructor(basePath) {
         this.basePath = basePath;
-        this.imageMap = {
-            "Iced Americano": "americano.jpg",
-            "Caffè Latte": "latte.jpg",
-            "Matcha Green Tea Latte": "matcha.jpg",
-            "Very Berry Hibiscus Refresher": "refresher.jpg",
-            "Egg Sandwich": "egg.jpg",
-            "Bacon & Cheese Sandwich": "bacon.jpg",
-            "Cheddar Melt Sandwich": "cheddar.jpg",
-            "Ice Starbucks Purple Cream": "cream.jpg",
-            "Double-Smoked Bacon, Cheddar & Egg Sandwich": "BaconGoudaEggSandwich.jpg",
-            "Turkey Bacon, Cheddar & Egg White Sandwich": "DoubleSmokedBaconEggSandwich.jpg"
-        };
     }
 
-    getImage(name) {
-        return this.imageMap[name]
-            ? this.basePath + this.imageMap[name]
-            : this.basePath + "ClassicCup.png";
+    getImage(imageUrl) {
+        // Use the image_url from the database; fallback if missing
+        return imageUrl ? this.basePath + imageUrl : this.basePath + "ClassicCup.png";
     }
 }
 
+// =========================
+// CategoryService
+// =========================
 class CategoryService {
     constructor(apiBasePath) {
         this.apiBasePath = apiBasePath;
@@ -46,6 +39,9 @@ class CategoryService {
     }
 }
 
+// =========================
+// CategoryUI
+// =========================
 class CategoryUI {
     constructor(imageManager) {
         this.imageManager = imageManager;
@@ -72,7 +68,7 @@ class CategoryUI {
         ul.innerHTML = top4.map(item => `
             <li class="prodInfo">
               <div class="contents">
-                <img src="${this.imageManager.getImage(item.name)}" alt="${item.name}" class="item-image" />
+                <img src="${this.imageManager.getImage(item.image_url)}" alt="${item.name}" class="item-image" />
                 <h2>${item.name}</h2>
                 <p>₱${parseFloat(item.price).toFixed(2)}</p>
                 <p>Total Sold: ${item.total_sold}</p>
@@ -98,7 +94,7 @@ class CategoryUI {
         itemList.innerHTML = '';
 
         items.forEach(item => {
-            const imageUrl = this.imageManager.getImage(item.name);
+            const imageUrl = this.imageManager.getImage(item.image_url);
             const card = document.createElement('div');
             card.className = 'item-card';
             card.onclick = () => openModal(item);
@@ -118,6 +114,9 @@ class CategoryUI {
     }
 }
 
+// =========================
+// CategoryController
+// =========================
 class CategoryController {
     constructor(service, ui) {
         this.service = service;
@@ -174,13 +173,15 @@ class CategoryController {
     }
 }
 
-// ===== Initialization =====
+// =========================
+// Initialization
+// =========================
 const imageManager = new ImageManager(IMAGES_BASE_PATH);
 const categoryService = new CategoryService(API_BASE_PATH);
 const categoryUI = new CategoryUI(imageManager);
 export const categoryController = new CategoryController(categoryService, categoryUI);
 
-// Original exports kept for compatibility with existing code calls
+// Original exports for backward compatibility
 export function loadTopSelling(categoryName) {
     categoryController.loadTopSelling(categoryName);
 }
