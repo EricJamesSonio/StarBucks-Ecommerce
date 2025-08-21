@@ -39,7 +39,6 @@ function addStock($con) {
     // Get sizeId
     $sizeId = intval($data['size_id'] ?? 0);
     if ($sizeId <= 0) {
-        // Fetch Default size for this item
         $res = $con->query("
             SELECT s.id 
             FROM item_size i
@@ -76,8 +75,6 @@ function addStock($con) {
     }
 }
 
-
-
 function addItem($con) {
     $data = json_decode(file_get_contents("php://input"), true);
     $itemModel = new Item($con);
@@ -86,7 +83,8 @@ function addItem($con) {
         floatval($data['price']),
         intval($data['category_id']),
         intval($data['subcategory_id']),
-        $data['description']
+        $data['description'],
+        $data['image_url'] ?? null   // ✅ pass image_url
     );
 
     echo json_encode(["status" => $success]);
@@ -99,7 +97,8 @@ function updateItem($con) {
         intval($data['id']),
         $data['name'],
         floatval($data['price']),
-        $data['description']
+        $data['description'],
+        $data['image_url'] ?? null   // ✅ allow updating image_url
     );
 
     echo json_encode(["status" => $success]);
@@ -118,7 +117,7 @@ function getAllStocks($con) {
     try {
         require_once dirname(__DIR__, 2) . '/model/Stock.php';
         $stockModel = new Stock($con);
-        $stocks = $stockModel->getAllStocks(); // you need this method in Stock.php
+        $stocks = $stockModel->getAllStocks();
 
         echo json_encode([
             "status" => true,
