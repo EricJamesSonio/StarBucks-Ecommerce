@@ -1,37 +1,82 @@
-<!-- cart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Your Cart</title>
-  <link rel="stylesheet" href="cart.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starbucks Cart</title>
+    <link rel="stylesheet" href="cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header id="top">
-    <div style="display: flex; align-items: center;">
-      <img src="../assets/logo.png" alt="Logo">
-      <button class="back-btn" onclick="window.location.href='../menu/menu.html'">← Back</button>
-    </div>
-    <ul id="nav">
-      <li><a href="../menu/menu.html">Menu</a></li>
-      <li><a href="../history/history.html">History</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
+    <ul id="head-nav">
+        <li>
+            <img class="logo" src="../assets/starbucksLogo-nocircle.png" alt="starbucks">
+        </li>
+        <li class="nav-list">
+            <nav>
+                <a href="../home/home.html">Home</a>
+                <a href="../menu/menu.html">Menu</a>
+                <a href="">About Us</a>
+            </nav>
+        </li>
+        <li>
+            <ul id="icon-list">
+            <li>
+                <img class="icon" src="../assets/shopping-cart.png" alt="cart">
+                <img class="icon" src="../assets/user.png" alt="user">
+            </li>
+            <button onclick="window.location.href='../../frontend/login/login.html'">SIGN UP</button>
+            </ul>
+        </li>
     </ul>
-  </header>
 
-  <main>
-    <section id="cartSection">
-      <h2 class="title">🛒 Your Cart</h2>
-      <div id="cartItems"></div>
-      <div class="summary">
-        <p>Total: ₱<span id="cartTotal">0.00</span></p>
-        <p>Discount: ₱<span id="cartDiscount">0.00</span></p>
-        <button onclick="checkout()" class="checkout-btn">Checkout</button>
-      </div>
-    </section>
+    <div id="container">
+        <h1>my cart</h1>
+        <div id="cart">
+            <div id="left">
+                <div class="cart-container-header">
+                    <div class="selected-qty">
+                    <input type="checkbox" checked>
+                    <span>1/4 items selected</span>
+                    </div>
+                    <button id="rm-btn">remove</button>
+                </div>
 
-    <!-- Modal -->
+                <div id="cart-container" style="width: 95%">
+                </div>
+            </div>
+            <div id="right">
+                <h2>order summary</h2>
+                <div class="coupons">
+                    <div class="coupon-icon"></div>
+                    <input type="text" placeholder="Enter coupon code">
+                </div>
+                <div id="details">
+                    <ul class="pinfo">
+                        <li>Subtotal</li>
+                        <li>₱ <span class="cartTotal">50.99</span></li>
+                    </ul>
+                    <ul class="del-info">
+                        <li>Delivery fee</li>
+                        <li>₱25.00</li>
+                    </ul>
+                    <ul class="couponinfo">
+                        <li>Total Discount</li>
+                        <li>₱<span class="cartDiscount">5.00</span></li>
+                    </ul>
+                </div>
+                <div id="line"></div>
+                <ul class="amt">
+                    <li>Total</li>
+                    <li>₱80.99</li>
+                </ul>
+                <button id="order" onclick="checkout()">place order</button>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- Modal -->
     <div id="paymentModal" class="modal" style="display: none;">
       <div class="modal-content">
         <h3>🧾 Checkout</h3>
@@ -62,6 +107,9 @@
     </div>
   </main>
 
-  <script type="module" src="./cartMain.js"></script>
+
+  
+    <script type="module" src="./cartMain.js"></script>
+    <script type="module" src="./end-config.js"></script>
 </body>
 </html>

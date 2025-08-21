@@ -1,5 +1,5 @@
 // cartMain.js
-import { fetchCartItems, renderCartFromServer, cartController } from '../js/cart.js';
+import { fetchCartItems, renderCartFromServer } from '../js/cart.js';
 import { checkout, closePaymentModal, processPayment } from '../js/payment.js';
 import { checkLoginOnLoad } from '../js/session.js';
 import { API_BASE_PATH } from '../js/config.js';
@@ -7,17 +7,15 @@ import { API_BASE_PATH } from '../js/config.js';
 async function initCartPage() {
   checkLoginOnLoad();
   try {
-    // Instead of calling fetch + render manually...
-    await cartController.loadCart();  // ✅ initializes items in UI
+    const items = await fetchCartItems();
+    renderCartFromServer(items);
   } catch (err) {
     console.error("Could not load cart:", err);
     alert("❌ Failed to load your cart.");
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  initCartPage();
-});
+initCartPage();
 
 window.checkout          = checkout;
 window.processPayment    = processPayment;
@@ -26,7 +24,5 @@ window.logout            = () => {
   localStorage.clear();
   fetch(`${API_BASE_PATH}/logout`, {
     credentials: 'include'
-  }).then(() => window.location.href = '../home/home.html');
+  }).then(() => window.location.href = '../../design/home/index.html');
 };
-
-
