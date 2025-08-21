@@ -1,6 +1,7 @@
 // cart.js
 import { API_BASE_PATH , IMAGES_BASE_PATH} from './config.js';
 
+
 class CartService {
     constructor(apiBasePath) {
         this.apiBasePath = apiBasePath;
@@ -47,11 +48,9 @@ class CartUI {
         div.dataset.index = index; // keep index reference
 
         div.innerHTML = `
-            <input type="checkbox" id="prods">
-            <label for="prods" class='prod-label'> 
             <div class="image-checkbox">
                 <div class="img">
-                    <img src="${item.image_url || ''}" alt="${item.name}">
+                    <img src="${IMAGES_BASE_PATH}${item.image_url || ''}" alt="${item.name}">
                 </div>
             </div>
             <div class="prod-info">
@@ -73,7 +72,6 @@ class CartUI {
                     <button class="minus-qty">-</button>        
                 </div>
             </div>
-            </label>
             <div class="border-bot"></div>
         `;
 
@@ -102,7 +100,9 @@ class CartController {
         try {
             const items = await this.service.fetchCartItems();
             this.ui.render(items);
+            console.log(items)
         } catch (err) {
+            
             console.error('Error loading cart:', err);
         }
     }
