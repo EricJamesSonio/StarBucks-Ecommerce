@@ -113,42 +113,6 @@ function deleteItem($con) {
     echo json_encode(["status" => $success]);
 }
 
-function searchItems($con) {
-    $query = isset($_GET['query']) ? trim($_GET['query']) : '';
-
-    if ($query === '') {
-        echo json_encode(["status" => false, "message" => "No search query"]);
-        return;
-    }
-
-    $itemModel = new Item($con);
-    $results = $itemModel->searchByName($query);
-
-    header('Content-Type: application/json');
-    echo json_encode([
-        "status" => true,
-        "data" => $results
-    ]);
-}
-
-function searchInventoryItems($con) {
-    $query = isset($_GET['query']) ? trim($_GET['query']) : '';
-
-    if ($query === '') {
-        echo json_encode(["status" => false, "message" => "No search query"]);
-        return;
-    }
-
-    $itemModel = new Item($con);
-    $results = $itemModel->searchInventoryByName($query);
-
-    header('Content-Type: application/json');
-    echo json_encode([
-        "status" => true,
-        "data" => $results
-    ]);
-}
-
 function getAllStocks($con) {
     header('Content-Type: application/json');
     try {
@@ -170,7 +134,7 @@ function getAllStocks($con) {
     }
 }
 
-function searchReadyStocks($con) {
+function handleSearch($con, callable $searchCallback) {
     $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 
     if ($query === '') {
@@ -178,13 +142,39 @@ function searchReadyStocks($con) {
         return;
     }
 
+    try {
+        $results = $searchCallback($query);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            "status" => true,
+            "data" => $results
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Search failed",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Search functions
+ */
+function searchItems($con) {
+    $itemModel = new Item($con);
+    handleSearch($con, fn($query) => $itemModel->searchByName($query));
+}
+
+function searchInventoryItems($con) {
+    $itemModel = new Item($con);
+    handleSearch($con, fn($query) => $itemModel->searchInventoryByName($query));
+}
+
+function searchReadyStocks($con) {
     require_once dirname(__DIR__, 2) . '/model/Stock.php';
     $stockModel = new Stock($con);
-    $results = $stockModel->searchReadyStocks($query);
-
-    header('Content-Type: application/json');
-    echo json_encode([
-        "status" => true,
-        "data" => $results
-    ]);
+    handleSearch($con, fn($query) => $stockModel->searchReadyStocks($query));
 }
