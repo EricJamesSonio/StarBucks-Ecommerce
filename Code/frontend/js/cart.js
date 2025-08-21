@@ -1,5 +1,5 @@
 // cart.js
-import { API_BASE_PATH } from './config.js';
+import { API_BASE_PATH , IMAGES_BASE_PATH} from './config.js';
 
 class CartService {
     constructor(apiBasePath) {
@@ -21,24 +21,39 @@ class CartUI {
     }
 
     render(items) {
-        this.container.innerHTML = '';
+    this.container.innerHTML = '';
 
-        let total = 0;
+    let total = 0;
 
-        items.forEach(item => {
-            const lineTotal = item.quantity * parseFloat(item.price || 0);
-            total += lineTotal;
+    items.forEach(item => {
+        const lineTotal = item.quantity * parseFloat(item.price || 0);
+        total += lineTotal;
 
-            const sizeLabel = item.size_name ? ` (${item.size_name})` : '';
+        const sizeLabel = item.size_name ? ` (${item.size_name})` : '';
 
-            const div = document.createElement('div');
-            div.textContent = `${item.name}${sizeLabel} x ${item.quantity} = ₱${lineTotal.toFixed(2)}`;
-            this.container.appendChild(div);
-        });
+        // Create wrapper
+        const div = document.createElement('div');
+        div.classList.add('cart-item');
 
-        this.totalElem.textContent = total.toFixed(2);
-        this.discountElem.textContent = '0.00';
-    }
+        div.innerHTML = `
+            <div class="cart-item-left">
+                <img src="${IMAGES_BASE_PATH}/${item.image_url}" alt="${item.name}" class="cart-item-img">
+            </div>
+            <div class="cart-item-right">
+                <h4>${item.name}${sizeLabel}</h4>
+                <p>₱${parseFloat(item.price).toFixed(2)} × ${item.quantity}</p>
+                <p><b>₱${lineTotal.toFixed(2)}</b></p>
+            </div>
+        `;
+
+        this.container.appendChild(div);
+    });
+
+    this.totalElem.textContent = total.toFixed(2);
+    this.discountElem.textContent = '0.00';
+}
+
+
 }
 
 class CartController {
