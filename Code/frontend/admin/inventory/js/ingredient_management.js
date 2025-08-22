@@ -130,6 +130,31 @@ class IngredientManager {
     }
   }
 
+  async searchIngredients(query) {
+  try {
+    const res = await fetch(`${this.API_INGREDIENTS}?action=search&query=${encodeURIComponent(query)}`, {
+      credentials: 'include'
+    });
+    const result = await res.json();
+
+    if (result.status && Array.isArray(result.data) && result.data.length > 0) {
+      this.ingredientsContainer.innerHTML = result.data.map(item => `
+        <div class="ingredient-item" data-id="${item.id}">
+          <strong>${this.escapeHtml(item.name)}</strong>: ${item.quantity_in_stock} ${item.stock_unit || ''}
+          <button class="btn-edit" data-id="${item.id}" data-name="${this.escapeHtml(item.name)}" data-unit="${item.stock_unit || ''}">Edit</button>
+          <button class="btn-remove" data-id="${item.id}">Remove</button>
+        </div>
+      `).join("");
+    } else {
+      this.ingredientsContainer.innerHTML = `<div class="ingredient-empty">No ingredients found</div>`;
+    }
+  } catch (err) {
+    console.error("Search error:", err);
+    this.showMessage("Error searching ingredients", "error");
+  }
+}
+
+
   /*********************
    * Bind events
    *********************/
@@ -203,6 +228,21 @@ class IngredientManager {
         this.updateIngredientUnit.value = unit;
       }
     });
+
+  const searchInput = document.getElementById("ingredientSearch");
+searchInput?.addEventListener('input', () => {
+  const query = searchInput.value.trim();
+  if (!query) {
+    this.loadCurrentStock(); // reload all ingredients
+    return;
+  }
+
+  clearTimeout(this.searchTimeout);
+  this.searchTimeout = setTimeout(() => {
+    this.searchIngredients(query);
+  }, 300); // small delay to reduce requests
+});
+
 
     // Modal elements
 const modal = document.getElementById("updateIngredientModal");

@@ -205,7 +205,6 @@ function getIngredientStock($con) {
     }
 }
 
-// Add stock to ingredient
 function addIngredientStock($con, $data) {
     try {
         if (empty($data['ingredient_id']) || !isset($data['quantity']) || empty($data['unit'])) {
@@ -238,12 +237,12 @@ function addIngredientStock($con, $data) {
 
 function getLowStock($con) {
     try {
-        // 1️⃣ Get the global threshold
+        // Get the global threshold
         $thresholdRes = $con->query("SELECT global_threshold FROM inventory_settings ORDER BY id DESC LIMIT 1");
         $thresholdRow = $thresholdRes->fetch_assoc();
         $threshold = $thresholdRow['global_threshold'] ?? 0;
 
-        // 2️⃣ Get ingredients below threshold
+        // Get ingredients below threshold
         $sql = "SELECT id, name, stock_unit, quantity_in_stock 
                 FROM ingredient 
                 WHERE quantity_in_stock <= ?
@@ -306,9 +305,6 @@ function createIngredient($con, $data) {
     }
 }
 
-/**
- * Fetch all ingredients from ingredient table with quantity_in_stock
- */
 function getAllIngredientStocks($con) {
     try {
         $sql = "SELECT id, name, stock_unit, quantity_in_stock FROM ingredient ORDER BY name ASC";
@@ -332,11 +328,8 @@ function getAllIngredientStocks($con) {
             "error" => $e->getMessage()
         ]);
     }
-
-    
 }
 
-// Update ingredient info in ingredient table
 function updateIngredient($con, $data) {
     try {
         if (empty($data['id']) || empty($data['name'])) {
@@ -369,7 +362,6 @@ function updateIngredient($con, $data) {
     }
 }
 
-// Remove ingredient from ingredient table
 function removeIngredient($con, $data) {
     try {
         if (empty($data['id'])) {
@@ -396,6 +388,38 @@ function removeIngredient($con, $data) {
             "status" => false,
             "message" => "Failed to remove ingredient",
             "error" => $e->getMessage()
+        ]);
+    }
+}
+
+function searchIngredients($con, $query) {
+    try {
+        $likeQuery = "%{$query}%";
+        $sql = "SELECT id, name, stock_unit, quantity_in_stock 
+                FROM ingredient 
+                WHERE name LIKE ?
+                ORDER BY name ASC";
+
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("s", $likeQuery);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+
+        echo json_encode([
+            'status' => true,
+            'data' => $data
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            'status' => false,
+            'message' => 'Failed to search ingredients',
+            'error' => $e->getMessage()
         ]);
     }
 }

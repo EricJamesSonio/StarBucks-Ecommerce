@@ -36,6 +36,20 @@ try {
     getLowStock($con);
     break;
 
+        case 'search':
+    $query = $_GET['query'] ?? '';
+    if (empty($query)) {
+        echo json_encode([
+            'status' => false,
+            'message' => 'Search query is required',
+            'data' => []
+        ]);
+        break;
+    }
+    searchIngredients($con, $query);
+    break;
+
+
 
             default:
                 getAllIngredients($con);

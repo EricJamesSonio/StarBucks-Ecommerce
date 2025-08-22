@@ -215,3 +215,54 @@ section {
   .header-controls { flex-direction: column; align-items: flex-start; }
   form { flex-direction: column; }
 }
+
+/* Container styling */
+.search-container {
+  position: relative;
+  width: 300px; /* Adjust width as needed */
+  margin: 20px auto; /* Center horizontally */
+}
+
+/* Search input styling */
+#ingredientSearch {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+#ingredientSearch:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Suggestions box styling */
+.suggestions {
+  position: absolute;
+  top: 110%; /* Slightly below the input */
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none; /* Avoid double border */
+  border-radius: 0 0 10px 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  display: none; /* Hidden by default */
+}
+
+/* Each suggestion item */
+.suggestions div {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.suggestions div:hover {
+  background-color: #f0f0f0;
+}
