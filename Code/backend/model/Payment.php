@@ -116,72 +116,85 @@ if (empty($cart)) {
     ];
 }
     private function deductItemQuantities($orderId) {
-        // Deduct INGREDIENT stock based on item_ingredient recipes per ordered item
-        // Assumption: item_ingredient.quantity_value uses the same unit as ingredient.stock_unit
-        // If different size multipliers are needed, add them here using size_id.
+    // 1) Fetch ordered items
+    $oiStmt = $this->con->prepare(
+        "SELECT item_id, size_id, quantity FROM order_item WHERE order_id = ?"
+    );
+    $oiStmt->bind_param("i", $orderId);
+    $oiStmt->execute();
+    $oiRes = $oiStmt->get_result();
 
-        // 1) Fetch ordered items
-        $oiStmt = $this->con->prepare(
-            "SELECT item_id, size_id, quantity FROM order_item WHERE order_id = ?"
-        );
-        if (!$oiStmt) {
-            error_log("❌ Failed to prepare order_item select: " . $this->con->error);
-            return;
-        }
-        $oiStmt->bind_param("i", $orderId);
-        $oiStmt->execute();
-        $oiRes = $oiStmt->get_result();
+    // 2) Prepare statements
+    $readyStockStmt = $this->con->prepare(
+        "SELECT quantity FROM ready_item_stock WHERE item_id = ? AND size_id = ?"
+    );
+    $updateReadyStockStmt = $this->con->prepare(
+        "UPDATE ready_item_stock SET quantity = GREATEST(quantity - ?, 0) WHERE item_id = ? AND size_id = ?"
+    );
+    $deleteReadyStockStmt = $this->con->prepare(
+        "DELETE FROM ready_item_stock WHERE item_id = ? AND size_id = ? AND quantity = 0"
+    );
+    $recipeStmt = $this->con->prepare(
+        "SELECT ingredient_id, quantity_value FROM item_ingredient WHERE item_id = ?"
+    );
+    $updateIngredientStmt = $this->con->prepare(
+        "UPDATE ingredient SET quantity_in_stock = GREATEST(quantity_in_stock - ?, 0) WHERE id = ?"
+    );
 
-        // 2) Prepare statements for reading recipes and updating ingredient stock
-        $recipeStmt = $this->con->prepare(
-            "SELECT ingredient_id, quantity_value FROM item_ingredient WHERE item_id = ?"
-        );
-        if (!$recipeStmt) {
-            error_log("❌ Failed to prepare item_ingredient select: " . $this->con->error);
-            return;
-        }
+    while ($row = $oiRes->fetch_assoc()) {
+        $itemId = (int)$row['item_id'];
+        $sizeId = (int)$row['size_id'];
+        $qty    = (int)$row['quantity'];
 
-        $updStmt = $this->con->prepare(
-            "UPDATE ingredient SET quantity_in_stock = GREATEST(quantity_in_stock - ?, 0) WHERE id = ?"
-        );
-        if (!$updStmt) {
-            error_log("❌ Failed to prepare ingredient update: " . $this->con->error);
-            return;
-        }
+        // 3) Check ready stock
+        $readyStockStmt->bind_param("ii", $itemId, $sizeId);
+        $readyStockStmt->execute();
+        $stockRes = $readyStockStmt->get_result()->fetch_assoc();
+        $availableStock = $stockRes['quantity'] ?? 0;
 
-        while ($row = $oiRes->fetch_assoc()) {
-            $itemId = (int)$row['item_id'];
-            $qty    = (int)$row['quantity'];
-
-            // Optional: use $row['size_id'] to scale recipe if needed
-
-            // 3) Get recipe for this item
-            $recipeStmt->bind_param("i", $itemId);
-            if (!$recipeStmt->execute()) {
-                error_log("❌ Failed to fetch recipe for item $itemId: " . $recipeStmt->error);
-                continue;
+        if ($availableStock >= $qty) {
+            // Fully covered by ready stock
+            $updateReadyStockStmt->bind_param("iii", $qty, $itemId, $sizeId);
+            $updateReadyStockStmt->execute();
+            $remainingQty = 0;
+        } else {
+            // Partially covered or none
+            if ($availableStock > 0) {
+                $updateReadyStockStmt->bind_param("iii", $availableStock, $itemId, $sizeId);
+                $updateReadyStockStmt->execute();
             }
+            $remainingQty = $qty - $availableStock;
+        }
+
+        // 4) Delete ready stock row if quantity is now 0
+        $deleteReadyStockStmt->bind_param("ii", $itemId, $sizeId);
+        $deleteReadyStockStmt->execute();
+
+        // 5) Deduct remaining from ingredients if needed
+        if ($remainingQty > 0) {
+            $recipeStmt->bind_param("i", $itemId);
+            $recipeStmt->execute();
             $rRes = $recipeStmt->get_result();
 
             while ($r = $rRes->fetch_assoc()) {
                 $ingredientId = (int)$r['ingredient_id'];
                 $perItemUse   = (float)$r['quantity_value'];
-                $toDeduct     = $perItemUse * $qty; // total needed for this order line
+                $toDeduct     = $perItemUse * $remainingQty;
 
-                $updStmt->bind_param("di", $toDeduct, $ingredientId);
-                if (!$updStmt->execute()) {
-                    error_log("❌ Failed to deduct $toDeduct from ingredient $ingredientId: " . $updStmt->error);
-                } else {
-                    error_log("✅ Deducted $toDeduct from ingredient $ingredientId for item $itemId (qty $qty)");
-                }
+                $updateIngredientStmt->bind_param("di", $toDeduct, $ingredientId);
+                $updateIngredientStmt->execute();
             }
         }
-
-        // Cleanup
-        $updStmt->close();
-        $recipeStmt->close();
-        $oiStmt->close();
     }
+
+    // Cleanup
+    $oiStmt->close();
+    $readyStockStmt->close();
+    $updateReadyStockStmt->close();
+    $deleteReadyStockStmt->close();
+    $recipeStmt->close();
+    $updateIngredientStmt->close();
+}
 
 
 }
