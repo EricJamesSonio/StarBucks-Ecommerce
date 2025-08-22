@@ -37,6 +37,28 @@ class Modal {
         });
     }
 
+    async initGuestIfNeeded() {
+        // Only call backend if guest token not registered yet
+        const guestToken = ensureGuestToken();
+
+        try {
+            const res = await fetch(`${this.apiBasePath}/init_guest`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ guest_token: guestToken })
+            });
+
+            if (!res.ok) {
+                console.warn('Failed to register guest token:', await res.text());
+            }
+        } catch (err) {
+            console.warn('Could not initialize guest token:', err);
+        }
+
+        return guestToken;
+    }
+
     async addToCart() {
         const qty = parseInt(this.quantityInput.value, 10);
         if (qty < 1) return;
@@ -46,11 +68,13 @@ class Modal {
         const mod = parseFloat(selectedOption.dataset.modifier);
         const unitPrice = parseFloat(this.currentItem.price) + mod;
 
+        const guestToken = await this.initGuestIfNeeded();
+
         const payload = {
             item_id: this.currentItem.id,
             size_id: sizeId,
             quantity: qty,
-            guest_token: ensureGuestToken()
+            guest_token: guestToken
         };
 
         try {
@@ -61,7 +85,9 @@ class Modal {
                 body: JSON.stringify(payload)
             });
 
-            const data = await res.json();
+            let data = {};
+            try { data = await res.json(); } catch { console.warn('No JSON returned from /cart'); }
+
             if (!res.ok) throw new Error(data.error || data.message || res.statusText);
 
             alert(`✅ Added ${this.currentItem.name} ×${qty} to your cart.`);
@@ -85,13 +111,7 @@ class Modal {
 // ===== Singleton Export =====
 export const modal = new Modal(API_BASE_PATH);
 
-// Keep old function names for compatibility with existing code
-export function openModal(item) {
-    modal.open(item);
-}
-export function closeModal() {
-    modal.close();
-}
-export async function addToCart() {
-    await modal.addToCart();
-}
+// Legacy function names
+export function openModal(item) { modal.open(item); }
+export function closeModal() { modal.close(); }
+export async function addToCart() { await modal.addToCart(); }
