@@ -38,9 +38,9 @@ require_once(__DIR__ . '/model/ready_item_stock.php'); // keep last after item/i
 require_once(__DIR__ . '/scripts/data/category_data.php');
 require_once(__DIR__ . '/scripts/data/subcategory_data.php');
 require_once(__DIR__ . '/scripts/data/attributes_templates_data.php');
-require_once(__DIR__ . '/scripts/data/users.php');
+//require_once(__DIR__ . '/scripts/data/users.php');
 require_once(__DIR__ . '/scripts/data/admins.php');
-require_once(__DIR__ . '/scripts/data/contacts.php');
+require_once(__DIR__ . '/scripts/data/contacts.php'); 
 require_once(__DIR__ . '/scripts/data/auth.php');
 require_once(__DIR__ . '/scripts/data/address.php');
 require_once(__DIR__ . '/scripts/data/discounts.php');
@@ -66,10 +66,10 @@ require_once(__DIR__ . '/scripts/data/item_ingredient.php'); // ✅
 require_once(__DIR__ . '/scripts/data/ready_item_stock.php');
 
 // 8) seed some orders so order_item has something to reference  
-require_once(__DIR__ . '/scripts/data/sample_order.php');
+//require_once(__DIR__ . '/scripts/data/sample_order.php');
 
 // 9) now seed order_items (drinks will get valid size_ids)  
-require_once(__DIR__ . '/scripts/data/order_item.php');
+//require_once(__DIR__ . '/scripts/data/order_item.php');
 
 // (optionally) 10) seed receipts, etc.
 // require_once(__DIR__ . '/scripts/data/receipts_data.php');

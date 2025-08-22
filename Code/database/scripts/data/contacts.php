@@ -4,11 +4,11 @@ require_once(__DIR__ . '/../function.php');
 $contacts = [];
 
 // Add user contact
-$userId = getIdByFullName($con, 'user', 'Juan', 'Cruz');
-if ($userId) {
-    $contacts[] = ['user', $userId, 'phone', '09171234567'];
-    $contacts[] = ['user', $userId, 'email', 'user1@example.com'];
-}
+//$userId = getIdByFullName($con, 'user', 'Juan', 'Cruz');
+//if ($userId) {
+  //  $contacts[] = ['user', $userId, 'phone', '09171234567'];
+    //$contacts[] = ['user', $userId, 'email', 'user1@example.com'];
+//}
 
 // Add admin contact
 $adminId = getIdByFullName($con, 'admin', 'Maria', 'Santos');
