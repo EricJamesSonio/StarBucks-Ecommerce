@@ -1,3 +1,5 @@
+
+
 class InventoryAPI {
   constructor() {
     if (!window.API_BASE_PATH) {
@@ -123,26 +125,45 @@ class InventoryUI {
     await this.renderLowStock('stock');
   }
 
-  async renderLowStock(type) {
-    const list = this.lowStockLists[type];
-    if (!list) return;
+async renderLowStock(type) {
+  const list = this.lowStockLists[type];
+  if (!list) return;
 
-    list.innerHTML = '<li>Loading...</li>';
-    const j = await this.api.getLowStock(type);
-    list.innerHTML = '';
+  list.innerHTML = '<li>Loading...</li>';
+  const j = await this.api.getLowStock(type);
+  list.innerHTML = '';
 
-    if (!j || !j.data || j.data.length === 0) {
-      list.innerHTML = `<li>No low-stock ${type}s (or threshold = 0)</li>`;
-      return;
+  if (!j || !j.data || j.data.length === 0) {
+    list.innerHTML = `<li>No low-stock ${type}s (or threshold = 0)</li>`;
+    return;
+  }
+
+  j.data.forEach(it => {
+    const li = document.createElement('li');
+
+    if (type === 'stock' && it.image_url) {
+      // prepend image path from config.js
+      const fullImgUrl = `${window.IMAGES_BASE_PATH}${it.image_url}`;
+
+      li.innerHTML = `
+        <div class="stock-item">
+          <img src="${fullImgUrl}" alt="${it.name}" class="stock-img" />
+          <div class="stock-info">
+            <strong>${it.name}</strong><br>
+            Qty: ${it.quantity}
+          </div>
+        </div>
+      `;
+    } else {
+      li.textContent = `${it.name} — qty: ${it.quantity}`;
     }
 
-    j.data.forEach(it => {
-      const li = document.createElement('li');
-      li.textContent = `${it.name} — qty: ${it.quantity}`;
-      list.appendChild(li);
-    });
-  }
+    list.appendChild(li);
+  });
 }
+
+}
+
 
 
 // ===== Initialization =====
