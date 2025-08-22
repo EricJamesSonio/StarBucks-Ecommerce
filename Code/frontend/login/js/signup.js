@@ -41,8 +41,10 @@ class SignupManager {
 
 
     isValidPhone(phone) {
-        return /^\d{11}$/.test(phone);
-    }
+    // Match 09XXXXXXXXX (11 digits) OR +63XXXXXXXXXX (13 chars total)
+    return /^(09\d{9}|\+63\d{10})$/.test(phone);
+}
+
 
     addValidationListeners() {
         const fields = [
@@ -50,7 +52,8 @@ class SignupManager {
             { input: this.middleName, validator: this.isValidName, errorId: "middleNameError", message: "Only letters and spaces allowed" },
             { input: this.lastName, validator: this.isValidName, errorId: "lastNameError", message: "Only letters and spaces allowed" },
             { input: this.email, validator: this.isValidEmail, errorId: "emailError", message: "Enter a valid email (gmail, yahoo, email)" },
-            { input: this.phone, validator: this.isValidPhone, errorId: "phoneError", message: "Phone must be exactly 11 digits" }
+            { input: this.phone, validator: this.isValidPhone, errorId: "phoneError", message: "Enter a valid PH number (09XXXXXXXXX or +63XXXXXXXXXX)" }
+
         ];
 
         fields.forEach(({ input, validator, errorId, message }) => {

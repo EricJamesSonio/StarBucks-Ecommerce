@@ -8,9 +8,18 @@
   id="signupPhone"
   placeholder="Phone"
   type="tel"
-  maxlength="11"
-  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11)"
+  oninput="
+    // Allow digits, and '+' only at the start
+    this.value = this.value.replace(/(?!^\+)[^\d]/g, '');
+    // Limit to max 13 characters (+63XXXXXXXXXX)
+    if (this.value.startsWith('+')) {
+      this.value = this.value.slice(0, 13);
+    } else {
+      this.value = this.value.slice(0, 11);
+    }
+  "
 />
+
 
 <input id="street" placeholder="Street" />
 
