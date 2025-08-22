@@ -85,7 +85,7 @@ class StockManager {
 
   async loadAllStocks() {
     try {
-      const response = await fetch(`${this.API_ITEMS}?action=getStocks`, { credentials: 'include' });
+      const response = await fetch(`${this.API_ITEMS}?action=getStocksWithIds`, { credentials: 'include' });
       const data = await response.json();
 
       if (!data.status) {
@@ -141,10 +141,14 @@ class StockManager {
               </span>
             </div>
             <div class="stock-actions">
-              <button class="btn-update-stock" data-stock-id="${stock.id}" data-item-id="${stock.item_id}" data-size-id="${stock.size_id}">
-                Update
-              </button>
-              <button class="btn-remove-stock" data-stock-id="${stock.id}">
+              <button class="btn-update-stock" 
+  data-stock-id="${stock.stock_id}" 
+  data-item-id="${stock.item_id}" 
+  data-size-id="${stock.size_id}">
+  Update
+</button>
+
+              <button class="btn-remove-stock" data-stock-id="${stock.stock_id}">
                 Remove
               </button>
             </div>
@@ -214,10 +218,9 @@ class StockManager {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+
           stock_id: stockId,
-          item_id: itemId,
-          size_id: sizeId,
-          quantity: parseInt(newQuantity)
+  quantity: parseInt(newQuantity)
         }),
         credentials: 'include'
       });

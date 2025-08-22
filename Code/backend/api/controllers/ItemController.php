@@ -177,3 +177,83 @@ function searchReadyStocks($con) {
     $stockModel = new Stock($con);
     handleSearch($con, fn($query) => $stockModel->searchReadyStocks($query));
 }
+
+function updateStock($con) {
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $stockId = intval($data['stock_id'] ?? 0);
+    $qty     = intval($data['quantity'] ?? -1);
+
+    if ($stockId <= 0 || $qty < 0) {
+        echo json_encode(["status" => false, "message" => "Invalid input data"]);
+        return;
+    }
+
+    try {
+        require_once dirname(__DIR__, 2) . '/model/Stock.php';
+        $stockModel = new Stock($con);
+
+        $success = $stockModel->updateStock($stockId, $qty);
+
+        echo json_encode([
+            "status" => $success,
+            "message" => $success ? "Stock updated successfully" : "Failed to update stock"
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Error updating stock",
+            "error"   => $e->getMessage()
+        ]);
+    }
+}
+
+function removeStock($con) {
+    $stockId = isset($_GET['stock_id']) ? intval($_GET['stock_id']) : 0;
+
+    if ($stockId <= 0) {
+        echo json_encode(["status" => false, "message" => "Invalid stock ID"]);
+        return;
+    }
+
+    try {
+        require_once dirname(__DIR__, 2) . '/model/Stock.php';
+        $stockModel = new Stock($con);
+        $success = $stockModel->removeStock($stockId);
+
+        echo json_encode([
+            "status" => $success,
+            "message" => $success ? "Stock removed successfully" : "Failed to remove stock"
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Error removing stock",
+            "error"   => $e->getMessage()
+        ]);
+    }
+}
+
+
+function getAllStocksWithIds($con) {
+    header('Content-Type: application/json');
+    try {
+        require_once dirname(__DIR__, 2) . '/model/Stock.php';
+        $stockModel = new Stock($con);
+        $stocks = $stockModel->getAllStocksWithIds();
+
+        echo json_encode([
+            "status" => true,
+            "data" => $stocks
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Error fetching stocks with IDs",
+            "error" => $e->getMessage()
+        ]);
+    }
+}

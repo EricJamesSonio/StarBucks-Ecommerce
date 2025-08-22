@@ -17,9 +17,12 @@ switch ($method) {
         searchInventoryItems($con);
     } elseif ($action === 'search') {
         searchItems($con);
-    } elseif ($action === 'getStocks') {   // <-- new route
+    } elseif ($action === 'getStocks') {
         getAllStocks($con);
-    } elseif ($action == 'searchStocks') {searchReadyStocks($con);
+    } elseif ($action === 'getStocksWithIds') {   // ✅ NEW
+        getAllStocksWithIds($con);
+    } elseif ($action == 'searchStocks') {
+        searchReadyStocks($con);
     } else {
         getItems($con);
     }
@@ -33,8 +36,10 @@ switch ($method) {
         addItem($con);
     } elseif ($action === 'update') {
         updateItem($con);
-    } elseif ($action === 'addStock') {   // ✅ new route
+    } elseif ($action === 'addStock') {
         addStock($con);
+    } elseif ($action === 'updateStock') {
+        updateStock($con);
     } else {
         http_response_code(400);
         echo json_encode(["message" => "Invalid action"]);
@@ -43,8 +48,13 @@ switch ($method) {
 
 
     case 'DELETE':
+    $action = $_GET['action'] ?? '';
+    if ($action === 'removeStock') {
+        removeStock($con);
+    } else {
         deleteItem($con);
-        break;
+    }
+    break;
 
     
 

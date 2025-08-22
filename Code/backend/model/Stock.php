@@ -147,6 +147,65 @@ public function searchReadyStocks($query) {
     return $out;
 }
 
+public function updateStock($stockId, $qty) {
+    try {
+        $sql = "UPDATE ready_item_stock 
+                SET quantity = ? 
+                WHERE id = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("ii", $qty, $stockId);
+        $success = $stmt->execute();
+
+        return $success && $stmt->affected_rows > 0;
+    } catch (Throwable $e) {
+        throw new Exception("Update stock failed: " . $e->getMessage());
+    }
+}
+
+
+
+public function getAllStocksWithIds() {
+    $sql = "SELECT rs.id AS stock_id,
+                   si.id AS item_id,
+                   si.name AS item_name, 
+                   sz.id AS size_id,
+                   sz.name AS size_name, 
+                   rs.quantity
+            FROM ready_item_stock rs
+            JOIN starbucksitem si ON si.id = rs.item_id
+            JOIN size sz ON sz.id = rs.size_id
+            WHERE rs.quantity > 0
+            ORDER BY si.name, sz.id";
+    
+    $result = $this->con->query($sql);
+
+    if (!$result) {
+        throw new Exception("Database error: " . $this->con->error);
+    }
+
+    $stocks = [];
+    while ($row = $result->fetch_assoc()) {
+        $stocks[] = $row;
+    }
+    return $stocks;
+}
+
+public function removeStock($stockId) {
+    try {
+        $sql = "DELETE FROM ready_item_stock WHERE id = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("i", $stockId);
+        $stmt->execute();
+
+        return $stmt->affected_rows > 0;
+    } catch (Throwable $e) {
+        throw new Exception("Remove stock failed: " . $e->getMessage());
+    }
+}
+
+
+
+
 
 }
 
