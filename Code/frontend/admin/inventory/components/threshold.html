@@ -1,30 +1,44 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Inventory — Global Threshold</title>
+  <title>Inventory — Thresholds</title>
   <link rel="stylesheet" href="../css/threshold.css">
 </head>
 <body>
-  <h1>Inventory — Global Threshold</h1>
+  <header>
+    <h1>📦 Inventory — Thresholds</h1>
+  </header>
 
   <!-- Back Button -->
-  <div style="margin-bottom: 20px;">
-    <button onclick="window.location.href='../inventory.html'">
-      ← Back to Admin Panel
-    </button>
-  </div>
+  <nav>
+    <button class="back-btn" onclick="window.location.href='../inventory.html'">← Back to Admin Panel</button>
+  </nav>
 
-  <div>
-    <label>Global threshold:</label>
-    <input id="threshold" type="number" min="0" />
-    <button id="btnSet">Set Threshold</button>
-  </div>
+  <!-- Threshold Form -->
+  <section class="card">
+    <h2>Set Global Thresholds</h2>
+    <label for="ingredientThreshold">Ingredient threshold</label>
+    <input id="ingredientThreshold" type="number" min="0" />
 
-  <h2>Low-stock items</h2>
-  <ul id="lowStockList"></ul>
+    <label for="stockThreshold">Stock threshold</label>
+    <input id="stockThreshold" type="number" min="0" />
 
-  <script type="module" src="../../../js/config.js"></script> 
+    <button id="btnSet">💾 Save Thresholds</button>
+  </section>
+
+  <!-- Low stock lists -->
+  <section class="card">
+    <h2>⚠️ Low-stock Ingredients</h2>
+    <ul id="lowStockIngredients" class="low-stock-list"></ul>
+  </section>
+
+  <section class="card">
+    <h2>⚠️ Low-stock Ready Items</h2>
+    <ul id="lowStockStocks" class="low-stock-list"></ul>
+  </section>
+
+  <script type="module" src="../../../js/config.js"></script>
   <script src="../js/threshold.js"></script>
 </body>
 </html>

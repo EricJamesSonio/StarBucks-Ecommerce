@@ -122,21 +122,6 @@ Subcategory -->
         category_id INT NOT NULL,
         FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
 
-Attribute Templates -->
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-Item Attributes --> 
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        item_id INT NOT NULL,
-        attribute_template_id INT NOT NULL,
-        attribute_value VARCHAR(30) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
-        FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
 
 ingredient 
         CREATE TABLE IF NOT EXISTS item_ingredient
@@ -161,18 +146,22 @@ Item_ingredient
         FOREIGN KEY (ingredient_id) REFERENCES ingredient(id) ON DELETE CASCADE,
         UNIQUE (item_id, ingredient_id)
 
-ready_item_stock
-    CREATE TABLE IF NOT EXISTS ready_item_stock (
+Attribute Templates -->
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+
+Item Attributes --> 
         id INT AUTO_INCREMENT PRIMARY KEY,
         item_id INT NOT NULL,
-        size_id INT NOT NULL,
-        quantity INT NOT NULL DEFAULT 0, -- how many ready-to-sell items
+        attribute_template_id INT NOT NULL,
+        attribute_value VARCHAR(30) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
-        FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE,
-        UNIQUE (item_id, size_id)
-
+        FOREIGN KEY (attribute_template_id) REFERENCES attribute_template(id) ON DELETE CASCADE
 
 Admin -->
         CREATE TABLE admin (

@@ -1,6 +1,4 @@
 <?php
-// backend/api/controllers/inventoryController.php
-
 require_once dirname(__DIR__, 2) . '/model/InventorySetting.php';
 
 class InventoryController {
@@ -11,32 +9,37 @@ class InventoryController {
         header('Content-Type: application/json');
     }
 
-    // GET: return current global threshold
+    // GET: return thresholds
     public function getInventorySetting() {
-        $threshold = $this->model->getGlobalThreshold();
-        echo json_encode(['status' => true, 'data' => ['global_threshold' => $threshold]]);
+        $thresholds = $this->model->getThresholds();
+        echo json_encode(['status' => true, 'data' => $thresholds]);
     }
 
-    // POST/PUT: set/update global threshold
+    // POST/PUT: update thresholds
     public function upsertInventorySetting() {
         $body = file_get_contents('php://input');
         $data = json_decode($body, true);
 
-        if (!$data || !isset($data['global_threshold'])) {
+        if (!$data || !isset($data['ingredient_threshold']) || !isset($data['stock_threshold'])) {
             http_response_code(400);
-            echo json_encode(['status' => false, 'message' => 'Missing global_threshold']);
+            echo json_encode(['status' => false, 'message' => 'Missing thresholds']);
             return;
         }
 
-        $threshold = intval($data['global_threshold']);
+        $ingredient = intval($data['ingredient_threshold']);
+        $stock      = intval($data['stock_threshold']);
         $updated_by = isset($data['updated_by']) ? intval($data['updated_by']) : null;
 
-        $res = $this->model->upsertGlobalThreshold($threshold, $updated_by);
+        $res = $this->model->upsertThresholds($ingredient, $stock, $updated_by);
 
         if ($res['success']) {
             echo json_encode([
                 'status' => true,
-                'data' => ['id' => $res['id'], 'global_threshold' => $threshold]
+                'data' => [
+                    'id' => $res['id'],
+                    'ingredient_threshold' => $ingredient,
+                    'stock_threshold' => $stock
+                ]
             ]);
         } else {
             http_response_code(500);
@@ -44,28 +47,23 @@ class InventoryController {
         }
     }
 
-    // GET action=low-stock : list low stock items using the global threshold
+    // GET action=low-stock
     public function getLowStockItems() {
-        $items = $this->model->getLowStockItems();
+        $type = $_GET['type'] ?? 'ingredient';
+        $items = $this->model->getLowStockItems($type);
         echo json_encode(['status' => true, 'data' => $items]);
     }
 }
 
-/*
-    ================================
-    To keep backward compatibility with function calls in other files:
-    ================================
-*/
+// Backward compatibility
 function getInventorySetting($con) {
     $controller = new InventoryController($con);
     $controller->getInventorySetting();
 }
-
 function upsertInventorySetting($con) {
     $controller = new InventoryController($con);
     $controller->upsertInventorySetting();
 }
-
 function getLowStockItems($con) {
     $controller = new InventoryController($con);
     $controller->getLowStockItems();
