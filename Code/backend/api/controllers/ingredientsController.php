@@ -332,6 +332,70 @@ function getAllIngredientStocks($con) {
             "error" => $e->getMessage()
         ]);
     }
+
+    
 }
 
+// Update ingredient info in ingredient table
+function updateIngredient($con, $data) {
+    try {
+        if (empty($data['id']) || empty($data['name'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Ingredient ID and name are required"
+            ]);
+            return;
+        }
 
+        $stock_unit = $data['stock_unit'] ?? null;
+
+        $sql = "UPDATE ingredient SET name = ?, stock_unit = ? WHERE id = ?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("ssi", $data['name'], $stock_unit, $data['id']);
+        $success = $stmt->execute();
+
+        echo json_encode([
+            "status" => $success,
+            "message" => $success ? "Ingredient updated successfully" : "Failed to update ingredient"
+        ]);
+
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to update ingredient",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+// Remove ingredient from ingredient table
+function removeIngredient($con, $data) {
+    try {
+        if (empty($data['id'])) {
+            echo json_encode([
+                "status" => false,
+                "message" => "Ingredient ID is required"
+            ]);
+            return;
+        }
+
+        $sql = "DELETE FROM ingredient WHERE id = ?";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("i", $data['id']);
+        $success = $stmt->execute();
+
+        echo json_encode([
+            "status" => $success,
+            "message" => $success ? "Ingredient removed successfully" : "Failed to remove ingredient"
+        ]);
+
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to remove ingredient",
+            "error" => $e->getMessage()
+        ]);
+    }
+}

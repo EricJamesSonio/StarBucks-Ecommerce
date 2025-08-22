@@ -68,15 +68,16 @@ class InventorySetting {
                 WHERE quantity_in_stock <= ? 
                 ORDER BY quantity_in_stock ASC";
     } elseif ($type === 'stock') {
-        $threshold = $thresholds['stock_threshold'];
-        if ($threshold <= 0) return [];
+    $threshold = $thresholds['stock_threshold'];
+    if ($threshold <= 0) return [];
 
-        $sql = "SELECT ris.id, s.name, ris.quantity 
-                FROM ready_item_stock ris
-                JOIN starbucksitem s ON ris.item_id = s.id
-                WHERE ris.quantity <= ? 
-                ORDER BY ris.quantity ASC";
-    } else {
+    $sql = "SELECT ris.id, s.name, s.image_url, ris.quantity 
+            FROM ready_item_stock ris
+            JOIN starbucksitem s ON ris.item_id = s.id
+            WHERE ris.quantity <= ? 
+            ORDER BY ris.quantity ASC";
+}
+ else {
         return [];
     }
 

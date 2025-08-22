@@ -13,7 +13,6 @@ class StockManager {
     this.searchInput = document.getElementById("searchInput");
     this.suggestionsBox = document.getElementById("suggestionsBox");
     this.stocksContainer = document.getElementById("stocksContainer");
-    this.lowStockContainer = document.getElementById("lowStockContainer");
     this.btnRefreshStocks = document.getElementById("btnRefreshStocks");
 
     this.searchTimeout = null;
@@ -25,7 +24,7 @@ class StockManager {
   async init() {
     await this.loadItems();
     await this.loadAllStocks();
-    await this.loadLowStockAlerts();
+    
     this.bindEvents();
   }
 
@@ -102,23 +101,6 @@ class StockManager {
     }
   }
 
-  async loadLowStockAlerts() {
-    try {
-      const response = await fetch(`${this.API_ITEMS}?action=getLowStock`, { credentials: 'include' });
-      const data = await response.json();
-
-      if (!data.status) {
-        this.lowStockContainer.innerHTML = `<div class="stock-empty">No low stock alerts</div>`;
-        return;
-      }
-
-      const lowStocks = data.data;
-      this.renderLowStockAlerts(lowStocks);
-    } catch (error) {
-      console.error("Error loading low stock alerts:", error);
-      this.lowStockContainer.innerHTML = `<div class="stock-empty">Error loading low stock alerts</div>`;
-    }
-  }
 
   /*********************
    * Rendering
@@ -160,24 +142,6 @@ class StockManager {
     this.stocksContainer.innerHTML = stocksHtml;
   }
 
-  renderLowStockAlerts(lowStocks) {
-    if (!lowStocks || lowStocks.length === 0) {
-      this.lowStockContainer.innerHTML = `<div class="stock-empty">No low stock alerts - all items are well stocked!</div>`;
-      return;
-    }
-
-    const alertsHtml = lowStocks.map(stock => `
-      <div class="low-stock-warning">
-        <h4>⚠️ Low Stock Alert</h4>
-        <p><strong>${this.escapeHtml(stock.item_name)}</strong> 
-           ${stock.size_name ? `(${this.escapeHtml(stock.size_name)})` : ''} 
-           - Only <strong>${stock.quantity}</strong> units remaining</p>
-      </div>
-    `).join("");
-
-    this.lowStockContainer.innerHTML = alertsHtml;
-  }
-
   /*********************
    * Stock Operations
    *********************/
@@ -196,7 +160,7 @@ class StockManager {
         this.addStockForm.reset();
         this.sizeSelect.innerHTML = '<option value="">Select Size</option>';
         await this.loadAllStocks();
-        await this.loadLowStockAlerts();
+   
       } else {
         this.showMessage(result.message || "Failed to add stock", "error");
       }
@@ -229,7 +193,7 @@ class StockManager {
       if (result.status) {
         this.showMessage("Stock updated successfully!", "success");
         await this.loadAllStocks();
-        await this.loadLowStockAlerts();
+        
       } else {
         this.showMessage(result.message || "Failed to update stock", "error");
       }
@@ -254,7 +218,7 @@ class StockManager {
       if (result.status) {
         this.showMessage("Stock removed successfully!", "success");
         await this.loadAllStocks();
-        await this.loadLowStockAlerts();
+        
       } else {
         this.showMessage(result.message || "Failed to remove stock", "error");
       }
@@ -359,7 +323,7 @@ this.addStockForm.addEventListener("submit", (e) => {
     // Refresh stocks button
     this.btnRefreshStocks?.addEventListener('click', async () => {
       await this.loadAllStocks();
-      await this.loadLowStockAlerts();
+      
       this.showMessage("Stocks refreshed!", "success");
     });
 

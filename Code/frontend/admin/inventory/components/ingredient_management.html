@@ -43,23 +43,7 @@
     </form>
   </section>
 
-  <!-- Current Ingredient Stocks Display -->
-  <section id="ingredientListSection">
-    <h2>Current Ingredient Stock Levels</h2>
-    <div id="ingredientsContainer">
-      <div class="ingredient-empty">Loading ingredients...</div>
-    </div>
-  </section>
-
-  <!-- Low Ingredient Stock Alerts -->
-  <section id="lowIngredientSection">
-    <h2>Low Ingredient Stock Alerts</h2>
-    <div id="lowIngredientContainer">
-      <div class="ingredient-empty">Loading low ingredient stock alerts...</div>
-    </div>
-  </section>
-
-  <!-- Add New Ingredient Section -->
+   <!-- Add New Ingredient Section -->
   <section id="newIngredientSection">
     <h2>Add New Ingredient</h2>
     <form id="newIngredientForm">
@@ -85,6 +69,47 @@
       <button type="submit">Add New Ingredient</button>
     </form>
   </section>
+
+  <!-- Current Ingredient Stocks Display -->
+  <section id="ingredientListSection">
+    <h2>Current Ingredient Stock Levels</h2>
+    <div id="ingredientsContainer">
+      <div class="ingredient-empty">Loading ingredients...</div>
+    </div>
+  </section>
+
+
+ 
+ <!-- Update Ingredient Modal -->
+<div id="updateIngredientModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeUpdateModal">&times;</span>
+    <h3>Update Ingredient</h3>
+    <form id="updateIngredientForm">
+      <input type="hidden" id="updateIngredientId" />
+      
+      <label for="updateIngredientName">Name:</label>
+      <input type="text" id="updateIngredientName" required />
+
+      <label for="updateIngredientUnit">Unit:</label>
+      <select id="updateIngredientUnit" required>
+        <option value="">Select unit</option>
+        <option value="kg">kg</option>
+        <option value="g">g</option>
+        <option value="pcs">pcs</option>
+        <option value="liters">liters</option>
+        <option value="ml">ml</option>
+        <option value="cups">cups</option>
+        <option value="tbsp">tbsp</option>
+        <option value="tsp">tsp</option>
+      </select>
+
+      <button type="submit">Update</button>
+      <button type="button" id="cancelUpdate">Cancel</button>
+    </form>
+  </div>
+</div>
+
 
   <!-- Config must load first so window.API_BASE_PATH is set -->
   <script type="module" src="../../../js/config.js"></script>

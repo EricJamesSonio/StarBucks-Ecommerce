@@ -66,6 +66,16 @@ try {
     $input = json_decode(file_get_contents('php://input'), true);
     createIngredient($con, $input);
     break;
+        case 'updateIngredient':
+    $input = json_decode(file_get_contents('php://input'), true);
+    updateIngredient($con, $input);
+    break;
+
+case 'removeIngredient':
+    $input = json_decode(file_get_contents('php://input'), true);
+    removeIngredient($con, $input);
+    break;
+
 
 
             default:
@@ -82,6 +92,7 @@ try {
             "message" => "Method not allowed"
         ]);
     }
+    
 } catch (Throwable $e) {
     http_response_code(500);
     echo json_encode([
@@ -90,3 +101,4 @@ try {
         "error" => $e->getMessage()
     ]);
 }
+
