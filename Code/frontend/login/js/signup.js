@@ -12,8 +12,76 @@ class SignupManager {
         this.provinceContainer = document.getElementById("province-buttons");
         this.cityContainer = document.getElementById("city-buttons");
 
+        this.signupBtn = document.getElementById("signupBtn");
+
+        // Inputs
+        this.firstName = document.getElementById("firstName");
+        this.middleName = document.getElementById("middleName");
+        this.lastName = document.getElementById("lastName");
+        this.email = document.getElementById("signupEmail");
+        this.password = document.getElementById("signupPass");
+        this.phone = document.getElementById("signupPhone");
+
+        // Add live validation
+        this.addValidationListeners();
+
         console.log("signup.js loaded, initializing...");
         this.loadCountries();
+    }
+
+    // Regex Validators
+    isValidName(name) {
+        return /^[A-Za-z\s]+$/.test(name);
+    }
+
+    isValidEmail(email) {
+    // Basic RFC-like check: something@something.something
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+
+    isValidPhone(phone) {
+        return /^\d{11}$/.test(phone);
+    }
+
+    addValidationListeners() {
+        const fields = [
+            { input: this.firstName, validator: this.isValidName, errorId: "firstNameError", message: "Only letters and spaces allowed" },
+            { input: this.middleName, validator: this.isValidName, errorId: "middleNameError", message: "Only letters and spaces allowed" },
+            { input: this.lastName, validator: this.isValidName, errorId: "lastNameError", message: "Only letters and spaces allowed" },
+            { input: this.email, validator: this.isValidEmail, errorId: "emailError", message: "Enter a valid email (gmail, yahoo, email)" },
+            { input: this.phone, validator: this.isValidPhone, errorId: "phoneError", message: "Phone must be exactly 11 digits" }
+        ];
+
+        fields.forEach(({ input, validator, errorId, message }) => {
+            let errorEl = document.getElementById(errorId);
+            if (!errorEl) {
+                errorEl = document.createElement("small");
+                errorEl.id = errorId;
+                errorEl.style.color = "red";
+                input.insertAdjacentElement("afterend", errorEl);
+            }
+
+            input.addEventListener("input", () => {
+                if (!validator.call(this, input.value.trim()) && input.value.trim() !== "") {
+                    errorEl.textContent = message;
+                } else {
+                    errorEl.textContent = "";
+                }
+                this.toggleSignupButton();
+            });
+        });
+    }
+
+    toggleSignupButton() {
+        const valid =
+            this.isValidName(this.firstName.value.trim()) &&
+            (this.middleName.value.trim() === "" || this.isValidName(this.middleName.value.trim())) &&
+            this.isValidName(this.lastName.value.trim()) &&
+            this.isValidEmail(this.email.value.trim()) &&
+            this.isValidPhone(this.phone.value.trim());
+
+        this.signupBtn.disabled = !valid;
     }
 
     async loadCountries() {
@@ -86,13 +154,15 @@ class SignupManager {
     }
 
     submitSignup() {
+        if (this.signupBtn.disabled) return; // Prevent submission if invalid
+
         const payload = {
-            first_name: document.getElementById('firstName').value.trim(),
-            middle_name: document.getElementById('middleName').value.trim(),
-            last_name: document.getElementById('lastName').value.trim(),
-            email: document.getElementById('signupEmail').value.trim(),
-            password: document.getElementById('signupPass').value,
-            phone: document.getElementById('signupPhone').value.trim(),
+            first_name: this.firstName.value.trim(),
+            middle_name: this.middleName.value.trim(),
+            last_name: this.lastName.value.trim(),
+            email: this.email.value.trim(),
+            password: this.password.value,
+            phone: this.phone.value.trim(),
             street: document.getElementById('street').value.trim(),
             city: this.selectedCity?.name || '',
             province: this.selectedProvince?.name || '',
