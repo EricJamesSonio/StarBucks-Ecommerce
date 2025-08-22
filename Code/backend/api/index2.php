@@ -57,9 +57,6 @@ switch ($route) {
     case 'topselling':
         require __DIR__ . '/routes/topselling.php';
         break;
-    case 'guest':
-        require __DIR__ . '/routes/guest.php';
-        break;
     case 'getCities':
         require __DIR__ . '/routes/getCities.php';
         break;
