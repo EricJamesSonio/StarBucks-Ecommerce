@@ -37,7 +37,13 @@ class CartController {
                 $this->handlePost();
                 break;
             case 'DELETE':
-                $this->handleDelete();
+                // Check if item_id is provided in query string
+                if (isset($_GET['item_id'])) {
+                    $itemId = (int) $_GET['item_id'];
+                    $this->handleDeleteItem($itemId); // delete single item
+                } else {
+                    $this->handleDelete(); // clear entire cart
+                }
                 break;
             default:
                 $this->respond(["error" => "Method not allowed"], 405);
@@ -116,6 +122,34 @@ class CartController {
         unset($_SESSION['cart']); // Clear guest cart too
         $this->respond(["success" => true, "message" => "Cart cleared"]);
     }
+
+    private function handleDeleteItem(int $itemId, ?int $sizeId = null): void {
+    try {
+        if (!$this->isLoggedIn || $this->userId === null) {
+            $this->respond(["error" => "User not authenticated"], 401);
+            return;
+        }
+
+        if ($itemId <= 0) {
+            $this->respond(["error" => "Invalid item ID"], 400);
+            return;
+        }
+
+        // Call model method to delete the cart item
+        $deleted = $this->cartModel->removeCartItem($this->userId, $itemId, $sizeId);
+
+        if ($deleted) {
+            $this->respond(["success" => true, "message" => "Item deleted successfully"]);
+        } else {
+            $this->respond(["error" => "Item not found or could not be deleted"], 404);
+        }
+
+    } catch (Exception $e) {
+        error_log("Delete error: " . $e->getMessage());
+        $this->respond(["error" => "Internal Server Error"], 500);
+    }
+}
+
 }
 
 // Run the controller
