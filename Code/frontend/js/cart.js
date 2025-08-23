@@ -12,6 +12,22 @@ class CartService {
         if (!res.ok) throw new Error("Failed to load cart");
         return res.json(); // [{ item_id, name, price, quantity, ... }]
     }
+
+    async deleteCartItem(itemId) {
+        if (!itemId) throw new Error("Item ID is missing");
+
+        // Send item_id as a query parameter
+        const res = await fetch(`${this.apiBasePath}/cart?item_id=${itemId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (!res.ok) throw new Error("Failed to delete cart item");
+        return res.json();
+}
+    
+
+
 }
 
 class CartUI {
@@ -65,7 +81,7 @@ class CartUI {
                 <span class="prod-price">₱${parseFloat(item.price || 0).toFixed(2)}</span>
             </div>
             <div class="end-config">
-                <div class="cross"></div>
+                <div class="cross">x</div>
                 <div class="qty-config">
                     <button class="add-qty">+</button>
                     <span class="qty">${item.quantity || 1}</span>
@@ -74,6 +90,20 @@ class CartUI {
             </div>
             <div class="border-bot"></div>
         `;
+
+        div.querySelector(".cross").addEventListener("click", async () => {
+    try {
+        console.log("Deleting item:", item.item_id); // Debug
+        await cartService.deleteCartItem(item.item_id);
+        console.log("Deleting item:", item.item_id); // Send correct ID
+        this.items = this.items.filter(i => i.item_id !== item.item_id); // Remove only this one
+        this.render(this.items);
+    } catch (err) {
+        console.error("Delete failed:", err);
+        alert("Failed to remove item.");
+    }
+});
+
 
         return div;
     }
