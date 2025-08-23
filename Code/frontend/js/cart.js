@@ -13,18 +13,20 @@ class CartService {
         return res.json(); // [{ item_id, name, price, quantity, ... }]
     }
 
-    async deleteCartItem(itemId) {
+    async deleteCartItem(itemId, sizeId = null) {
         if (!itemId) throw new Error("Item ID is missing");
 
-        // Send item_id as a query parameter
-        const res = await fetch(`${this.apiBasePath}/cart?item_id=${itemId}`, {
+        const query = sizeId !== null ? `?item_id=${itemId}&size_id=${sizeId}` : `?item_id=${itemId}`;
+
+        const res = await fetch(`${this.apiBasePath}/cart${query}`, {
             method: 'DELETE',
             credentials: 'include'
         });
 
         if (!res.ok) throw new Error("Failed to delete cart item");
         return res.json();
-}
+    }
+
     
 
 
@@ -94,7 +96,7 @@ class CartUI {
         div.querySelector(".cross").addEventListener("click", async () => {
             try {
                 console.log("Deleting item:", item.item_id); // Debug
-                await cartService.deleteCartItem(item.item_id); // Send correct ID
+                await cartService.deleteCartItem(item.item_id, item.size_id); // Send correct ID
                 this.items = this.items.filter(i => i.item_id !== item.item_id); // Remove only this one
                 this.render(this.items);
             } catch (err) {
