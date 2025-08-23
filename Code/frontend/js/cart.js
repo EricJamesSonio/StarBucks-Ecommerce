@@ -38,7 +38,7 @@ class CartUI {
         this.items = []; // store items here
     }
 
-    render(items) {
+    render(items) {event
         this.items = items; // keep a reference
 
         this.container.innerHTML = '';
@@ -92,16 +92,15 @@ class CartUI {
         `;
 
         div.querySelector(".cross").addEventListener("click", async () => {
-    try {
-        console.log("Deleting item:", item.item_id); // Debug
-        await cartService.deleteCartItem(item.item_id);
-        console.log("Deleting item:", item.item_id); // Send correct ID
-        this.items = this.items.filter(i => i.item_id !== item.item_id); // Remove only this one
-        this.render(this.items);
-    } catch (err) {
-        console.error("Delete failed:", err);
-        alert("Failed to remove item.");
-    }
+            try {
+                console.log("Deleting item:", item.item_id); // Debug
+                await cartService.deleteCartItem(item.item_id); // Send correct ID
+                this.items = this.items.filter(i => i.item_id !== item.item_id); // Remove only this one
+                this.render(this.items);
+            } catch (err) {
+                console.error("Delete failed:", err);
+                alert("Failed to remove item.");
+            }
 });
 
 
