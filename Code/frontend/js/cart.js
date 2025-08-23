@@ -27,10 +27,19 @@ class CartService {
         return res.json();
     }
 
-    
-
+    async updateCartItemQuantity(itemId, sizeId, quantity) {
+        const res = await fetch(`${this.apiBasePath}/cart`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: itemId, size_id: sizeId, quantity })
+        });
+        if (!res.ok) throw new Error("Failed to update cart item");
+        return res.json();
+    }
 
 }
+
 
 class CartUI {
     constructor(cartItemsContainerId, totalId, discountId) {
@@ -103,21 +112,49 @@ class CartUI {
                 console.error("Delete failed:", err);
                 alert("Failed to remove item.");
             }
-});
+        });
+
+        //Increase quantity
+        div.querySelector(".add-qty").addEventListener("click", async (e) => {
+            e.preventDefault();
+            const currentQty = this.items[index].quantity; // ✅ Always use latest
+            console.log(currentQty);
+            const newQty = currentQty + 1;
+            await this.updateQuantity(index, newQty);
+        });
+
+        //Decrease quantity
+        div.querySelector(".minus-qty").addEventListener("click", async (e) => {
+            e.preventDefault();
+            const currentQty = this.items[index].quantity; // ✅ Always use latest
+            console.log(currentQty);
+            const newQty = currentQty - 1;
+            if (newQty > 1) {
+                await this.updateQuantity(index, newQty);
+            }
+        });
 
 
         return div;
     }
 
     // 🔹 new method to update qty in data + re-render UI
-    updateQuantity(index, newQty) {
+    async updateQuantity(index, newQty) {
         if (newQty >= 1) {
-            this.items[index].quantity = newQty;
-            this.render(this.items); // refresh UI + totals
-            console.log("Before update:", this.items);
-            console.log("Updating index", index, "to", newQty);
+            const item = this.items[index];
+            try {
+                await cartService.updateCartItemQuantity(item.item_id, item.size_id, newQty);
+                this.items[index].quantity = newQty;
+                console.log("quantity: ", newQty)
+                this.render(this.items);
+            } catch (err) {
+                console.error("Failed to update quantity:", err);
+                alert("Could not update quantity");
+            }
         }
-    }
+}
+
+
 }
 
 
