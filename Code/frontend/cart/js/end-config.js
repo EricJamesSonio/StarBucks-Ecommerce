@@ -1,4 +1,4 @@
-import { cartController } from '../js/cart.js';
+import { cartController } from '../../js/cart.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", function(e) {

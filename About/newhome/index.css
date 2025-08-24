@@ -6,6 +6,7 @@
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
+
 }
 :root {
     --main-color-green: #00bb68;
@@ -19,8 +20,9 @@
 section {
     height: 100vh;
     width: 100vw;
+    overflow-y: hidden;
 }
-body {
+body, html {
     overflow-x: hidden;
 }
 /* HOME */
@@ -50,6 +52,7 @@ button {
     font-weight: 700;
     font-size: .8rem;
     color: var(--main-color-darkgreen);
+    text-transform: uppercase;
 }
 button:hover {
     background-color: var(--main-color-lightgreen);
@@ -167,8 +170,7 @@ button:hover {
 }   
 .Cart {
     height: 2rem;
-    width: 10rem;
-    
+    width: 12rem;
 }
 
 
@@ -189,6 +191,7 @@ button:hover {
     flex-direction: row;
     padding: 1rem 0;
     margin-right: 3vw;
+
 }
 .name {
     writing-mode: sideways-lr;
@@ -196,7 +199,7 @@ button:hover {
     font-size: 8rem;
     text-transform: uppercase;
     font-weight: 900;
-    
+
 }
 .first {
     margin-bottom: auto;
@@ -215,27 +218,26 @@ button:hover {
     flex-direction: column;
     align-items: center;
     overflow: hidden;
+
     background-color: var(--main-color-darkgreen);
-    
-    margin: auto;
 }
 #menu nav {
     width: inherit;
     height: 30vh;
+
     display: flex;
-    align-items: center;
-    justify-content: center;
+
 }
 #menu nav ul {
     width: 65%;
     height: 9vh;
     background-color: white;
     border-radius: 70px;
+    margin: auto;
     list-style: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
 }
 
 #menu nav ul li{
@@ -245,19 +247,17 @@ button:hover {
     align-items: center;
 }
 #menu nav ul li:hover {
-    background-color: rgb(83, 83, 83, .5);
-    border-radius: 0;
-}  /*true hover */
-#menu nav ul li:hover {
-    background-color: #00361f;
+    background-color: var(--main-color-darkgreen);
     border-radius: inherit;
     box-shadow: 8px 0px 8px rgb(0, 0, 0, .7);
-}
+    
+}  /*true hover */
+
 #menu nav ul li:hover div a{
     color: white
 }
 
-#menu nav ul li div{
+#menu nav ul li div{ /* divider */
     width: inherit;
     height: 3vh;
     border-right: solid 2px rgba(7, 7, 7, 0.5);
@@ -275,100 +275,198 @@ button:hover {
 #menu #foodSelection {
     width: inherit;
     height: 70vh;
-
+    width: inherit;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background-color: #006c3d;
 }
-#menu #foodSelection ul{
+#menu #foodSelection #box{
     display: flex;
     list-style: none;
     align-items: center;
     width: inherit;
     height: inherit;
-    background-color: #006c3d;
-}
-
-#menu #foodSelection ul .prodInfo {
-    background-color: #ffffff;
-    height: 65%;
-    width: 13vw;
-    border-radius: 20px;
+    gap: 5rem;
+    justify-content: center;
     
 }
-#menu #foodSelection ul .prodInfo:hover {
-    background-color: var(--main-color-lightgreen);
-    height: 70%;
-    width: 15vw;
-}
-#menu #foodSelection .prodInfo:hover .contents h2,.prodInfo:hover #ingName li{
-    color: white;
-}
-#menu #foodSelection ul .prodInfo:hover .contents #ingOpt a{
-    color: black;
-}
-#menu #foodSelection ul .prodInfo:hover .contents button {
-    margin-top: 7vh;
-    background-color: white;
-    color: var(--main-color-darkgreen);
-    font-weight: 600;
+#menu #foodSelection ul .prodInfo {
+    background-color: #ffffff;
+    height: 36vh;
+    width: 12vw;
+    border-radius: 20px;
+    filter: drop-shadow(15px 10px 5px rgb(0, 0, 0, .4));
 }
 
-#menu #foodSelection ul .contents {
+
+#menu #foodSelection .contents {
     position: relative;
     bottom: 80px;
-    width: inherit;
-    height: inherit;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#menu #foodSelection ul .contents h2 {
+#menu #foodSelection  h2 {
     text-transform: uppercase;
     margin-top: 15px;
     margin-bottom: 20px;
 }
 #menu #foodSelection .ingInfo {
     display: flex;
-    flex-wrap: wrap;
-    width: 80%;
-    gap: 4.4vh;
-    height: 15vh;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 60%;
+    padding-bottom: 1rem;
 }
 #menu #foodSelection .ingInfo ul {
     list-style: none;
-    display: flex;
+    display: flex-block;
     flex-wrap: wrap;
-    width: 4vw;
-    height: 10vh;
+    width: 2rem;
+    height: 90%;
+    gap: 10px;
+}
+#menu #foodSelection #ingName li{
+    margin-bottom: 10px;
 }
 #menu #foodSelection .ingInfo ul li, a{
   font-size: .8rem;
   text-transform: uppercase;
   font-weight: 500;
 } 
-#menu #foodSelection .ingInfo #ingOpt a {
-    color: var(--main-color-darkgreen);
-    text-transform: uppercase;
-}
-#menu #foodSelection .ingInfo #ingOpt{
+
+#menu #foodSelection #ingOpt{
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
+
 #menu #foodSelection ul li img{
-    height: 20vh;
-    width: 10vh;
+    height: 27vh;
+    width: 15vh;
     filter: drop-shadow(0px 3px 5px rgb(0,0,0, .7));
 }
+
 #menu #foodSelection button {
-    border-radius: 70px;
-    background-color: #00361f;
+    background-color: var(--main-color-lightgreen);
     color: white;
-    text-transform: uppercase;
-    font-size: .6rem;
-    padding: 6px 20px;
+}
+
+#menu #foodSelection .prodInfo:hover {
+    background-color: var(--main-color-lightgreen);
+    height: 39vh;
+    width: 14vw;
     cursor: pointer;
-    margin-top: 2vw;
-    border: none;
+}
+
+
+/* menu-hoverItems */
+#menu #foodSelection .prodInfo:hover h2 {
+    font-size: 1.3rem;
+    color: white;
+}
+#menu #foodSelection .prodInfo:hover #ingName li{
+    color: white;
+    font-size: 1rem;
+}
+#menu #foodSelection .prodInfo:hover #ingOpt a{
+    color: rgb(0, 214, 139);
+    font-weight: 500;
+    font-size: 1rem;
+}
+#menu #foodSelection .prodInfo:hover .ingInfo {
+    gap: 4vw;
+    font-size: 1rem;
+}
+
+#menu #foodSelection .prodInfo:hover button {
+    position: relative;
+    top: 10px;
+    background-color: white;
+    color: var(--main-color-lightgreen);
+    font-weight:700;
+    text-transform: uppercase;
+}
+
+
+/* unmatched */
+#unmatched {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: var(--main-color-darkgreen);
+}
+#unmatched h1{
+    font-size: 7rem;
+    line-height: 1;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: white; 
+    
+}
+#unmatched #quote {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 150px;
+}
+#unmatched img {
+    z-index: 2;
+    filter: drop-shadow(5px 5px 10px black);
+}
+#unmatched #line{
+    z-index: 3;
+    background-color: #006c3d;
+    width: 120vw;
+    height: 9vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10vw;
+    transform: rotate(-15deg);
+    position: absolute;
+    bottom:  25vh;
+    filter: drop-shadow(5px 5px 5px black);
+}
+#unmatched #line span {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: white;
+    animation: marquee 10s linear infinite; 
+}
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+#unmatched p {
+    position: absolute;
+}
+#unmatched p {
+    color: white;
+    font-size: .7rem;
+}
+.word-con {
+    width: 10rem;
+    height: 10rem;
+
+}
+
+.quote {
+    color: white;
+    font-size: .8rem;
+    align-items: center;
+    text-align: center;
+}
+.first-text {
+    position: absolute;
+    top: 60vh;
+    left: 30vw;
+
+}
+.sec {
+    position: absolute;
+    top: 80vh;
+    right: 10vw;
 }

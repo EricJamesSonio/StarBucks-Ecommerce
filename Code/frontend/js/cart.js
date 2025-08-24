@@ -49,25 +49,32 @@ class CartUI {
         this.items = []; // store items here
     }
 
-    render(items) {event
-        this.items = items; // keep a reference
+    render(items) {
+        this.items = items;
+
+        // Re-query DOM elements in case HTML was loaded dynamically
+        this.container = document.getElementById('cart-container');
+        this.totalElem = document.querySelector('.cartTotal');
+        this.discountElem = document.querySelector('.cartDiscount');
+
+        if (!this.container) {
+            console.error("Cart container not found in DOM");
+            return;
+        }
 
         this.container.innerHTML = '';
-
-    let total = 0;
+        let total = 0;
 
         items.forEach((item, index) => {
             const lineTotal = item.quantity * parseFloat(item.price || 0);
             total += lineTotal;
-
-            // create the product UI for each item
-            const prodElem = this.createProductElement(item, index);
-            this.container.appendChild(prodElem);
+            this.container.appendChild(this.createProductElement(item, index));
         });
 
         this.totalElem.textContent = total.toFixed(2);
         this.discountElem.textContent = '0.00';
     }
+
 
     createProductElement(item, index) {
         const div = document.createElement('div');
@@ -129,8 +136,8 @@ class CartUI {
             const currentQty = this.items[index].quantity; // ✅ Always use latest
             console.log(currentQty);
             const newQty = currentQty - 1;
-            if (newQty > 1) {
-                await this.updateQuantity(index, newQty);
+            if (newQty >= 1) {
+                await this.updateQuantity(index, newQty);   
             }
         });
 
@@ -140,12 +147,12 @@ class CartUI {
 
     // 🔹 new method to update qty in data + re-render UI
     async updateQuantity(index, newQty) {
+        console.log("quantity: ", newQty)
         if (newQty >= 1) {
             const item = this.items[index];
             try {
                 await cartService.updateCartItemQuantity(item.item_id, item.size_id, newQty);
                 this.items[index].quantity = newQty;
-                console.log("quantity: ", newQty)
                 this.render(this.items);
             } catch (err) {
                 console.error("Failed to update quantity:", err);

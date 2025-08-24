@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Starbucks Cart</title>
-    <link rel="stylesheet" href="cart.css">
+    <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -35,52 +35,16 @@
         <div id="cart">
             <div class="inner-left" >
                 <ul>
-                    <li><a href="#" id="cart-btn">
+                    <li class="nav-con"><a href="#" id="cart-btn">
                         <img src="../assets/shopping-cart.png" alt="">
                     </a></li>
-                    <li><a href="#" id="history-btn">
+                    <li class="nav-con"><a href="#" id="history-btn">
                         <img src="../assets/history.png" alt="">
                     </a></li>
                 </ul>
             </div>
-            <div id="left">
-                <div class="cart-container-header">
-                    <div class="selected-qty">
-                    <input type="checkbox" checked>
-                    <span>1/4 items selected</span>
-                    </div>
-                    <button id="rm-btn">remove</button>
-                </div>
+            <div id="cart-contents">
 
-                <div id="cart-container" style="width: 95%">
-                </div>
-            </div>
-            <div id="right">
-                <h2>order summary</h2>
-                <div class="coupons">
-                    <div class="coupon-icon"></div>
-                    <input type="text" placeholder="Enter coupon code">
-                </div>
-                <div id="details">
-                    <ul class="pinfo">
-                        <li>Subtotal</li>
-                        <li>₱ <span class="cartTotal">50.99</span></li>
-                    </ul>
-                    <ul class="del-info">
-                        <li>Delivery fee</li>
-                        <li>₱25.00</li>
-                    </ul>
-                    <ul class="couponinfo">
-                        <li>Total Discount</li>
-                        <li>₱<span class="cartDiscount">5.00</span></li>
-                    </ul>
-                </div>
-                <div id="line"></div>
-                <ul class="amt">
-                    <li>Total</li>
-                    <li>₱80.99</li>
-                </ul>
-                <button id="order" onclick="checkout()">place order</button>
             </div>
         </div>
     </div>
@@ -116,10 +80,6 @@
       </div>
     </div>
   </main>
-
-
-  
-    <script type="module" src="./cartMain.js"></script>
-    <script type="module" src="./end-config.js"></script>
+    <script type="module" src="js/switchHtml.js"></script>
 </body>
 </html>
