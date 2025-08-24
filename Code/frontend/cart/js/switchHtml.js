@@ -9,6 +9,11 @@ async function loadCart(htmlPath) {
     await loadHtml(htmlPath);
     await initCartPage(); 
     await import("./end-config.js");
+    changeTitle("My Cart");
+}
+
+function changeTitle(title) {
+    document.getElementById("con-title").textContent = title;
 }
 
 cartBtn.addEventListener("click", async () => {
@@ -17,8 +22,8 @@ cartBtn.addEventListener("click", async () => {
 
 
 hisBtn.addEventListener("click", async () => {
+    changeTitle("My Order History");
     await loadHtml("./components/history.html");
-
 
     // Initialize history after HTML is in the DOM
     const historyService = new HistoryService(API_BASE_PATH);
@@ -28,7 +33,7 @@ hisBtn.addEventListener("click", async () => {
     historyController.init();
 
     await import("../../js/history.js");
-    // Load history scripts here if needed
+    
 });
 
 async function loadHtml(htmlPath) {
