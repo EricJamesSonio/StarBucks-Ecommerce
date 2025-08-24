@@ -1,7 +1,7 @@
 // history.js
 import { API_BASE_PATH, IMAGES_BASE_PATH } from './config.js';
 
-class HistoryService {
+export class HistoryService {
     constructor(apiBasePath) {
         this.apiBasePath = apiBasePath;
     }
@@ -13,7 +13,7 @@ class HistoryService {
     }
 }
 
-class HistoryUI {
+export class HistoryUI {
     constructor(containerId) {
         this.container = document.getElementById(containerId);
     }
@@ -60,7 +60,7 @@ class HistoryUI {
     }
 }
 
-class HistoryController {
+export class HistoryController {
     constructor(service, ui) {
         this.service = service;
         this.ui = ui;
@@ -83,11 +83,3 @@ class HistoryController {
     }
 }
 
-// ===== Initialization =====
-document.addEventListener("DOMContentLoaded", () => {
-    const historyService = new HistoryService(API_BASE_PATH);
-    const historyUI = new HistoryUI("history-container");
-    const historyController = new HistoryController(historyService, historyUI);
-
-    historyController.init();
-});

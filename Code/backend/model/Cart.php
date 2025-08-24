@@ -59,7 +59,7 @@ class Cart {
 
     if ($exists) {
         $upd = $this->con->prepare(
-            "UPDATE cart_item SET quantity = quantity + ? WHERE id = ?"
+            "UPDATE cart_item SET quantity = ? WHERE id = ?"
         );
         $upd->bind_param("ii", $quantity, $exists['id']);
         $ok = $upd->execute();
