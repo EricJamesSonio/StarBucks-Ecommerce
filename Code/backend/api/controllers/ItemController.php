@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__DIR__, 2) . '/model/Item.php';
+require_once dirname(__DIR__, 2) . '/model/Merchandise.php';
 
 function getItems($con) {
     header('Content-Type: application/json');
@@ -165,6 +166,55 @@ function handleSearch($con, callable $searchCallback) {
 function searchItems($con) {
     $itemModel = new Item($con);
     handleSearch($con, fn($query) => $itemModel->searchByName($query));
+}
+
+function searchAll($con) {
+    $itemModel = new Item($con);
+    $merchModel = new Merchandise($con);
+
+    handleSearch($con, function($query) use ($itemModel, $merchModel) {
+        $items = $itemModel->searchByName($query) ?? [];
+        $merch = $merchModel->searchByName($query) ?? [];
+
+        // Normalize fields if necessary
+        $normalizedItems = array_map(function($row){
+            return [
+                'id' => $row['id'] ?? null,
+                'name' => $row['name'] ?? '',
+                'price' => isset($row['price']) ? (float)$row['price'] : 0,
+                'image_url' => $row['image_url'] ?? null,
+                'description' => $row['description'] ?? null,
+                'item_type' => 'starbucksitem',
+            ];
+        }, $items);
+
+        $normalizedMerch = array_map(function($row){
+            return [
+                'id' => $row['id'] ?? null,
+                'name' => $row['name'] ?? '',
+                'price' => isset($row['price']) ? (float)$row['price'] : 0,
+                'image_url' => $row['image_url'] ?? null,
+                'description' => $row['description'] ?? null,
+                'item_type' => 'merchandise',
+            ];
+        }, $merch);
+
+        $merged = array_merge($normalizedItems, $normalizedMerch);
+
+        // Optional: de-duplicate by name
+        $seen = [];
+        $unique = [];
+        foreach ($merged as $row) {
+            $key = mb_strtolower($row['name']);
+            if (!isset($seen[$key])) {
+                $seen[$key] = true;
+                $unique[] = $row;
+            }
+        }
+
+        // Limit results
+        return array_slice($unique, 0, 10);
+    });
 }
 
 function searchInventoryItems($con) {

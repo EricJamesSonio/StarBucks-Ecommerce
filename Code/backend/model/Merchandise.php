@@ -37,4 +37,18 @@ class Merchandise {
         
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function searchByName($query) {
+        $sql = "SELECT id, name, price, image_url, description, category_id, subcategory_id 
+                FROM merchandise 
+                WHERE name LIKE CONCAT('%', ?, '%') 
+                LIMIT 10";
+
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("s", $query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 }

@@ -5,7 +5,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        searchItems($con);
+        searchAll($con);
         break;
     default:
         http_response_code(405);
