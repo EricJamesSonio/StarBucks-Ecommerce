@@ -14,8 +14,14 @@ require_once(__DIR__ . '/model/user_order.php');
 // Ensure product table exists before any FKs referencing it
 require_once(__DIR__ . '/model/starbucksitem.php'); 
 
+// Merchandise table
+require_once(__DIR__ . '/model/merchandise.php');
+
 // Size and item_size (now safe, starbucksitem exists)
 require_once(__DIR__ . '/model/size.php');          // also creates item_size
+
+// Merchandise size table
+require_once(__DIR__ . '/model/merchandise_size.php');
 
 // Tables referencing starbucksitem and/or size
 require_once(__DIR__ . '/model/itemattributes.php');
@@ -48,6 +54,7 @@ require_once(__DIR__ . '/scripts/data/inventory_setting.php');
 
 // 2) seed items (just the products, no sizes yet)
 require_once(__DIR__ . '/scripts/data/starbucksitem.php');
+require_once(__DIR__ . '/scripts/data/merchandise.php');
 require_once(__DIR__ . '/scripts/data/item_attributes_data.php');
 
 // 3) seed sizes lookup  

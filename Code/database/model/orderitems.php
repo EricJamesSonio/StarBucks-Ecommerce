@@ -9,6 +9,7 @@ createTable($con, 'order_item', "
         id INT AUTO_INCREMENT PRIMARY KEY,
         order_id INT NOT NULL,
         item_id INT NOT NULL,
+        item_type ENUM('starbucksitem', 'merchandise') NOT NULL DEFAULT 'starbucksitem',
         size_id INT NULL,
         quantity INT NOT NULL,
         unit_price DECIMAL(10,2) NOT NULL,
@@ -16,7 +17,6 @@ createTable($con, 'order_item', "
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (order_id) REFERENCES `userorder`(id) ON DELETE CASCADE,
-        FOREIGN KEY (item_id) REFERENCES starbucksitem(id) ON DELETE CASCADE,
         FOREIGN KEY (size_id) REFERENCES size(id)
     )
 ");

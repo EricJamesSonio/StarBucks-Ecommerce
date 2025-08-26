@@ -4,7 +4,8 @@ require_once(__DIR__ . '/../function.php');
 
 
 insertData($con, 'category', ['name'], [
-    ['Drink'],
-    ['Sandwich']
+    ['Beverages'],
+    ['Food'],
+    ['Merchandise']
 ]);
 ?>

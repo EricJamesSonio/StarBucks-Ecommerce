@@ -67,10 +67,16 @@ class OrderHistory {
 
     private function fetchOrderItems(int $orderId): array {
     $sql = "
-        SELECT i.name, i.image_url, oi.quantity, oi.unit_price
+        SELECT 
+            COALESCE(si.name, m.name) as name, 
+            COALESCE(si.image_url, m.image_url) as image_url, 
+            oi.quantity, 
+            oi.unit_price,
+            CASE WHEN si.id IS NOT NULL THEN 'starbucksitem' ELSE 'merchandise' END AS item_type
         FROM order_item oi
-        JOIN starbucksitem i ON oi.item_id = i.id
-        WHERE oi.order_id = ?
+        LEFT JOIN starbucksitem si ON oi.item_id = si.id AND (oi.item_type = 'starbucksitem' OR oi.item_type IS NULL)
+        LEFT JOIN merchandise m ON oi.item_id = m.id AND oi.item_type = 'merchandise'
+        WHERE oi.order_id = ? AND (si.id IS NOT NULL OR m.id IS NOT NULL)
     ";
 
     $stmt = $this->db->prepare($sql);
@@ -86,7 +92,8 @@ class OrderHistory {
             "name" => htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8'),
             "qty"  => (int)$item['quantity'],
             "price" => number_format((float)$item['unit_price'], 2),
-            "image_url" => $item['image_url'] ?? null
+            "image_url" => $item['image_url'] ?? null,
+            "item_type" => $item['item_type'] ?? 'starbucksitem'
         ];
     }
 

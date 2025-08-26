@@ -36,21 +36,30 @@ if (empty($cart)) {
     $orderId = $this->con->insert_id;
     $stmt->close();
 
-    // 3. Insert order items (include size_id when available)
+    // 3. Insert order items (include size_id and item_type when available)
     foreach ($cart as $item) {
         $itemId    = $item['item_id'] ?? $item['id'];  // safer
         $qty       = (int)$item['quantity'];
         $unitPrice = $item['price'];  // Use the calculated price from cart (includes size modifier)
         $sizeId    = isset($item['size_id']) ? $item['size_id'] : null; // nullable
+        $itemType  = $item['item_type'] ?? 'starbucksitem'; // Default to starbucksitem for backward compatibility
 
-        $stmt = $this->con->prepare("INSERT INTO order_item (order_id, item_id, size_id, quantity, unit_price) VALUES (?, ?, ?, ?, ?)");
+        // Try with item_type first, fallback to old schema if column doesn't exist
+        $stmt = $this->con->prepare("INSERT INTO order_item (order_id, item_id, item_type, size_id, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
-            return ['success' => false, 'error' => 'Failed to prepare order_item insert.'];
+            // Fallback to old schema without item_type
+            $stmt = $this->con->prepare("INSERT INTO order_item (order_id, item_id, size_id, quantity, unit_price) VALUES (?, ?, ?, ?, ?)");
+            if (!$stmt) {
+                return ['success' => false, 'error' => 'Failed to prepare order_item insert.'];
+            }
+            $stmt->bind_param("iiiid", $orderId, $itemId, $sizeId, $qty, $unitPrice);
+        } else {
+            // New schema with item_type
+            $stmt->bind_param("iisiid", $orderId, $itemId, $itemType, $sizeId, $qty, $unitPrice);
         }
-        // Note: binding null is supported; MySQL will store NULL for size_id
-        $stmt->bind_param("iiiid", $orderId, $itemId, $sizeId, $qty, $unitPrice);
+        
         if (!$stmt->execute()) {
-            return ['success' => false, 'error' => 'Failed to insert order item.'];
+            return ['success' => false, 'error' => 'Failed to insert order item: ' . $stmt->error];
         }
         $stmt->close();
     }

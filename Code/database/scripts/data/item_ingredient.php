@@ -9,16 +9,16 @@ function id($table, $name) {
 }
 
 // Drinks
-$americanoId = id('starbucksitem', 'Iced Americano');
-$latteId     = id('starbucksitem', 'Caffè Latte');
-$matchaId    = id('starbucksitem', 'Matcha Green Tea Latte');
-$refresherId = id('starbucksitem', 'Very Berry Hibiscus Refresher');
-$purpleId    = id('starbucksitem', 'Ice Starbucks Purple Cream');
+$americanoId = id('starbucksitem', 'Cold Brew');
+$latteId     = id('starbucksitem', 'Chai Latte');
+$matchaId    = id('starbucksitem', 'Matcha Latte');
+$refresherId = id('starbucksitem', 'Summer Berry Lemonade');
+$purpleId    = id('starbucksitem', 'Strawberry Açaí Lemonade Refresher');
 
 // Sandwiches
-$eggSandId     = id('starbucksitem', 'Egg Sandwich');
-$baconSandId   = id('starbucksitem', 'Bacon & Cheese Sandwich');
-$cheddarSandId = id('starbucksitem', 'Cheddar Melt Sandwich');
+$eggSandId     = id('starbucksitem', 'Egg, Pesto & Mozzarella Sandwich');
+$baconSandId   = id('starbucksitem', 'Bacon, Gouda & Egg Sandwich');
+$cheddarSandId = id('starbucksitem', 'Crispy Grilled Cheese on Sourdough');
 $doubleId      = id('starbucksitem', 'Double-Smoked Bacon, Cheddar & Egg Sandwich');
 $turkeyId      = id('starbucksitem', 'Turkey Bacon, Cheddar & Egg White Sandwich');
 

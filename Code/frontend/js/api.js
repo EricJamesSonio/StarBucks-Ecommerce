@@ -37,6 +37,16 @@ class CategoryService {
         const res = await fetch(`${this.apiBasePath}/items?subcategory_id=${subcategoryId}`, { credentials: 'include' });
         return res.json();
     }
+
+    async fetchMerchandiseBySubcategory(subcategoryId) {
+        const res = await fetch(`${this.apiBasePath}/merchandise?subcategory_id=${subcategoryId}`, { credentials: 'include' });
+        return res.json();
+    }
+
+    async fetchCategories() {
+        const res = await fetch(`${this.apiBasePath}/categories`, { credentials: 'include' });
+        return res.json();
+    }
 }
 
 // =========================
@@ -124,7 +134,12 @@ class CategoryController {
     }
 
     async loadTopSelling(categoryName) {
-        const catId = categoryName === 'Drink' ? 1 : 2;
+        // Get category ID from database
+        const catId = await this.getCategoryIdByName(categoryName);
+        if (!catId) {
+            console.error('Category not found:', categoryName);
+            return;
+        }
 
         document.getElementById('categorySelect')?.style.setProperty('display', 'none');
         document.getElementById('backButton')?.style.setProperty('display', 'block');
@@ -144,7 +159,13 @@ class CategoryController {
         document.getElementById('backButton').style.display = 'block';
         document.getElementById('subcategorySelect').style.display = 'none';
 
-        const catId = categoryName === 'Drink' ? 1 : 2;
+        // Get category ID from database
+        const catId = await this.getCategoryIdByName(categoryName);
+        if (!catId) {
+            console.error('Category not found:', categoryName);
+            return;
+        }
+        
         this.loadSubcategories(catId);
     }
 
@@ -153,6 +174,10 @@ class CategoryController {
         try {
             const result = await this.service.fetchSubcategories(categoryId);
             if (!result.status) throw new Error('No subcategories found');
+            
+            // Store category ID to determine which API to use later
+            this.currentCategoryId = categoryId;
+            
             this.ui.displaySubcategories(result.data, (subcatId) => this.loadItemsBySubcategory(subcatId));
         } catch (err) {
             console.error('Could not load subcategories:', err);
@@ -163,12 +188,36 @@ class CategoryController {
     async loadItemsBySubcategory(subcategoryId) {
         document.getElementById('itemList').innerHTML = 'Loading items...';
         try {
-            const result = await this.service.fetchItemsBySubcategory(subcategoryId);
+            let result;
+            
+            // Check if current category is Merchandise (category ID 3) to use correct API
+            const categories = await this.service.fetchCategories();
+            const merchandiseCategory = categories.data?.find(cat => cat.name === 'Merchandise');
+            
+            if (this.currentCategoryId === merchandiseCategory?.id) {
+                result = await this.service.fetchMerchandiseBySubcategory(subcategoryId);
+            } else {
+                result = await this.service.fetchItemsBySubcategory(subcategoryId);
+            }
+            
             if (!result.status) throw new Error('No items found');
             this.ui.displayItems(result.data);
         } catch (err) {
             console.error('Could not load items for subcategory:', err);
             this.ui.showError('itemList', 'Failed to load items');
+        }
+    }
+
+    async getCategoryIdByName(categoryName) {
+        try {
+            const result = await this.service.fetchCategories();
+            if (!result.status) throw new Error('No categories found');
+            
+            const category = result.data.find(cat => cat.name === categoryName);
+            return category ? category.id : null;
+        } catch (err) {
+            console.error('Could not fetch categories:', err);
+            return null;
         }
     }
 }

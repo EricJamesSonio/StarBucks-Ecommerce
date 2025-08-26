@@ -96,8 +96,9 @@ switch ($route) {
         require __DIR__ . '/routes/ingredients.php';
         break;
 
-
-
+    case 'merchandise':
+        require __DIR__ . '/routes/merchandise.php';
+        break;
 
     default:
         http_response_code(404);

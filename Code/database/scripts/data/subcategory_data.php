@@ -4,15 +4,27 @@ require_once(__DIR__ . '/../function.php');
 
 
 // Get category IDs
-$drinkId = $con->query("SELECT id FROM category WHERE name = 'Drink'")->fetch_assoc()['id'];
-$sandwichId = $con->query("SELECT id FROM category WHERE name = 'Sandwich'")->fetch_assoc()['id'];
+$beveragesId = $con->query("SELECT id FROM category WHERE name = 'Beverages'")->fetch_assoc()['id'];
+$foodId = $con->query("SELECT id FROM category WHERE name = 'Food'")->fetch_assoc()['id'];
+$merchandiseId = $con->query("SELECT id FROM category WHERE name = 'Merchandise'")->fetch_assoc()['id'];
 
 insertData($con, 'subcategory', ['category_id', 'name'], [
-    [$drinkId, 'Espresso'],
-    [$drinkId, 'Tea'],
-    [$drinkId, 'Fruity'],
-    [$sandwichId, 'Egg'],
-    [$sandwichId, 'Bacon'],
-    [$sandwichId, 'Cheddar']
-],); 
+    // Beverages subcategories
+    [$beveragesId, 'Hot Coffee'],
+    [$beveragesId, 'Cold Coffee'],
+    [$beveragesId, 'Frappuccino'],
+    [$beveragesId, 'Tea Latte'],
+    [$beveragesId, 'Refreshers'],
+    
+    // Food subcategories
+    [$foodId, 'Hot Breakfast'],
+    [$foodId, 'Lunch Sandwiches'],
+    [$foodId, 'Bakery'],
+    [$foodId, 'Salads'],
+    [$foodId, 'Snacks'],
+    
+    // Merchandise subcategories
+    [$merchandiseId, 'Mugs'],
+    [$merchandiseId, 'Cold Cups']
+]); 
 ?>

@@ -16,15 +16,26 @@ class PaymentController {
     }
 
     public function processPayment() {
-        $data = json_decode(file_get_contents('php://input'), true);
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
 
-        $paymentType = $data['type'] ?? '';
-        $amountPaid  = $data['amountPaid'] ?? 0;
-        $total       = $data['total'] ?? 0;
-        $discount    = $data['discount'] ?? 0;
-        $finalAmount = $data['finalAmount'] ?? 0;
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception("Invalid JSON payload");
+            }
 
-        $result = $this->payment->saveReceipt($paymentType, $amountPaid, $total, $discount, $finalAmount);
+            $paymentType = $data['type'] ?? '';
+            $amountPaid  = $data['amountPaid'] ?? 0;
+            $total       = $data['total'] ?? 0;
+            $discount    = $data['discount'] ?? 0;
+            $finalAmount = $data['finalAmount'] ?? 0;
+
+            $result = $this->payment->saveReceipt($paymentType, $amountPaid, $total, $discount, $finalAmount);
+        } catch (Exception $e) {
+            error_log("Payment processing exception: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(["message" => "Payment failed.", "error" => $e->getMessage()]);
+            return;
+        }
 
         if (is_array($result) && $result['success']) {
             echo json_encode([
@@ -36,6 +47,7 @@ class PaymentController {
         } else {
             http_response_code(500);
             $errorMsg = is_array($result) && isset($result['error']) ? $result['error'] : "Payment failed.";
+            error_log("Payment error: " . print_r($result, true));
             echo json_encode(["message" => "Payment failed.", "error" => $errorMsg]);
         }
     }

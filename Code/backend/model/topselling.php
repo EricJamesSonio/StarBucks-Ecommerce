@@ -10,15 +10,18 @@ class TopSelling {
     public function fetchTopSellingItems() {
         $sql = "
             SELECT 
-                si.id,
-                si.name,
-                si.price,
-                si.category_id,
-                si.image_url,              -- ✅ include image
-                SUM(oi.quantity) AS total_sold
+                COALESCE(si.id, m.id) as id,
+                COALESCE(si.name, m.name) as name,
+                COALESCE(si.price, m.price) as price,
+                COALESCE(si.category_id, m.category_id) as category_id,
+                COALESCE(si.image_url, m.image_url) as image_url,
+                SUM(oi.quantity) AS total_sold,
+                CASE WHEN si.id IS NOT NULL THEN 'starbucksitem' ELSE 'merchandise' END AS item_type
             FROM order_item oi
-            JOIN starbucksitem si ON oi.item_id = si.id
-            GROUP BY si.id, si.name, si.price, si.category_id, si.image_url
+            LEFT JOIN starbucksitem si ON oi.item_id = si.id AND oi.item_type = 'starbucksitem'
+            LEFT JOIN merchandise m ON oi.item_id = m.id AND oi.item_type = 'merchandise'
+            WHERE (si.id IS NOT NULL OR m.id IS NOT NULL)
+            GROUP BY COALESCE(si.id, m.id), COALESCE(si.name, m.name), COALESCE(si.price, m.price), COALESCE(si.category_id, m.category_id), COALESCE(si.image_url, m.image_url), item_type
             ORDER BY total_sold DESC
             LIMIT 10
         ";

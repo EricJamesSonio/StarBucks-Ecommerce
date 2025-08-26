@@ -71,6 +71,7 @@ class CartController {
         $itemId = filter_var($payload['item_id'] ?? null, FILTER_VALIDATE_INT);
         $sizeId = isset($payload['size_id']) ? filter_var($payload['size_id'], FILTER_VALIDATE_INT) : null;
         $quantity = filter_var($payload['quantity'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $itemType = $payload['item_type'] ?? 'starbucksitem'; // Default to starbucksitem for backward compatibility
 
         if (!$itemId || !$quantity) {
             $this->respond(["error" => "Missing item_id or quantity"], 400);
@@ -84,7 +85,7 @@ class CartController {
 
         // Logged-in or guest DB cart
         if ($this->userId !== null || $this->guestToken !== null) {
-            $ok = $this->cartModel->addOrUpdateCartItem($this->userId, $this->guestToken, $itemId, $sizeId, $quantity);
+            $ok = $this->cartModel->addOrUpdateCartItem($this->userId, $this->guestToken, $itemId, $sizeId, $quantity, $itemType);
             if ($ok) {
                 $this->respond(["success" => true, "message" => "Item added to cart"]);
             } else {

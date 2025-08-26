@@ -70,8 +70,12 @@ class Modal {
 
         const guestToken = await this.initGuestIfNeeded();
 
+        // Determine item type based on the current item's category or other properties
+        const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise' ? 'merchandise' : 'starbucksitem';
+
         const payload = {
             item_id: this.currentItem.id,
+            item_type: itemType,
             size_id: sizeId,
             quantity: qty,
             guest_token: guestToken
