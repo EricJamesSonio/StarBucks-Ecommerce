@@ -21,6 +21,7 @@
       <input type="number" id="itemPrice" placeholder="Price" step="0.01" min="0" required>
       <select id="categorySelect" required></select>
       <select id="subcategorySelect" required></select>
+      <input type="text" id="itemImageUrl" placeholder="Image URL (optional)">
       <textarea id="itemDescription" placeholder="Description"></textarea>
       <button type="submit">Add Item</button>
     </form>
@@ -36,6 +37,44 @@
   <section id="itemListSection">
     <h2>Existing Items</h2>
     <table id="itemTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Subcategory</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <hr>
+
+  <!-- Add Merchandise Form -->
+  <section id="addMerchSection">
+    <h2>Add New Merchandise</h2>
+    <form id="addMerchForm">
+      <input type="text" id="merchName" placeholder="Merchandise Name" required>
+      <input type="number" id="merchPrice" placeholder="Price" step="0.01" min="0" required>
+      <select id="merchSubcategorySelect" required></select>
+      <input type="text" id="merchImageUrl" placeholder="Image URL (optional)">
+      <textarea id="merchDescription" placeholder="Description"></textarea>
+      <button type="submit">Add Merchandise</button>
+    </form>
+  </section>
+
+  <!-- Merchandise Search -->
+  <div class="search-container">
+    <input type="text" id="merchSearchInput" placeholder="Search merchandise...">
+  </div>
+
+  <!-- Merchandise List -->
+  <section id="merchListSection">
+    <h2>Existing Merchandise</h2>
+    <table id="merchTable">
       <thead>
         <tr>
           <th>Name</th>

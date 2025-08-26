@@ -51,4 +51,27 @@ class Merchandise {
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function addMerchandise($name, $price, $category_id, $subcategory_id, $description, $image_url = null) {
+        $sql = "INSERT INTO merchandise (name, price, category_id, subcategory_id, description, image_url)
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("sdiiss", $name, $price, $category_id, $subcategory_id, $description, $image_url);
+        $ok = $stmt->execute();
+        return [ 'status' => $ok, 'id' => $ok ? $stmt->insert_id : null ];
+    }
+
+    public function updateMerchandise($id, $name, $price, $description) {
+        $sql = "UPDATE merchandise SET name = ?, price = ?, description = ? WHERE id = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("sdsi", $name, $price, $description, $id);
+        return $stmt->execute();
+    }
+
+    public function deleteMerchandise($id) {
+        $sql = "DELETE FROM merchandise WHERE id = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
 }
