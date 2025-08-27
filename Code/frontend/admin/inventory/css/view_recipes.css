@@ -113,9 +113,10 @@ button {
   border-radius: 8px;
   padding: 15px;
   background: #fafafa;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
   position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+
 }
 
 .recipe-card:hover {
