@@ -24,9 +24,10 @@
   <main>
     <section id="categorySelect">
       <h2>Choose a Category</h2>
-      <button onclick="loadCategory('Food')">🍽️ Food</button>
-      <button onclick="loadCategory('Beverages')">🥤 Beverages</button>
-      <button onclick="loadCategory('Merchandise')">🛍️ Merchandise</button>
+<button onclick="window.menu.setCategory(2); loadCategory('Food')">🍽️ Food</button>
+<button onclick="window.menu.setCategory(1); loadCategory('Beverages')">🥤 Beverages</button>
+<button onclick="window.menu.setCategory(3); loadCategory('Merchandise')">🛍️ Merchandise</button>
+
     </section>
 
   <section id="subcategorySelect" style="display:none;">
@@ -35,7 +36,8 @@
 </section>
 
 
-    <button id="backButton" onclick="showCategories()" style="display:none">🔙 Back</button>
+    <button id="backButton" onclick="window.menu.resetCategory(); showCategories()" style="display:none">🔙 Back</button>
+
 
     <section id="itemList"></section>
   </main>
