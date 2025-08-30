@@ -16,21 +16,23 @@ class MenuManager {
   }
 
   async setCategory(categoryId) {
-    this.currentCategoryId = categoryId; // set when user clicks a category
-    console.log("Selected category:", categoryId);
+  this.currentCategoryId = categoryId; 
+  console.log("Selected category:", categoryId);
 
-    try {
-      const res = await fetch(`${API_BASE_PATH}/items?category_id=${categoryId}`, {
-        credentials: 'include'
-      });
-      const json = await res.json();
-      if (json.status) {
-        this.displayItemsForSearch(json.data);
-      }
-    } catch (err) {
-      console.error('Error fetching category items:', err);
+  // Fetch items but don't automatically display them
+  try {
+    const res = await fetch(`${API_BASE_PATH}/items?category_id=${categoryId}`, {
+      credentials: 'include'
+    });
+    const json = await res.json();
+    if (json.status) {
+      this.currentCategoryItems = json.data; // store for search
+      // Do NOT call displayItemsForSearch yet
     }
+  } catch (err) {
+    console.error('Error fetching category items:', err);
   }
+}
 
   getCurrentCategoryId() {
     return this.currentCategoryId || 0;
