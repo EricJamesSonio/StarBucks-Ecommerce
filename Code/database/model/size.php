@@ -9,8 +9,7 @@ createTable($con, 'size', "
         name            VARCHAR(50)    NOT NULL UNIQUE,       -- e.g. Tall, Grande, Venti
         price_modifier  DECIMAL(10,2)  NOT NULL DEFAULT 0.00,  -- surcharge over base price
         created_at      TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
-        updated_at      TIMESTAMP      DEFAULT CURRENT_TIMESTAMP 
-                          ON UPDATE CURRENT_TIMESTAMP
+        updated_at      TIMESTAMP      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
 ");
 

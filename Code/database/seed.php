@@ -57,11 +57,14 @@ require_once(__DIR__ . '/scripts/data/starbucksitem.php');
 require_once(__DIR__ . '/scripts/data/merchandise.php');
 require_once(__DIR__ . '/scripts/data/item_attributes_data.php');
 
-// 3) seed sizes lookup  
+// 3) seed sizes lookup (Default, Tall/Grande/Venti for beverages, Small/Medium/Large for merchandise)
 require_once(__DIR__ . '/scripts/data/size.php');
 
-// 4) map each drink → all sizes  
+// 4) map beverages → Tall/Grande/Venti sizes, food → Default size
 require_once(__DIR__ . '/scripts/data/item_size.php');
+
+// 4.5) map merchandise → Small/Medium/Large sizes
+require_once(__DIR__ . '/scripts/data/merchandise_size.php');
 
 // 5) seed ingredients
 require_once(__DIR__ . '/scripts/data/ingredient.php');   // ✅

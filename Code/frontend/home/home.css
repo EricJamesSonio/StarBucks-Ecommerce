@@ -6,69 +6,80 @@
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
-
 }
+
 :root {
     --main-color-green: #00bb68;
     --main-color-darkgreen: #00361f;
     --main-color-lightgreen: #006c3d;
     --sec-color-grey: rgb(207, 208, 206);
     --unique-color-yellow: #b9d401;
-    --big-font-size: 4.06rem;
-    --biggest-font-size: 8rem;
+    --big-font-size: clamp(2rem, 5vw, 4.06rem);
+    --biggest-font-size: clamp(3rem, 8vw, 8rem);
 }
+
 section {
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     overflow-y: hidden;
 }
+
 body, html {
     overflow-x: hidden;
 }
+
 /* HOME */
 /* Home-general */
 #home {
     display: flex;
     flex-direction: row;
-
 }
 
 .icon {
     filter: invert(1) brightness(1000%);
     height: 1.5rem;
     width: 1.5rem;
-
-    position:relative;
+    position: relative;
     top: 2px;
+    z-index: 2;
 }
+
 .icon:hover {
     filter: blur(.9px) invert(1) brightness(1000%);
     cursor: pointer;
+    z-index: 2;
 }
-button {
+
+#head-nav button {
     border-radius: 20px;
     background-color: rgb(240, 240, 240);
     padding: 0.3rem 1.5rem;
+    height: auto;
+    width: auto;
     font-weight: 700;
-    font-size: .8rem;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
     color: var(--main-color-darkgreen);
     text-transform: uppercase;
+    z-index: 3;
+    border: none;
 }
-button:hover {
+
+#head-nav button:hover {
     background-color: var(--main-color-lightgreen);
     color: rgb(243, 243, 243);
-    padding: 0.3rem 1.5rem;
     cursor: pointer;
+    z-index: 3;
 }
 
 /* containers */
 #left {
     background-color: var(--main-color-darkgreen);
     width: 70vw;
-    padding: 0 1rem 0 8rem;
+    padding: 0 clamp(1rem, 5vw, 8rem);
     display: flex;
     flex-direction: column;
 }
+
 #right {
     background-color: var(--sec-color-grey);
     width: 30vw;
@@ -77,19 +88,20 @@ button:hover {
 
 /* left-contents-top */
 #head-nav {
-
     display: flex;
     align-items: center;
     justify-content: space-between;
     list-style: none;
     height: 15%;
     width: 100%;
-
-}
+    z-index: 5;
+    flex-wrap: wrap;
+    gap: 1rem;
+}   
 
 .logo {
-    height: 5rem;
-    width: 5rem;
+    height: clamp(3rem, 8vw, 5rem);
+    width: clamp(3rem, 8vw, 5rem);
     filter: invert(1) brightness(1000%);
 }
 
@@ -98,91 +110,102 @@ button:hover {
     padding: .6rem 1rem;
     border-radius: 20px;
 }
-.nav-list nav a{
-    font-size: .9rem;
+
+.nav-list nav a {
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     text-transform: uppercase;
     font-weight: 700;
     text-decoration: none;
     color: var(--main-color-darkgreen);
     padding: .5rem 1.5rem;
     border-radius: 20px;
+    display: inline-block;
 }
-.nav-list nav a:hover{
+
+.nav-list nav a:hover {
     background-color: var(--main-color-darkgreen);
     color: white;
     font-weight: 600;
-    background-color: #00361f;
 }
-#icon-list{ 
+
+#icon-list { 
     display: flex;
     flex-direction: row;
     align-items: center;
-    list-style: None;
+    list-style: none;
     gap: .6rem;
 }
 
 /* left-contents-mid */
 #contents {
-    margin: 8rem 0;
+    margin: clamp(2rem, 8vh, 8rem) 0;
 }
-#intro1{
-    font-size: 2rem;
+
+#intro1 {
+    font-size: clamp(1.2rem, 4vw, 2rem);
     color: white;
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
-#intro2 , #intro3{
+
+#intro2, #intro3 {
     text-transform: uppercase;
-    font-size: 6rem;
+    font-size: clamp(2.5rem, 12vw, 6rem);
     font-weight: 800;
     color: white;
     line-height: 100%;
 }
+
 #intro3 {
-    color: var(--main-color-green)
+    color: var(--main-color-green);
 }
+
 #CoffeeName {
-    margin-top: 10vh;
-    font-size: 1.5rem ;
+    margin-top: clamp(2rem, 10vh, 10vh);
+    font-size: clamp(1rem, 3vw, 1.5rem);
     font-weight: 600;
     text-transform: uppercase;
     color: white;
     display: inline-block;
 }
+
 #description {
     padding-top: 1vh;
-    width: 50%;
+    width: min(100%, 50ch);
     font-weight: normal;
     letter-spacing: 1px;
-    font-size: .8rem;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
     padding-bottom: 2vh;
     font-style: italic;
-    color: white
+    color: white;
 }
+
 #rating {
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 3vw, 1.5rem);
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--unique-color-yellow);
     display: inline-block;
-    margin-left: 2rem;
-    
+    margin-left: clamp(0.5rem, 4vw, 2rem);
 }   
+
 .Cart {
     height: 2rem;
-    width: 12rem;
+    width: clamp(8rem, 20vw, 12rem);
 }
-
 
 /* right-contents */
 #product {
     position: absolute;
-    height: 80vh;
+    height: clamp(40vh, 80vh, 80vh);
     top: 7vh;
-    right: 20vw;
+    right: clamp(5vw, 20vw, 20vw);
     filter: drop-shadow(30px 0px 15px rgb(0, 0, 0, .5));
     transform: rotate(10deg);
+    z-index: 0;
+    pointer-events: none; /* Prevents image from blocking clicks */
 }
+
 #name-container { 
     height: 100%;
     width: 50%;
@@ -191,26 +214,25 @@ button:hover {
     flex-direction: row;
     padding: 1rem 0;
     margin-right: 3vw;
-
 }
+
 .name {
     writing-mode: sideways-lr;
     display: block;
-    font-size: 8rem;
+    font-size: clamp(3rem, 12vw, 8rem);
     text-transform: uppercase;
     font-weight: 900;
-
 }
+
 .first {
     margin-bottom: auto;
 }
+
 .second {
     -webkit-text-stroke: rgb(0, 0, 0) 3px;
     color: rgb(0, 0, 0, .0);
     line-height: 2vw;
 }
-
-
 
 /* MENU */
 #menu {
@@ -218,19 +240,19 @@ button:hover {
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-
     background-color: var(--main-color-darkgreen);
+    padding: 2rem 0;
 }
+
 #menu nav {
-    width: inherit;
+    width: 100%;
     height: 30vh;
-
     display: flex;
-
 }
+
 #menu nav ul {
-    width: 65%;
-    height: 9vh;
+    width: min(90%, 65%);
+    height: clamp(6vh, 9vh, 9vh);
     background-color: white;
     border-radius: 70px;
     margin: auto;
@@ -238,65 +260,72 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
-#menu nav ul li{
-    width: 14vw;
+#menu nav ul li {
+    width: clamp(80px, 14vw, 14vw);
     height: inherit;
     display: flex;
     align-items: center;
+    min-width: 80px;
 }
+
 #menu nav ul li:hover {
     background-color: var(--main-color-darkgreen);
     border-radius: inherit;
     box-shadow: 8px 0px 8px rgb(0, 0, 0, .7);
-    
-}  /*true hover */
-
-#menu nav ul li:hover div a{
-    color: white
 }
 
-#menu nav ul li div{ /* divider */
+#menu nav ul li:hover div a {
+    color: white;
+}
+
+#menu nav ul li div {
     width: inherit;
     height: 3vh;
     border-right: solid 2px rgba(7, 7, 7, 0.5);
     display: flex;
 }
-#menu nav ul li a{
+
+#menu nav ul li a {
     text-decoration: none;
     color: black;
     font-weight: 700;
-    font-size: large;
+    font-size: clamp(0.7rem, 2.5vw, 1rem);
     margin: auto;
     text-transform: uppercase;
 }
 
 #menu #foodSelection {
-    width: inherit;
+    width: 100%;
     height: 70vh;
-    width: inherit;
     display: flex;
     justify-content: center;
+    padding: 0 1rem;
 }
-#menu #foodSelection #box{
+
+#menu #foodSelection #box {
     display: flex;
     list-style: none;
     align-items: center;
-    width: inherit;
+    width: 100%;
     height: inherit;
-    gap: 5rem;
+    gap: clamp(1rem, 5vw, 5rem);
     justify-content: center;
-    
-}
-#menu #foodSelection ul .prodInfo {
-    background-color: #ffffff;
-    height: 36vh;
-    width: 12vw;
-    border-radius: 20px;
-    filter: drop-shadow(15px 10px 5px rgb(0, 0, 0, .4));
+    flex-wrap: wrap;
 }
 
+#menu #foodSelection ul .prodInfo {
+    background-color: #ffffff;
+    height: clamp(250px, 36vh, 36vh);
+    width: clamp(150px, 12vw, 12vw);
+    min-width: 150px;
+    border-radius: 20px;
+    filter: drop-shadow(15px 10px 5px rgb(0, 0, 0, .4));
+    transition: all 0.3s ease;
+}
 
 #menu #foodSelection .contents {
     position: relative;
@@ -304,19 +333,26 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 0.5rem;
+    z-index: 10; /* Ensure content is above images */
 }
-#menu #foodSelection  h2 {
+
+#menu #foodSelection h2 {
     text-transform: uppercase;
     margin-top: 15px;
     margin-bottom: 20px;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    text-align: center;
 }
+
 #menu #foodSelection .ingInfo {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 60%;
+    width: 90%;
     padding-bottom: 1rem;
 }
+
 #menu #foodSelection .ingInfo ul {
     list-style: none;
     display: flex-block;
@@ -325,56 +361,71 @@ button:hover {
     height: 90%;
     gap: 10px;
 }
-#menu #foodSelection #ingName li{
+
+#menu #foodSelection #ingName li {
     margin-bottom: 10px;
 }
-#menu #foodSelection .ingInfo ul li, a{
-  font-size: .8rem;
-  text-transform: uppercase;
-  font-weight: 500;
+
+#menu #foodSelection .ingInfo ul li, a {
+    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+    text-transform: uppercase;
+    font-weight: 500;
 } 
 
-#menu #foodSelection #ingOpt{
+#menu #foodSelection #ingOpt {
     display: flex;
     justify-content: flex-end;
 }
 
-#menu #foodSelection ul li img{
-    height: 27vh;
-    width: 15vh;
+#menu #foodSelection ul li img {
+    height: clamp(150px, 27vh, 27vh);
+    width: clamp(80px, 15vh, 15vh);
     filter: drop-shadow(0px 3px 5px rgb(0,0,0, .7));
+    object-fit: cover;
+    z-index: 1; /* Keep images below interactive content */
+    position: relative;
 }
 
 #menu #foodSelection button {
     background-color: var(--main-color-lightgreen);
     color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+    cursor: pointer;
+    position: relative;
+    z-index: 20; /* Ensure buttons are always clickable */
+    margin-top: 0.5rem;
 }
 
 #menu #foodSelection .prodInfo:hover {
     background-color: var(--main-color-lightgreen);
-    height: 39vh;
-    width: 14vw;
+    height: clamp(270px, 39vh, 39vh);
+    width: clamp(170px, 14vw, 14vw);
     cursor: pointer;
 }
 
-
 /* menu-hoverItems */
 #menu #foodSelection .prodInfo:hover h2 {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
     color: white;
 }
-#menu #foodSelection .prodInfo:hover #ingName li{
+
+#menu #foodSelection .prodInfo:hover #ingName li {
     color: white;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1rem);
 }
-#menu #foodSelection .prodInfo:hover #ingOpt a{
+
+#menu #foodSelection .prodInfo:hover #ingOpt a {
     color: rgb(0, 214, 139);
     font-weight: 500;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1rem);
 }
+
 #menu #foodSelection .prodInfo:hover .ingInfo {
     gap: 4vw;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1rem);
 }
 
 #menu #foodSelection .prodInfo:hover button {
@@ -382,10 +433,9 @@ button:hover {
     top: 10px;
     background-color: white;
     color: var(--main-color-lightgreen);
-    font-weight:700;
+    font-weight: 700;
     text-transform: uppercase;
 }
-
 
 /* unmatched */
 #unmatched {
@@ -394,31 +444,38 @@ button:hover {
     justify-content: center;
     position: relative;
     background-color: var(--main-color-darkgreen);
+    padding: 2rem;
 }
-#unmatched h1{
-    font-size: 7rem;
+
+#unmatched h1 {
+    font-size: clamp(3rem, 12vw, 7rem);
     line-height: 1;
     text-transform: uppercase;
     font-weight: 900;
-    color: white; 
-    
+    color: white;
+    text-align: center;
 }
+
 #unmatched #quote {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    top: 150px;
+    top: clamp(100px, 20vh, 150px);
 }
+
 #unmatched img {
     z-index: 2;
     filter: drop-shadow(5px 5px 10px black);
+    max-width: 100%;
+    height: auto;
 }
-#unmatched #line{
+
+#unmatched #line {
     z-index: 3;
     background-color: #006c3d;
     width: 120vw;
-    height: 9vh;
+    height: clamp(6vh, 9vh, 9vh);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -426,47 +483,357 @@ button:hover {
     gap: 10vw;
     transform: rotate(-15deg);
     position: absolute;
-    bottom:  25vh;
+    bottom: 25vh;
     filter: drop-shadow(5px 5px 5px black);
 }
+
 #unmatched #line span {
-    font-size: 3rem;
+    font-size: clamp(1.5rem, 5vw, 3rem);
     font-weight: 900;
     text-transform: uppercase;
     color: white;
-    animation: marquee 10s linear infinite; 
+    animation: marquee 10s linear infinite;
+    white-space: nowrap;
 }
+
 @keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
 }
+
 #unmatched p {
     position: absolute;
-}
-#unmatched p {
     color: white;
-    font-size: .7rem;
+    font-size: clamp(0.6rem, 1.5vw, 0.7rem);
 }
-.word-con {
-    width: 10rem;
-    height: 10rem;
 
+.word-con {
+    width: clamp(6rem, 15vw, 10rem);
+    height: clamp(6rem, 15vw, 10rem);
 }
 
 .quote {
     color: white;
-    font-size: .8rem;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
     align-items: center;
     text-align: center;
+    max-width: 200px;
 }
+
 .first-text {
     position: absolute;
     top: 60vh;
-    left: 30vw;
-
+    left: clamp(5vw, 30vw, 30vw);
 }
+
 .sec {
     position: absolute;
     top: 80vh;
-    right: 10vw;
+    right: clamp(5vw, 10vw, 10vw);
+}
+
+/* RESPONSIVE BREAKPOINTS */
+
+/* Tablet styles */
+@media screen and (max-width: 1024px) {
+    #home {
+        flex-direction: column;
+    }
+    
+    #left {
+        width: 100vw;
+        padding: 0 2rem;
+    }
+    
+    #right {
+        width: 100vw;
+        height: 50vh;
+        position: relative;
+    }
+    
+    #product {
+        position: relative;
+        top: 2vh;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) rotate(0deg);
+        height: 40vh;
+        z-index: 1; /* Lower z-index on tablet */
+        pointer-events: none;
+    }
+    
+    #name-container {
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+    }
+    
+    .name {
+        writing-mode: horizontal-tb;
+        font-size: clamp(2rem, 8vw, 4rem);
+    }
+    
+    #menu nav ul {
+        width: 95%;
+        flex-wrap: wrap;
+        height: auto;
+        padding: 1rem 0;
+    }
+    
+    #menu nav ul li {
+        width: auto;
+        min-width: 100px;
+        flex: 1;
+    }
+    
+    #menu #foodSelection #box {
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+    
+    #menu #foodSelection ul .prodInfo {
+        width: clamp(200px, 40vw, 300px);
+        height: clamp(300px, 40vh, 400px);
+    }
+}
+
+/* Mobile styles */
+@media screen and (max-width: 768px) {
+    section {
+        min-height: auto;
+    }
+    
+    #home {
+        min-height: 100vh;
+    }
+    
+    #head-nav {
+        flex-direction: column;
+        gap: 1rem;
+        height: auto;
+        padding: 1rem 0;
+        z-index: 100; /* Ensure navigation is always on top */
+        position: relative;
+    }
+    
+    .nav-list nav {
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .nav-list nav a {
+        padding: 0.3rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    #contents {
+        margin: 2rem 0;
+        text-align: center;
+    }
+    
+    #intro1 {
+        font-size: 1.2rem;
+    }
+    
+    #intro2, #intro3 {
+        font-size: 2.5rem;
+    }
+    
+    #description {
+        width: 100%;
+        text-align: left;
+    }
+    
+    #rating {
+        margin-left: 0;
+        margin-top: 1rem;
+        display: block;
+    }
+    
+    #right {
+        height: 40vh;
+    }
+    
+    #product {
+        height: 30vh;
+        z-index: 1;
+        pointer-events: none;
+        max-width: 80vw; /* Prevent image from taking full width */
+    }
+    
+    .name {
+        font-size: 2rem;
+    }
+    
+    #menu {
+        padding: 1rem 0;
+    }
+    
+    #menu nav {
+        height: auto;
+    }
+    
+    #menu nav ul {
+        flex-direction: column;
+        height: auto;
+        border-radius: 20px;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+    
+    #menu nav ul li {
+        width: 100%;
+        height: 40px;
+        justify-content: center;
+    }
+    
+    #menu nav ul li div {
+        border-right: none;
+        border-bottom: solid 1px rgba(7, 7, 7, 0.3);
+        height: 1px;
+        width: 80%;
+    }
+    
+    #menu nav ul li:last-child div {
+        border-bottom: none;
+    }
+    
+    #menu #foodSelection {
+        height: auto;
+        padding: 2rem 1rem;
+    }
+    
+    #menu #foodSelection #box {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1rem; /* Add padding to prevent edge overlap */
+    }
+    
+    #menu #foodSelection ul .prodInfo {
+        width: 250px;
+        height: 350px;
+        max-width: 90vw;
+        margin: 0 auto; /* Center the cards */
+        position: relative;
+        z-index: 10;
+    }
+    
+    #menu #foodSelection .prodInfo:hover {
+        width: 270px;
+        height: 380px;
+        max-width: 95vw;
+    }
+    
+    #unmatched {
+        padding: 1rem;
+    }
+    
+    #unmatched h1 {
+        font-size: 3rem;
+    }
+    
+    #unmatched #quote {
+        top: 80px;
+    }
+    
+    #unmatched #line {
+        height: 6vh;
+        bottom: 15vh;
+    }
+    
+    .first-text {
+        top: 50vh;
+        left: 5vw;
+    }
+    
+    .sec {
+        top: 70vh;
+        right: 5vw;
+    }
+}
+
+/* Small mobile styles */
+@media screen and (max-width: 480px) {
+    #left {
+        padding: 0 1rem;
+        z-index: 10; /* Ensure left content is above images */
+        position: relative;
+    }
+    
+    .logo {
+        height: 3rem;
+        width: 3rem;
+    }
+    
+    #intro2, #intro3 {
+        font-size: 2rem;
+    }
+    
+    #CoffeeName {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+    }
+    
+    #description {
+        font-size: 0.8rem;
+    }
+    
+    #rating {
+        font-size: 1.2rem;
+    }
+    
+    #menu nav ul li a {
+        font-size: 0.7rem;
+    }
+    
+    #menu #foodSelection ul .prodInfo {
+        width: 200px;
+        height: 300px;
+        position: relative;
+        z-index: 10;
+        margin: 0 auto;
+    }
+    
+    #menu #foodSelection .prodInfo:hover {
+        width: 210px;
+        height: 320px;
+        z-index: 15;
+    }
+    
+    #unmatched h1 {
+        font-size: 2rem;
+    }
+    
+    #unmatched #line span {
+        font-size: 1.2rem;
+    }
+    
+    /* Ensure all interactive elements are accessible */
+    button, a, .icon {
+        position: relative;
+        z-index: 50;
+    }
+}
+
+/* Landscape mobile orientation */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    #home {
+        flex-direction: row;
+    }
+    
+    #left {
+        width: 60vw;
+    }
+    
+    #right {
+        width: 40vw;
+        height: 100vh;
+    }
+    
+    #contents {
+        margin: 1rem 0;
+    }
+    
+    #menu {
+        min-height: 100vh;
+    }
 }

@@ -15,7 +15,7 @@ if (empty($sizeIds)) {
 }
 
 // Gather all items
-$drinkItemIds = [];
+$beverageItemIds = [];
 $otherItemIds = [];
 
 $res = mysqli_query($con, "
@@ -24,8 +24,8 @@ $res = mysqli_query($con, "
   JOIN category c ON s.category_id = c.id
 ");
 while ($r = mysqli_fetch_assoc($res)) {
-    if ($r['category'] === 'drink') {
-        $drinkItemIds[] = $r['id'];
+    if ($r['category'] === 'beverages') {
+        $beverageItemIds[] = $r['id'];
     } else {
         $otherItemIds[] = $r['id'];
     }
@@ -33,13 +33,11 @@ while ($r = mysqli_fetch_assoc($res)) {
 
 $rows = [];
 
-// Drinks → all sizes (Tall, Grande, Venti)
-foreach ($drinkItemIds as $itemId) {
-  foreach ($sizeIds as $name => $sizeId) {
-    if ($name !== 'Default') { // exclude Default
-        $rows[] = [$itemId, $sizeId];
-    }
-  }
+// Beverages → beverage sizes only (Tall, Grande, Venti)
+foreach ($beverageItemIds as $itemId) {
+  if (isset($sizeIds['Tall'])) $rows[] = [$itemId, $sizeIds['Tall']];
+  if (isset($sizeIds['Grande'])) $rows[] = [$itemId, $sizeIds['Grande']];
+  if (isset($sizeIds['Venti'])) $rows[] = [$itemId, $sizeIds['Venti']];
 }
 
 // Non-drinks → Default size only
