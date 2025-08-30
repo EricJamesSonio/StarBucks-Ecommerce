@@ -25,11 +25,12 @@ class SizeController {
 
         // check for item_id query param
         $item_id = isset($_GET['item_id']) ? intval($_GET['item_id']) : 0;
+        $item_type = isset($_GET['item_type']) ? $_GET['item_type'] : 'starbucksitem';
 
         try {
             if ($item_id > 0) {
                 // If frontend asked for item-specific sizes, return an object with status/data
-                $sizes = $this->sizeModel->getByItem($item_id);
+                $sizes = $this->sizeModel->getByItem($item_id, $item_type);
                 echo json_encode([
                     'status' => true,
                     'data' => $sizes

@@ -292,4 +292,24 @@ Inventory Settings -->
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (updated_by) REFERENCES admin(id) ON DELETE SET NULL
 
+SIZE SYSTEM -->
+    The size system is category-specific and managed through size tables:
+    
+    Available Sizes:
+    - Default: Used for food items (no price modifier)
+    - Tall/Grande/Venti: Used for beverages only (with price modifiers)
+    - Small/Medium/Large: Used for merchandise items (with price modifiers)
+    
+    Size Relationships:
+    - item_size: Links starbucksitem to available sizes
+    - merchandise_size: Links merchandise to available sizes
+    
+    Price Modifiers:
+    - Tall: +₱0.00
+    - Grande: +₱10.00  
+    - Venti: +₱20.00
+    - Small: +₱0.00
+    - Medium: +₱5.00
+    - Large: +₱10.00
+
 

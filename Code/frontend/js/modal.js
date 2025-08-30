@@ -18,7 +18,7 @@ class Modal {
         this.nameElement.textContent = item.name;
         this.quantityInput.value = 1;
 
-        this.populateSizes();
+        this.populateSizes(item.id);
         this.show();
     }
 
@@ -26,15 +26,50 @@ class Modal {
         this.hide();
     }
 
-    populateSizes() {
+    async populateSizes(itemId) {
         this.sizeSelect.innerHTML = '';
-        getSizes().forEach(size => {
+        
+        try {
+            // Determine item type for size fetching
+            const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise' ? 'merchandise' : 'starbucksitem';
+            
+            // Fetch sizes specific to this item
+            const res = await fetch(`${this.apiBasePath}/sizes?item_id=${itemId}&item_type=${itemType}`, { 
+                credentials: 'include' 
+            });
+            
+            if (!res.ok) {
+                throw new Error('Failed to fetch sizes');
+            }
+            
+            const response = await res.json();
+            
+            if (response.status && response.data && response.data.length > 0) {
+                // Use item-specific sizes
+                response.data.forEach(size => {
+                    const opt = document.createElement('option');
+                    opt.value = size.id;
+                    opt.textContent = `${size.name} (+₱${parseFloat(size.price_modifier).toFixed(2)})`;
+                    opt.dataset.modifier = size.price_modifier;
+                    this.sizeSelect.appendChild(opt);
+                });
+            } else {
+                // Fallback: show default size only
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Default Size';
+                opt.dataset.modifier = '0.00';
+                this.sizeSelect.appendChild(opt);
+            }
+        } catch (err) {
+            console.error('Failed to fetch item sizes:', err);
+            // Fallback: show default size only
             const opt = document.createElement('option');
-            opt.value = size.id;
-            opt.textContent = `${size.name} (+₱${parseFloat(size.price_modifier).toFixed(2)})`;
-            opt.dataset.modifier = size.price_modifier;
+            opt.value = '';
+            opt.textContent = 'Default Size';
+            opt.dataset.modifier = '0.00';
             this.sizeSelect.appendChild(opt);
-        });
+        }
     }
 
     async initGuestIfNeeded() {
@@ -64,8 +99,8 @@ class Modal {
         if (qty < 1) return;
 
         const selectedOption = this.sizeSelect.options[this.sizeSelect.selectedIndex];
-        const sizeId = selectedOption.value;
-        const mod = parseFloat(selectedOption.dataset.modifier);
+        const sizeId = selectedOption.value || null; // Handle empty value for default size
+        const mod = parseFloat(selectedOption.dataset.modifier || '0.00');
         const unitPrice = parseFloat(this.currentItem.price) + mod;
 
         const guestToken = await this.initGuestIfNeeded();
@@ -76,10 +111,14 @@ class Modal {
         const payload = {
             item_id: this.currentItem.id,
             item_type: itemType,
-            size_id: sizeId,
             quantity: qty,
             guest_token: guestToken
         };
+
+        // Only add size_id if it's not empty/null
+        if (sizeId) {
+            payload.size_id = sizeId;
+        }
 
         try {
             const res = await fetch(`${this.apiBasePath}/cart`, {
