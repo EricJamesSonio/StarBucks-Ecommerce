@@ -81,7 +81,6 @@ insertData($con, 'starbucksitem',
     ['KIND - Almond Coconut Cashew Chai', 135.00, $foodId, $snacksId, 'Nut bar with almond, coconut, cashew and chai spices', 'snacks/KIND - Almond Coconut Cashew Chai.jpg'],
     ['KIND® Salted Caramel & Dark Chocolate Nut Bar', 140.00, $foodId, $snacksId, 'Nut bar with salted caramel and dark chocolate', 'snacks/KIND® Salted Caramel & Dark Chocolate Nut Bar.jpg'],
     ['Perfect Bar® Peanut Butter', 145.00, $foodId, $snacksId, 'Whole food protein bar with peanut butter', 'snacks/Perfect Bar® Peanut Butter.jpg'],
-    ['Perfect Bar® – Dark Chocolate Chip Peanut Butter', 150.00, $foodId, $snacksId, 'Protein bar with dark chocolate chips and peanut butter', 'snacks/Perfect Bar® – Dark Chocolate Chip Peanut Butter.webp']
 ]);
 
 ?>

@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="../css/account_management.css">
+
+<div class="account-management">
+    <h2>Account Management</h2>
+
+    <!-- Back Button -->
+    <button class="btn-back" onclick="window.history.back();">
+         Back
+    </button>
+
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Filled dynamically via JS -->
+        </tbody>
+    </table>
+</div>
+
+<script type="module" src="../../../js/config.js"></script>
+<script type="module" src="../js/account_management.js"></script>

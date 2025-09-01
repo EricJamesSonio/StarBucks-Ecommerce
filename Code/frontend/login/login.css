@@ -18,6 +18,8 @@
     --biggest-font-size: 8rem;
 }
 
+
+
 body {
     overflow-x: hidden;
     background-color: var(--main-color-darkgreen);

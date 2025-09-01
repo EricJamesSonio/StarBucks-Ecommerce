@@ -9,17 +9,44 @@ class AuthController {
 
   // 🔔 UI Helpers
   showError(msg) {
-    if (this.errorEl) {
-      this.errorEl.textContent = msg;
-      this.errorEl.style.color = "red";
-    }
+    this.showAlert(msg, "red");
   }
 
   showMessage(msg, color = "green") {
-    if (this.errorEl) {
-      this.errorEl.textContent = msg;
-      this.errorEl.style.color = color;
+    this.showAlert(msg, color);
+  }
+
+  showAlert(msg, color) {
+    // Use existing container or create one
+    let container = this.errorEl;
+
+    if (!container) {
+      const form = document.querySelector("#con1 form") || this.rootEl;
+      container = document.createElement("div");
+      container.id = "errorMsg";
+      container.style.margin = "10px 0";
+      container.style.padding = "10px";
+      container.style.borderRadius = "5px";
+      container.style.fontWeight = "bold";
+      container.style.textAlign = "center";
+      container.style.width = "100%";
+      container.style.transition = "all 0.3s ease";
+      form.prepend(container);
+      this.errorEl = container;
     }
+
+    container.textContent = msg;
+    container.style.color = color;
+    container.style.backgroundColor = color === "red" ? "#ffe5e5" : "#e5ffe5";
+    container.style.border = `1px solid ${color === "red" ? "#ff4d4d" : "#4dff4d"}`;
+
+    // Auto-hide after 3 seconds
+    clearTimeout(container.hideTimeout);
+    container.hideTimeout = setTimeout(() => {
+      container.textContent = "";
+      container.style.backgroundColor = "transparent";
+      container.style.border = "none";
+    }, 3000);
   }
 
   clearError() {
@@ -78,6 +105,8 @@ class AuthController {
       const data = await res.json();
 
       if (data.success) {
+        this.showMessage("Login successful!");
+
         localStorage.setItem("isLoggedIn", "true");
         localStorage.removeItem("isGuest");
         localStorage.setItem("loggedInUser", JSON.stringify({
@@ -85,13 +114,13 @@ class AuthController {
           type: data.account_type
         }));
 
-        alert("Login successful!");
-
-        if (data.account_type?.toLowerCase() === "admin") {
-          window.location.href = "../admin/panel/panel.html";
-        } else {
-          window.location.href = "../menu/menu.html";
-        }
+        setTimeout(() => {
+          if (data.account_type?.toLowerCase() === "admin") {
+            window.location.href = "../admin/panel/panel.html";
+          } else {
+            window.location.href = "../menu/menu.html";
+          }
+        }, 800); // slight delay to see message
       } else {
         this.showError(data.message || "Login failed.");
       }

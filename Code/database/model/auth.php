@@ -10,15 +10,12 @@ createTable($con, 'auth', "
         account_id INT NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
+        status ENUM('active', 'blocked', 'deleted') NOT NULL DEFAULT 'active',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         CONSTRAINT uniq_auth_account UNIQUE (account_type, account_id),
         INDEX idx_auth_type_id (account_type, account_id)
     )
 ");
-
-
-
-
 
 ?>
