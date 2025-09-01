@@ -5,7 +5,6 @@ header('Content-Type: application/json');
 
 require_once dirname(__DIR__, 2) . '/model/Auth.php';
 require_once dirname(__DIR__, 2) . '/model/Cart.php';
-require_once dirname(__DIR__, 3) . '/database/db2.php';
 
 class AuthController {
     private $con;
@@ -29,6 +28,21 @@ class AuthController {
         $result = $this->auth->verifyCredentials($email, $password);
 
         if ($result) {
+            // Check account status
+            if ($result['status'] === 'blocked') {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Your account has been blocked by the admin"
+                ]);
+                return;
+            } elseif ($result['status'] === 'deleted') {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "This account does not exist"
+                ]);
+                return;
+            }
+
             $_SESSION['user_id'] = $result['account_id'];
             $_SESSION['account_type'] = $result['account_type'];
 
@@ -61,8 +75,8 @@ class AuthController {
     }
 }
 
-
 function handleLogin($con) {
     $controller = new AuthController($con);
     $controller->login();
 }
+?>

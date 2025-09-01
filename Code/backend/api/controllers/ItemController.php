@@ -137,10 +137,11 @@ function getAllStocks($con) {
 function handleSearch($con, callable $searchCallback) {
     $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 
-    if ($query === '') {
-        echo json_encode(["status" => false, "message" => "No search query"]);
-        return;
-    }
+    // Remove the empty query check to allow "show all" functionality
+    // if ($query === '') {
+    //     echo json_encode(["status" => false, "message" => "No search query"]);
+    //     return;
+    // }
 
     try {
         $results = $searchCallback($query);
@@ -159,7 +160,6 @@ function handleSearch($con, callable $searchCallback) {
         ]);
     }
 }
-
 /**
  * Search functions
  */
@@ -173,8 +173,22 @@ function searchAll($con) {
     $merchModel = new Merchandise($con);
 
     handleSearch($con, function($query) use ($itemModel, $merchModel) {
-        $items = $itemModel->searchByName($query) ?? [];
-        $merch = $merchModel->searchByName($query) ?? [];
+        $query = trim($query);
+        
+        // If query is empty or just whitespace, return all items
+        if ($query === '' || $query === ' ') {
+            // Get all items without search filter
+            $items = $itemModel->getAllItems() ?? [];
+            $merch = $merchModel->getAllMerchandise() ?? [];
+        } else {
+            // Normal search by name
+            $items = $itemModel->searchByName($query) ?? [];
+            $merch = $merchModel->searchByName($query) ?? [];
+        }
+
+        // Debug: Check if merchandise is being retrieved
+        error_log("Items count: " . count($items));
+        error_log("Merchandise count: " . count($merch));
 
         // Normalize fields if necessary
         $normalizedItems = array_map(function($row){
@@ -201,6 +215,9 @@ function searchAll($con) {
 
         $merged = array_merge($normalizedItems, $normalizedMerch);
 
+        // Debug: Check merged result
+        error_log("Merged count: " . count($merged));
+
         // Optional: de-duplicate by name
         $seen = [];
         $unique = [];
@@ -212,8 +229,8 @@ function searchAll($con) {
             }
         }
 
-        // Limit results
-        return array_slice($unique, 0, 10);
+        // Limit results for performance
+        return array_slice($unique, 0, 50);
     });
 }
 
@@ -306,4 +323,33 @@ function getAllStocksWithIds($con) {
             "error" => $e->getMessage()
         ]);
     }
+}
+
+// Add these new functions to your ItemController.php file
+
+function getMerchandise($con) {
+    header('Content-Type: application/json');
+    try {
+        $subcategory_id = isset($_GET['subcategory_id']) ? intval($_GET['subcategory_id']) : 0;
+
+        $merchModel = new Merchandise($con);
+        $merchandise = $merchModel->getFilteredMerchandise($subcategory_id);
+
+        echo json_encode([
+            "status" => true,
+            "data" => $merchandise
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to load merchandise",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+function searchMerchandise($con) {
+    $merchModel = new Merchandise($con);
+    handleSearch($con, fn($query) => $merchModel->searchByName($query));
 }

@@ -88,6 +88,7 @@ Code/
 |   │   │   ├── components/
 |   │   │   |   ├── threshold.html
 |   │   │   |   ├── item_management.html
+|   │   │   |   ├── account_management.html
 |   │   │   | 
 |   │   │   ├── css/
 |   │   │   ├── item_management.css
@@ -95,6 +96,7 @@ Code/
 |   │   │   ├── threshold.css
 |   │   │   | 
 |   │   │   ├── js/
+|   │   │   |   account_management.js
 |   │   │   ├── item_management.js
 |   │   │   ├── threshold.js
 |   │   │  
@@ -136,7 +138,7 @@ Code/
 |   │   │   ├── login.css
 |   │   
 |   │   ├── js/
-|   │   │   ├── config.js
+|   │   │   ├── config.js    
 |   │   │   ├── auth.js
 |   │   │   ├── init.js
 |   │   │   ├── signup.js
