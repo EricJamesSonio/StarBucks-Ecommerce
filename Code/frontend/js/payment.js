@@ -2,6 +2,11 @@
 import { renderCartFromServer, fetchCartItems } from './cart.js';
 import { API_BASE_PATH } from './config.js';
 
+// ✅ Helper to format currency with commas
+function formatMoney(amount) {
+    return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 class Checkout {
     constructor(apiBasePath) {
         this.apiBasePath = apiBasePath;
@@ -40,9 +45,9 @@ class Checkout {
         const discount = total * 0.10;
         const final = total - discount;
 
-        document.getElementById('paymentTotal').textContent = total.toFixed(2);
-        document.getElementById('paymentDiscount').textContent = discount.toFixed(2);
-        document.getElementById('finalAmount').textContent = final.toFixed(2);
+        document.getElementById('paymentTotal').textContent = formatMoney(total);
+        document.getElementById('paymentDiscount').textContent = formatMoney(discount);
+        document.getElementById('finalAmount').textContent = formatMoney(final);
         document.getElementById('cashInput').value = '';
         document.getElementById('paymentModal').style.display = 'flex';
 
@@ -85,25 +90,25 @@ class Checkout {
                 throw new Error(data.error || "Payment failed");
             }
 
-            alert(`✅ Paid! Change: ₱${change.toFixed(2)}`);
+            alert(`✅ Paid! Change: ₱${formatMoney(change)}`);
             this.closePaymentModal();
 
             const items = this.cartSnapshot.map(item => ({
                 name: item.name + (item.size_name ? ` (${item.size_name})` : ""),
                 quantity: item.quantity,
                 price: parseFloat(item.price),
-                total: (parseFloat(item.price) * item.quantity).toFixed(2)
+                total: (parseFloat(item.price) * item.quantity)
             }));
 
             this.showReceipt({
                 items,
                 order_id: data.orderId,
                 discount_type: type,
-                discount_amount: discount.toFixed(2),
-                total: total.toFixed(2),
-                final: final.toFixed(2),
-                paid: amt.toFixed(2),
-                change: change.toFixed(2),
+                discount_amount: formatMoney(discount),
+                total: formatMoney(total),
+                final: formatMoney(final),
+                paid: formatMoney(amt),
+                change: formatMoney(change),
                 date: new Date().toLocaleString()
             });
 
@@ -124,8 +129,8 @@ class Checkout {
             <tr>
                 <td>${item.name}</td>
                 <td>${item.quantity}</td>
-                <td>₱${item.price.toFixed(2)}</td>
-                <td>₱${item.total}</td>
+                <td>₱${formatMoney(item.price)}</td>
+                <td>₱${formatMoney(item.total)}</td>
             </tr>
         `).join("");
 
