@@ -5,6 +5,36 @@
   <title>Inventory — Ingredient Management</title>
   <link rel="stylesheet" href="../css/ingredient_management.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Overlay styling */
+    #block-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+    #block-overlay button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Ingredient Management</h1>
@@ -13,9 +43,6 @@
     <button id="btnBack">← Back to Inventory Menu</button>
     <button id="btnRefreshIngredients">🔄 Refresh All Ingredients</button>
   </div>
-
-  <!-- Search -->
-  
 
   <!-- Add Ingredient Stock Form -->
   <section id="addIngredientSection">
@@ -40,13 +67,11 @@
     </form>
   </section>
 
-   <!-- Add New Ingredient Section -->
+  <!-- Add New Ingredient Section -->
   <section id="newIngredientSection">
     <h2>Add New Ingredient</h2>
     <form id="newIngredientForm">
       <input type="text" id="newIngredientName" placeholder="Ingredient Name" required>
-
-      <!-- Stock unit (optional) -->
       <select id="newIngredientUnit">
         <option value="">Select Stock Unit (optional)</option>
         <option value="kg">Kilograms (kg)</option>
@@ -55,18 +80,16 @@
         <option value="ml">Milliliters (ml)</option>
         <option value="pcs">Pieces (pcs)</option>
       </select>
-
-      <!-- Supplier (optional) -->
       <select id="newIngredientSupplier">
         <option value="">Select Supplier (optional)</option>
         <option value="1">Supplier A</option>
         <option value="2">Supplier B</option>
       </select>
-
       <button type="submit">Add New Ingredient</button>
     </form>
   </section>
 
+  <!-- Search -->
   <div class="search-container">
     <input type="text" id="ingredientSearch" placeholder="Search ingredients by name...">
     <div id="suggestionsBox" class="suggestions"></div>
@@ -87,10 +110,8 @@
       <h3>Update Ingredient</h3>
       <form id="updateIngredientForm">
         <input type="hidden" id="updateIngredientId" />
-        
         <label for="updateIngredientName">Name:</label>
         <input type="text" id="updateIngredientName" required />
-
         <label for="updateIngredientUnit">Unit:</label>
         <select id="updateIngredientUnit" required>
           <option value="">Select unit</option>
@@ -103,7 +124,6 @@
           <option value="tbsp">tbsp</option>
           <option value="tsp">tsp</option>
         </select>
-
         <button type="submit">Update</button>
         <button type="button" id="cancelUpdate">Cancel</button>
       </form>
@@ -114,5 +134,20 @@
   <script type="module" src="../../../js/config.js"></script>
   <!-- App logic -->
   <script src="../js/ingredient_management.js"></script>
+
+  <script>
+    const userRole = localStorage.getItem("role"); // "admin" or "guest"
+    if (!userRole || userRole !== "admin") {
+      document.body.innerHTML = `
+        <div id="block-overlay">
+          ${!userRole 
+            ? "🚨 Security Alert: You must log in first to access Ingredient Management." 
+            : "⛔ Access Denied: Ingredient Management is restricted to Admins only."
+          }
+          <br><br>
+        </div>
+      `;
+    }
+  </script>
 </body>
 </html>

@@ -1,10 +1,38 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Inventory — Stock Management</title>
   <link rel="stylesheet" href="../css/stock_management.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Overlay styling */
+    #block-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+    #block-overlay button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Stock Management</h1>
@@ -13,8 +41,6 @@
     <button id="btnBack">← Back to Inventory Menu</button>
     <button id="btnRefreshStocks">🔄 Refresh All Stocks</button>
   </div>
-
- 
 
   <!-- Add Stock Form -->
   <section id="addStockSection">
@@ -31,7 +57,7 @@
     </form>
   </section>
 
-   <!-- Search -->
+  <!-- Search -->
   <div class="search-container">
     <input type="text" id="searchInput" placeholder="Search stocks by item name...">
     <div id="suggestionsBox" class="suggestions"></div>
@@ -45,13 +71,23 @@
     </div>
   </section>
 
-
-
   <!-- Config must load first so window.API_BASE_PATH is set -->
   <script type="module" src="../../../js/config.js"></script>
   <!-- App logic -->
   <script src="../js/stock_management.js"></script>
 
-  <!-- Override renderStocks with safe version -->
+  <!-- Role-based access control -->
+  <script>
+    const userRole = localStorage.getItem("role"); // "admin" or "guest"
+    if (!userRole || userRole !== "admin") {
+      document.body.innerHTML = `
+        <div id="block-overlay">
+          ${!userRole
+            ? "🚨 Security Alert: You must log in first to access Stock Management."
+            : "⛔ Access Denied: Stock Management is restricted to Admins only."}
+
+      `;
+    }
+  </script>
 </body>
 </html>

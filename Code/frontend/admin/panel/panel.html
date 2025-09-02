@@ -4,16 +4,59 @@
   <meta charset="UTF-8">
   <title>Admin Panel – Starbucks POS</title>
   <link rel="stylesheet" href="panel.css"> <!-- Moved to css folder -->
+  <style>
+    /* Block screen overlay */
+    #block-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
 </head>
 <body>
   <header>Admin Dashboard</header>
   <main>
-    <h2>Welcome, Admin!</h2>
+    <h2 id="welcome-msg">Welcome, Admin!</h2>
     <a class="btn" href="../inventory/inventory.html">Inventory Settings</a>
     <a class="btn" href="../salesreport/salesreport.html">View Sales Report</a>
     <a class="btn" href="../inventory/components/account_management.html">Account Management</a>
     <a class="btn" href="about.html">About This Website</a>
     <a class="btn" href="../../../design/home/index.html">Back to Homepage</a>
   </main>
+
+  <script>
+    const userRole = localStorage.getItem("role"); // "admin" or "guest"
+    const userName = localStorage.getItem("customer_name") || "Guest";
+
+    if (!userRole) {
+      // Not logged in
+      document.body.innerHTML = "";
+      const overlay = document.createElement("div");
+      overlay.id = "block-overlay";
+      overlay.textContent = "🚨 Security Alert: You must log in first to access the admin panel.";
+      document.body.appendChild(overlay);
+    } else if (userRole !== "admin") {
+      // Logged in but not admin
+      const overlay = document.createElement("div");
+      overlay.id = "block-overlay";
+      overlay.textContent = "⛔ Access Denied: This panel is restricted to Admins only.";
+      document.body.appendChild(overlay);
+    } else {
+      // If admin, customize welcome message
+      document.getElementById("welcome-msg").innerText = `Welcome, ${userName} (Admin)!`;
+    }
+  </script>
 </body>
 </html>

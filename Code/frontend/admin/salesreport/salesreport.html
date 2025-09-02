@@ -1,41 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Sales Report</title>
   <link rel="stylesheet" href="./css/salesreport.css">
+  <style>
+    /* Overlay styling */
+    #block-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+    #block-overlay button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
+<body>
+  <div>
+    <button data-range="daily">Daily</button>
+    <button data-range="weekly">Weekly</button>
+    <button data-range="monthly">Monthly</button>
+    <button class="back-button" onclick="window.location.href='../panel/panel.html'">
+      ← Back to Admin Panel
+    </button>
+  </div>
 
+  <label>From: <input type="date" id="startDate"></label>
+  <label>To: <input type="date" id="endDate"></label>
+  <button id="loadReport">Load Report</button>
 
-<div>
-  <button data-range="daily">Daily</button>
-  <button data-range="weekly">Weekly</button>
-  <button data-range="monthly">Monthly</button>
-  <button class="back-button" onclick="window.location.href='../panel/panel.html'">
-  ← Back to Admin Panel
-</button>
-
-</div>
-
-
-
-<label>From: <input type="date" id="startDate"></label>
-<label>To: <input type="date" id="endDate"></label>
-<button id="loadReport">Load Report</button>
-
-<div>
+  <div>
     <h3>Total Sales: <span id="totalSales">₱0.00</span></h3>
     <h3>Total Orders: <span id="totalOrders">0</span></h3>
-</div>
+  </div>
 
-<h3>Top Selling Items</h3>
-<table border="1">
+  <h3>Top Selling Items</h3>
+  <table border="1">
     <thead>
-        <tr>
-            <th>Item</th>
-            <th>Total Sold</th>
-        </tr>
+      <tr>
+        <th>Item</th>
+        <th>Total Sold</th>
+      </tr>
     </thead>
     <tbody id="topSellingTable"></tbody>
-</table>
+  </table>
 
-<script type="module" src="../../js/config.js"></script>
-<script src="./js/salesreport.js"></script>
+  <script type="module" src="../../js/config.js"></script>
+  <script src="./js/salesreport.js"></script>
+
+  <script>
+    const userRole = localStorage.getItem("role"); // "admin" or "guest"
+    if (!userRole || userRole !== "admin") {
+      document.body.innerHTML = `
+        <div id="block-overlay">
+          ${!userRole 
+            ? "🚨 Security Alert: You must log in first to access the Sales Report." 
+            : "⛔ Access Denied: Sales Report is restricted to Admins only."
+          }
+          <br><br>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

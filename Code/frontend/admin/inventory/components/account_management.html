@@ -1,6 +1,42 @@
-<link rel="stylesheet" href="../css/account_management.css">
-
-<div class="account-management">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Account Management</title>
+  <link rel="stylesheet" href="../css/account_management.css">
+  <style>
+    /* Overlay styling */
+    #block-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+    #block-overlay button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="account-management">
     <h2>Account Management</h2>
 
     <!-- Back Button -->
@@ -21,7 +57,24 @@
             <!-- Filled dynamically via JS -->
         </tbody>
     </table>
-</div>
+  </div>
 
-<script type="module" src="../../../js/config.js"></script>
-<script type="module" src="../js/account_management.js"></script>
+  <script type="module" src="../../../js/config.js"></script>
+  <script type="module" src="../js/account_management.js"></script>
+
+  <script>
+    const userRole = localStorage.getItem("role"); // "admin" or "guest"
+    if (!userRole || userRole !== "admin") {
+      document.body.innerHTML = `
+        <div id="block-overlay">
+          ${!userRole 
+            ? "🚨 Security Alert: You must log in first to access Account Management." 
+            : "⛔ Access Denied: Account Management is restricted to Admins only."
+          }
+          <br><br>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
