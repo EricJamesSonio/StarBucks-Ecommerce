@@ -16,6 +16,7 @@
       background: rgba(0,0,0,0.9);
       color: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
@@ -135,19 +136,33 @@
   <!-- App logic -->
   <script src="../js/ingredient_management.js"></script>
 
-  <script>
-    const userRole = localStorage.getItem("role"); // "admin" or "guest"
-    if (!userRole || userRole !== "admin") {
-      document.body.innerHTML = `
-        <div id="block-overlay">
-          ${!userRole 
-            ? "🚨 Security Alert: You must log in first to access Ingredient Management." 
-            : "⛔ Access Denied: Ingredient Management is restricted to Admins only."
-          }
-          <br><br>
-        </div>
-      `;
-    }
-  </script>
+<script>
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const isGuest = localStorage.getItem("isGuest") === "true";
+  const userRole = loggedInUser ? loggedInUser.type : (isGuest ? "guest" : null);
+
+  if (!userRole) {
+    // Not logged in
+    document.body.innerHTML = "";
+    const overlay = document.createElement("div");
+    overlay.id = "block-overlay";
+    overlay.innerHTML = `
+      🚨 Security Alert: You must log in first to access the admin panel.
+      <button onclick="location.reload()">Reload</button>
+    `;
+    document.body.appendChild(overlay);
+  } else if (userRole !== "admin") {
+    // Logged in but not admin
+    document.body.innerHTML = "";
+    const overlay = document.createElement("div");
+    overlay.id = "block-overlay";
+    overlay.innerHTML = `
+      ⛔ Access Denied: This panel is restricted to Admins only.
+      <button onclick="window.history.back()">Go Back</button>
+    `;
+    document.body.appendChild(overlay);
+  }
+</script>
+
 </body>
 </html>

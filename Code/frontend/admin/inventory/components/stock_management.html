@@ -76,18 +76,35 @@
   <!-- App logic -->
   <script src="../js/stock_management.js"></script>
 
-  <!-- Role-based access control -->
-  <script>
-    const userRole = localStorage.getItem("role"); // "admin" or "guest"
-    if (!userRole || userRole !== "admin") {
-      document.body.innerHTML = `
-        <div id="block-overlay">
-          ${!userRole
-            ? "🚨 Security Alert: You must log in first to access Stock Management."
-            : "⛔ Access Denied: Stock Management is restricted to Admins only."}
+<!-- Security overlay -->
+<script>
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const userRole = loggedInUser ? loggedInUser.type : null;
+  const userName = localStorage.getItem("customer_name") || "Guest";
 
-      `;
+  if (!userRole) {
+    // Not logged in
+    document.body.innerHTML = "";
+    const overlay = document.createElement("div");
+    overlay.id = "block-overlay";
+    overlay.textContent = "🚨 Security Alert: You must log in first to access the admin panel.";
+    document.body.appendChild(overlay);
+  } else if (userRole !== "admin") {
+    // Logged in but not admin
+    document.body.innerHTML = "";
+    const overlay = document.createElement("div");
+    overlay.id = "block-overlay";
+    overlay.textContent = "⛔ Access Denied: This panel is restricted to Admins only.";
+    document.body.appendChild(overlay);
+  } else {
+    // If admin, insert welcome message under the <h1>
+    const mainTitle = document.querySelector("h1");
+    if (mainTitle) {
+      mainTitle.insertAdjacentHTML("afterend", `<p id="welcome-msg">Welcome, ${userName} (Admin)!</p>`);
     }
-  </script>
+  }
+</script>
+
+
 </body>
 </html>

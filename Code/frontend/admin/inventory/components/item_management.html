@@ -58,12 +58,6 @@
     </form>
   </section>
 
-  <!-- Search -->
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search items...">
-    <div id="suggestionsBox" class="suggestions"></div>
-  </div>
-
   <!-- Item List -->
   <section id="itemListSection">
     <h2>Existing Items</h2>
@@ -82,63 +76,41 @@
     </table>
   </section>
 
-  <hr>
-
-  <!-- Add Merchandise Form -->
-  <section id="addMerchSection">
-    <h2>Add New Merchandise</h2>
-    <form id="addMerchForm">
-      <input type="text" id="merchName" placeholder="Merchandise Name" required>
-      <input type="number" id="merchPrice" placeholder="Price" step="0.01" min="0" required>
-      <select id="merchSubcategorySelect" required></select>
-      <input type="text" id="merchImageUrl" placeholder="Image URL (optional)">
-      <textarea id="merchDescription" placeholder="Description"></textarea>
-      <button type="submit">Add Merchandise</button>
-    </form>
-  </section>
-
-  <!-- Merchandise Search -->
-  <div class="search-container">
-    <input type="text" id="merchSearchInput" placeholder="Search merchandise...">
-  </div>
-
-  <!-- Merchandise List -->
-  <section id="merchListSection">
-    <h2>Existing Merchandise</h2>
-    <table id="merchTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Category</th>
-          <th>Subcategory</th>
-          <th>Description</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <!-- Config must load first so window.API_BASE_PATH is set -->
+  <!-- Config must load first -->
   <script type="module" src="../../../js/config.js"></script>
   <!-- App logic -->
   <script src="../js/item_management.js"></script>
 
-  <!-- Role Restriction -->
+  <!-- Security / Role Restriction -->
   <script>
-    const userRole = localStorage.getItem("role"); // "admin" or "guest"
-    if (!userRole || userRole !== "admin") {
-      document.body.innerHTML = `
-        <div id="block-overlay">
-          ${!userRole 
-            ? "🚨 Security Alert: You must log in first to access Item Management." 
-            : "⛔ Access Denied: Item Management is restricted to Admins only."
-          }
-          <br><br>
-        </div>
-      `;
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const userRole = loggedInUser ? loggedInUser.type : null;
+    const userName = localStorage.getItem("customer_name") || "Guest";
+
+    if (!userRole) {
+      // Not logged in
+      document.body.innerHTML = "";
+      const overlay = document.createElement("div");
+      overlay.id = "block-overlay";
+      overlay.textContent = "🚨 Security Alert: You must log in first to access the admin panel.";
+      document.body.appendChild(overlay);
+    } else if (userRole !== "admin") {
+      // Logged in but not admin
+      document.body.innerHTML = "";
+      const overlay = document.createElement("div");
+      overlay.id = "block-overlay";
+      overlay.textContent = "⛔ Access Denied: This panel is restricted to Admins only.";
+      document.body.appendChild(overlay);
+    } else {
+      // Admin logged in — show dynamic welcome message
+      const welcome = document.createElement("div");
+      welcome.id = "welcome-msg";
+      welcome.style.margin = "10px 0";
+      welcome.style.fontWeight = "bold";
+      welcome.textContent = `Welcome, ${userName} (Admin)!`;
+      document.body.insertBefore(welcome, document.body.firstChild);
     }
   </script>
+
 </body>
 </html>

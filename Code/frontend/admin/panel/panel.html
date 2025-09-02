@@ -23,6 +23,16 @@
       text-align: center;
       padding: 20px;
     }
+    #block-overlay button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -37,7 +47,8 @@
   </main>
 
   <script>
-    const userRole = localStorage.getItem("role"); // "admin" or "guest"
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const userRole = loggedInUser ? loggedInUser.type : null;
     const userName = localStorage.getItem("customer_name") || "Guest";
 
     if (!userRole) {
@@ -49,13 +60,17 @@
       document.body.appendChild(overlay);
     } else if (userRole !== "admin") {
       // Logged in but not admin
+      document.body.innerHTML = "";
       const overlay = document.createElement("div");
       overlay.id = "block-overlay";
       overlay.textContent = "⛔ Access Denied: This panel is restricted to Admins only.";
       document.body.appendChild(overlay);
     } else {
-      // If admin, customize welcome message
-      document.getElementById("welcome-msg").innerText = `Welcome, ${userName} (Admin)!`;
+      // If admin, customize welcome message dynamically
+      const welcomeEl = document.getElementById("welcome-msg");
+      if (welcomeEl) {
+        welcomeEl.innerText = `Welcome, ${userName} (Admin)!`;
+      }
     }
   </script>
 </body>
