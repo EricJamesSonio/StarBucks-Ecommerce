@@ -26,22 +26,35 @@ class SignupController {
     }
 
     public function signup() {
-        $data = json_decode(file_get_contents('php://input'), true);
+    $data = json_decode(file_get_contents('php://input'), true);
 
-        if (!$data) {
+    if (!$data) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Invalid or empty JSON"]);
+        return;
+    }
+
+    $requiredFields = ['first_name', 'last_name', 'email', 'phone', 'password', 'street', 'city', 'province', 'postal_code', 'country'];
+    foreach ($requiredFields as $field) {
+        if (empty($data[$field])) {
             http_response_code(400);
-            echo json_encode(["success" => false, "message" => "Invalid or empty JSON"]);
+            echo json_encode(["success" => false, "message" => "Missing field: $field"]);
             return;
         }
+    }
 
-        $requiredFields = ['first_name', 'last_name', 'email', 'phone', 'password', 'street', 'city', 'province', 'postal_code', 'country'];
-        foreach ($requiredFields as $field) {
-            if (empty($data[$field])) {
-                http_response_code(400);
-                echo json_encode(["success" => false, "message" => "Missing field: $field"]);
-                return;
-            }
-        }
+    // ✅ Check if email already exists
+    $stmt = $this->con->prepare("SELECT id FROM auth WHERE email = ?");
+    $stmt->bind_param("s", $data['email']);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        http_response_code(409); // Conflict
+        echo json_encode(["success" => false, "message" => "Email already exists"]);
+        $stmt->close();
+        return;
+    }
+    $stmt->close();
 
         // 1️⃣ Create user
         $userModel = new User($this->con);

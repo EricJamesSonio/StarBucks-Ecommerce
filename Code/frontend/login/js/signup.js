@@ -29,22 +29,22 @@ class SignupManager {
         this.loadCountries();
     }
 
-    // Regex Validators
+     // Regex Validators
     isValidName(name) {
         return /^[A-Za-z\s]+$/.test(name);
     }
 
     isValidEmail(email) {
-    // Basic RFC-like check: something@something.something
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 
     isValidPhone(phone) {
-    // Match 09XXXXXXXXX (11 digits) OR +63XXXXXXXXXX (13 chars total)
-    return /^(09\d{9}|\+63\d{10})$/.test(phone);
-}
+        return /^(09\d{9}|\+63\d{10})$/.test(phone);
+    }
 
+    isValidPassword(password) {
+        return password.length >= 6;
+    }
 
     addValidationListeners() {
         const fields = [
@@ -52,8 +52,8 @@ class SignupManager {
             { input: this.middleName, validator: this.isValidName, errorId: "middleNameError", message: "Only letters and spaces allowed" },
             { input: this.lastName, validator: this.isValidName, errorId: "lastNameError", message: "Only letters and spaces allowed" },
             { input: this.email, validator: this.isValidEmail, errorId: "emailError", message: "Enter a valid email (gmail, yahoo, email)" },
-            { input: this.phone, validator: this.isValidPhone, errorId: "phoneError", message: "Enter a valid PH number (09XXXXXXXXX or +63XXXXXXXXXX)" }
-
+            { input: this.phone, validator: this.isValidPhone, errorId: "phoneError", message: "Enter a valid PH number (09XXXXXXXXX or +63XXXXXXXXXX)" },
+            { input: this.password, validator: this.isValidPassword, errorId: "passwordError", message: "Password must be at least 6 characters" }
         ];
 
         fields.forEach(({ input, validator, errorId, message }) => {
@@ -82,10 +82,12 @@ class SignupManager {
             (this.middleName.value.trim() === "" || this.isValidName(this.middleName.value.trim())) &&
             this.isValidName(this.lastName.value.trim()) &&
             this.isValidEmail(this.email.value.trim()) &&
-            this.isValidPhone(this.phone.value.trim());
+            this.isValidPhone(this.phone.value.trim()) &&
+            this.isValidPassword(this.password.value.trim()); // ✅ include password check
 
         this.signupBtn.disabled = !valid;
     }
+
 
     async loadCountries() {
         try {

@@ -8,12 +8,25 @@ class AuthController {
   }
 
   // 🔔 UI Helpers
+  // 🔔 UI Helpers
   showError(msg) {
-    if (this.errorEl) {
-      this.errorEl.textContent = msg;
-      this.errorEl.style.color = "red";
+    let container = this.errorEl;
+
+    // if #errorMsg doesn't exist, create it dynamically inside the form
+    if (!container) {
+      const form = document.querySelector("#component-root form") || this.rootEl;
+      container = document.createElement("div");
+      container.id = "errorMsg";
+      container.style.color = "red";
+      container.style.marginTop = "10px";
+      container.style.fontWeight = "bold";
+      form.prepend(container);
+      this.errorEl = container;
     }
+
+    container.textContent = msg;
   }
+
 
   showMessage(msg, color = "green") {
     if (this.errorEl) {
@@ -100,33 +113,45 @@ class AuthController {
       this.showError("Server error. Please try again.");
     }
   }
+async signup(userData) {
+  if (!userData) {
+    this.showError("Invalid signup data.");
+    return;
+  }
 
-  async signup(userData) {
-    if (!userData) {
-      this.showError("Invalid signup data.");
-      return;
-    }
+  // ✅ Password length validation
+  if (!userData.password || userData.password.length < 6) {
+    this.showError("Password must be at least 6 characters long.");
+    return;
+  }
 
-    try {
-      const res = await fetch(SIGNUP_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData)
-      });
+  try {
+    const res = await fetch(SIGNUP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (data.success) {
-        await this.showForm("login");
-        this.showMessage("Signup successful! Please log in.");
+    if (data.success) {
+      await this.showForm("login");
+      this.showMessage("Signup successful! Please log in.");
+    } else {
+      // ✅ Special case: email already exists
+      if (data.message?.toLowerCase().includes("email")) {
+        this.showError("This email is already registered. Please log in.");
       } else {
         this.showError(data.message || "Signup failed.");
       }
-    } catch (err) {
-      console.error("Signup error:", err);
-      this.showError("Server error during signup.");
     }
+  } catch (err) {
+    console.error("Signup error:", err);
+    this.showError("Server error during signup.");
   }
+}
+
+
 
   continueAsGuest() {
     localStorage.setItem("isGuest", "true");
