@@ -8,69 +8,75 @@ function id($table, $name) {
     return getIdByName($con, $table, $name);
 }
 
-// Drinks
-$americanoId = id('starbucksitem', 'Cold Brew');
-$latteId     = id('starbucksitem', 'Chai Latte');
-$matchaId    = id('starbucksitem', 'Matcha Latte');
-$refresherId = id('starbucksitem', 'Summer Berry Lemonade');
-$purpleId    = id('starbucksitem', 'Strawberry Açaí Lemonade Refresher');
+// Helper: map items
+function mapItem($itemName, $ingredients) {
+    $itemId = id('starbucksitem', $itemName);
+    $result = [];
+    foreach ($ingredients as $ingName => $data) {
+        $ingId = id('ingredient', $ingName);
+        $result[] = [$itemId, $ingId, $data['qty'], $data['unit']];
+    }
+    return $result;
+}
 
-// Sandwiches
-$eggSandId     = id('starbucksitem', 'Egg, Pesto & Mozzarella Sandwich');
-$baconSandId   = id('starbucksitem', 'Bacon, Gouda & Egg Sandwich');
-$cheddarSandId = id('starbucksitem', 'Crispy Grilled Cheese on Sourdough');
-$doubleId      = id('starbucksitem', 'Double-Smoked Bacon, Cheddar & Egg Sandwich');
-$turkeyId      = id('starbucksitem', 'Turkey Bacon, Cheddar & Egg White Sandwich');
+$allMappings = [];
 
-// Ingredients
-$espresso   = id('ingredient', 'Espresso Shot');
-$milk       = id('ingredient', 'Milk');
-$matcha     = id('ingredient', 'Matcha Powder');
-$hibiscus   = id('ingredient', 'Hibiscus Syrup');
-$berries    = id('ingredient', 'Blackberries');
-$egg        = id('ingredient', 'Egg');
-$bacon      = id('ingredient', 'Bacon');
-$cheddar    = id('ingredient', 'Cheddar Cheese');
-$bread      = id('ingredient', 'Bread');
-$icecream   = id('ingredient', 'Ice Cream Mix');
-$turkey     = id('ingredient', 'Turkey Bacon');
-$eggWhite   = id('ingredient', 'Egg White');
+// --- Drinks: Hot Coffee
+$allMappings = array_merge($allMappings, mapItem('Veranda Blend Hot', ['Espresso Shot'=>['qty'=>50,'unit'=>'ml'], 'Milk'=>['qty'=>0,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Chai Latte', ['Milk'=>['qty'=>200,'unit'=>'ml'], 'Vanilla Syrup'=>['qty'=>10,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Dark Rose Sumatra', ['Espresso Shot'=>['qty'=>50,'unit'=>'ml'], 'Milk'=>['qty'=>0,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Misto', ['Espresso Shot'=>['qty'=>50,'unit'=>'ml'], 'Milk'=>['qty'=>50,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Pike Place', ['Espresso Shot'=>['qty'=>50,'unit'=>'ml'], 'Milk'=>['qty'=>0,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Verona', ['Espresso Shot'=>['qty'=>50,'unit'=>'ml'], 'Milk'=>['qty'=>0,'unit'=>'ml']]));
 
-// Recipes
-insertData($con, 'item_ingredient',
-    ['item_id', 'ingredient_id', 'quantity_value', 'quantity_unit'], [
+// --- Cold Coffee
+$allMappings = array_merge($allMappings, mapItem('Salted Caramel Cream Cold Brew', ['Espresso Shot'=>['qty'=>60,'unit'=>'ml'], 'Caramel Syrup'=>['qty'=>15,'unit'=>'ml'], 'Milk'=>['qty'=>30,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Vanilla Sweet Cream Cold Brew', ['Espresso Shot'=>['qty'=>60,'unit'=>'ml'], 'Vanilla Syrup'=>['qty'=>15,'unit'=>'ml'], 'Milk'=>['qty'=>30,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Chocolate Cream Cold', ['Espresso Shot'=>['qty'=>60,'unit'=>'ml'], 'Chocolate Syrup'=>['qty'=>20,'unit'=>'ml'], 'Milk'=>['qty'=>30,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Cold Brew', ['Espresso Shot'=>['qty'=>60,'unit'=>'ml'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
 
-    // Drinks
-    [$americanoId, $espresso, 50, 'ml'],
-    [$americanoId, $milk, 0, 'ml'],   // none
-    [$latteId, $espresso, 30, 'ml'],
-    [$latteId, $milk, 200, 'ml'],
-    [$matchaId, $matcha, 5, 'g'],
-    [$matchaId, $milk, 180, 'ml'],
-    [$refresherId, $hibiscus, 40, 'ml'],
-    [$refresherId, $berries, 5, 'pcs'],
-    [$purpleId, $icecream, 120, 'ml'],
+// --- Frappuccino
+$allMappings = array_merge($allMappings, mapItem('Blended Average Frappuccino', ['Ice Cream Mix'=>['qty'=>100,'unit'=>'ml'], 'Milk'=>['qty'=>50,'unit'=>'ml'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Caramel Frappuccino', ['Ice Cream Mix'=>['qty'=>100,'unit'=>'ml'], 'Caramel Syrup'=>['qty'=>15,'unit'=>'ml'], 'Milk'=>['qty'=>50,'unit'=>'ml'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Mocha Crumble Creamy Frappuccino', ['Ice Cream Mix'=>['qty'=>100,'unit'=>'ml'], 'Chocolate Syrup'=>['qty'=>15,'unit'=>'ml'], 'Milk'=>['qty'=>50,'unit'=>'ml'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Mocha Frappuccino', ['Ice Cream Mix'=>['qty'=>100,'unit'=>'ml'], 'Chocolate Syrup'=>['qty'=>15,'unit'=>'ml'], 'Milk'=>['qty'=>50,'unit'=>'ml'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
 
-    // Sandwiches
-    [$eggSandId, $egg, 1, 'pcs'],
-    [$eggSandId, $bread, 2, 'pcs'],
-    [$eggSandId, $cheddar, 20, 'g'],
+// --- Tea Latte
+$allMappings = array_merge($allMappings, mapItem('Chai Latte', ['Milk'=>['qty'=>200,'unit'=>'ml'], 'Vanilla Syrup'=>['qty'=>10,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('London Fog', ['Milk'=>['qty'=>200,'unit'=>'ml'], 'Vanilla Syrup'=>['qty'=>10,'unit'=>'ml']]));
+$allMappings = array_merge($allMappings, mapItem('Matcha Latte', ['Milk'=>['qty'=>200,'unit'=>'ml'], 'Matcha Powder'=>['qty'=>10,'unit'=>'g']]));
 
-    [$baconSandId, $bacon, 30, 'g'],
-    [$baconSandId, $bread, 2, 'pcs'],
-    [$baconSandId, $cheddar, 25, 'g'],
+// --- Refreshers
+$allMappings = array_merge($allMappings, mapItem('Strawberry Açaí Lemonade Refresher', ['Strawberries'=>['qty'=>5,'unit'=>'pcs'], 'Vanilla Syrup'=>['qty'=>10,'unit'=>'ml'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Mango Fruit Refresher', ['Mango'=>['qty'=>5,'unit'=>'pcs'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Summer Berry Lemonade', ['Blackberries'=>['qty'=>5,'unit'=>'pcs'], 'Ice'=>['qty'=>5,'unit'=>'pcs']]));
 
-    [$cheddarSandId, $cheddar, 40, 'g'],
-    [$cheddarSandId, $bread, 2, 'pcs'],
+// --- Hot Breakfast
+$allMappings = array_merge($allMappings, mapItem('Bacon, Gouda & Egg Sandwich', ['Bacon'=>['qty'=>30,'unit'=>'g'], 'Cheddar Cheese'=>['qty'=>20,'unit'=>'g'], 'Egg'=>['qty'=>1,'unit'=>'pcs'], 'Bread'=>['qty'=>1,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Double-Smoked Bacon, Cheddar & Egg Sandwich', ['Bacon'=>['qty'=>30,'unit'=>'g'], 'Cheddar Cheese'=>['qty'=>20,'unit'=>'g'], 'Egg'=>['qty'=>1,'unit'=>'pcs'], 'Bread'=>['qty'=>1,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Egg, Pesto & Mozzarella Sandwich', ['Egg'=>['qty'=>1,'unit'=>'pcs'], 'Pesto'=>['qty'=>10,'unit'=>'g'], 'Mozzarella'=>['qty'=>20,'unit'=>'g'], 'Bread'=>['qty'=>1,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Sausage, Cheddar & Egg Sandwich', ['Sausage'=>['qty'=>30,'unit'=>'g'], 'Cheddar Cheese'=>['qty'=>20,'unit'=>'g'], 'Egg'=>['qty'=>1,'unit'=>'pcs'], 'Bread'=>['qty'=>1,'unit'=>'pcs']]));
+$allMappings = array_merge($allMappings, mapItem('Turkey Bacon, Cheddar & Egg White Sandwich', ['Turkey Bacon'=>['qty'=>20,'unit'=>'g'], 'Cheddar Cheese'=>['qty'=>20,'unit'=>'g'], 'Egg White'=>['qty'=>1,'unit'=>'pcs'], 'Bread'=>['qty'=>1,'unit'=>'pcs']]));
 
-    [$doubleId, $bacon, 40, 'g'],
-    [$doubleId, $cheddar, 25, 'g'],
-    [$doubleId, $egg, 1, 'pcs'],
-    [$doubleId, $bread, 2, 'pcs'],
+// --- Bakery
+$allMappings = array_merge($allMappings, mapItem('Baked Apple Croissant', ['Butter'=>['qty'=>10,'unit'=>'g'], 'Apple'=>['qty'=>1,'unit'=>'pcs'], 'Flour'=>['qty'=>50,'unit'=>'g']] ));
+$allMappings = array_merge($allMappings, mapItem('Butter Croissant', ['Butter'=>['qty'=>10,'unit'=>'g'], 'Flour'=>['qty'=>50,'unit'=>'g']] ));
+$allMappings = array_merge($allMappings, mapItem('Chocolate Croissant', ['Butter'=>['qty'=>10,'unit'=>'g'], 'Chocolate Syrup'=>['qty'=>10,'unit'=>'ml'], 'Flour'=>['qty'=>50,'unit'=>'g']] ));
+$allMappings = array_merge($allMappings, mapItem('Ham & Swiss Croissant', ['Ham'=>['qty'=>20,'unit'=>'g'], 'Cheddar Cheese'=>['qty'=>20,'unit'=>'g'], 'Flour'=>['qty'=>50,'unit'=>'g']] ));
+$allMappings = array_merge($allMappings, mapItem('Vanilla Bean Custard Danish', ['Vanilla Syrup'=>['qty'=>10,'unit'=>'ml'], 'Flour'=>['qty'=>50,'unit'=>'g'], 'Egg'=>['qty'=>1,'unit'=>'pcs']] ));
 
-    [$turkeyId, $turkey, 35, 'g'],
-    [$turkeyId, $cheddar, 20, 'g'],
-    [$turkeyId, $eggWhite, 1, 'pcs'],
-    [$turkeyId, $bread, 2, 'pcs']
-]);
+// --- Salads
+$allMappings = array_merge($allMappings, mapItem('Tomato & Mozzarella Salad', ['Tomato'=>['qty'=>1,'unit'=>'pcs'], 'Mozzarella'=>['qty'=>20,'unit'=>'g']] ));
+$allMappings = array_merge($allMappings, mapItem('Tuna Pasta Salad', ['Tomato'=>['qty'=>1,'unit'=>'pcs'], 'Dried Herbs'=>['qty'=>5,'unit'=>'g']] ));
+
+// --- Snacks
+$allMappings = array_merge($allMappings, mapItem('All In™ Madagascar Vanilla, Honey & Almonds Bar', ['Vanilla Syrup'=>['qty'=>10,'unit'=>'ml']] ));
+$allMappings = array_merge($allMappings, mapItem('KIND - Almond Coconut Cashew Chai', ['Flour'=>['qty'=>20,'unit'=>'g']] ));
+$allMappings = array_merge($allMappings, mapItem('KIND® Salted Caramel & Dark Chocolate Nut Bar', ['Caramel Syrup'=>['qty'=>10,'unit'=>'ml'], 'Chocolate Syrup'=>['qty'=>10,'unit'=>'ml']] ));
+$allMappings = array_merge($allMappings, mapItem('Perfect Bar® Peanut Butter', ['Flour'=>['qty'=>20,'unit'=>'g'], 'Butter'=>['qty'=>10,'unit'=>'g']] ));
+
+// --- Finally insert all into item_ingredient
+insertData($con, 'item_ingredient', ['item_id','ingredient_id','quantity_value','quantity_unit'], $allMappings);
+
+echo "All Starbucks items linked with ingredients successfully!";
 ?>
