@@ -25,40 +25,56 @@ class SignupController {
         return $found;
     }
 
+    /**
+     * Normal signup (reads php://input)
+     */
     public function signup() {
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    if (!$data) {
-        http_response_code(400);
-        echo json_encode(["success" => false, "message" => "Invalid or empty JSON"]);
-        return;
-    }
-
-    $requiredFields = ['first_name', 'last_name', 'email', 'phone', 'password', 'street', 'city', 'province', 'postal_code', 'country'];
-    foreach ($requiredFields as $field) {
-        if (empty($data[$field])) {
-            http_response_code(400);
-            echo json_encode(["success" => false, "message" => "Missing field: $field"]);
-            return;
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!$data) {
+            return $this->error(400, "Invalid or empty JSON");
         }
+        $this->processSignup($data);
     }
 
-    // ✅ Check if email already exists
-    $stmt = $this->con->prepare("SELECT id FROM auth WHERE email = ?");
-    $stmt->bind_param("s", $data['email']);
-    $stmt->execute();
-    $stmt->store_result();
-    if ($stmt->num_rows > 0) {
-        http_response_code(409); // Conflict
-        echo json_encode(["success" => false, "message" => "Email already exists"]);
-        $stmt->close();
-        return;
+    /**
+     * Signup from already-provided array (e.g., after OTP verification)
+     */
+    public function signupFromArray(array $data) {
+        $this->processSignup($data);
     }
-    $stmt->close();
+
+    /**
+     * Core signup logic (shared)
+     */
+    private function processSignup($data) {
+        $requiredFields = [
+            'first_name', 'last_name', 'email', 'phone', 'password',
+            'street', 'city', 'province', 'postal_code', 'country'
+        ];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                return $this->error(400, "Missing field: $field");
+            }
+        }
+
+        // ✅ Check if email already exists
+        $stmt = $this->con->prepare("SELECT id FROM auth WHERE email = ?");
+        $stmt->bind_param("s", $data['email']);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $stmt->close();
+            return $this->error(409, "Email already exists");
+        }
+        $stmt->close();
 
         // 1️⃣ Create user
         $userModel = new User($this->con);
-        $userId = $userModel->createUser($data['first_name'], $data['middle_name'] ?? '', $data['last_name']);
+        $userId = $userModel->createUser(
+            $data['first_name'],
+            $data['middle_name'] ?? '',
+            $data['last_name']
+        );
         if (!$userId) return $this->error(500, "Failed to create user");
 
         // 2️⃣ Create auth
@@ -77,7 +93,14 @@ class SignupController {
             return $this->error(400, "Invalid address data");
         }
 
-        if (!$addressModel->createAddress('user', $userId, $data['street'], $country_id, $province_id, $city_id)) {
+        if (!$addressModel->createAddress(
+            'user',
+            $userId,
+            $data['street'],
+            $country_id,
+            $province_id,
+            $city_id
+        )) {
             return $this->error(500, "Failed to save address");
         }
 
@@ -93,6 +116,7 @@ class SignupController {
     private function error($code, $message) {
         http_response_code($code);
         echo json_encode(["success" => false, "message" => $message]);
+        return false;
     }
 }
 

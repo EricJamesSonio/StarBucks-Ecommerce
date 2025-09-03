@@ -1,5 +1,6 @@
 // signup.js
 import { API_BASE_PATH } from "./config.js";
+import { showForm, signup as authSignup } from "./auth.js";
 
 class SignupManager {
     constructor(apiBasePath) {
@@ -25,11 +26,18 @@ class SignupManager {
         // Add live validation
         this.addValidationListeners();
 
+        // OTP modal elements (if OTP functionality is needed)
+        this.otpModal = document.getElementById("otpModal");
+        if (this.otpModal) {
+            this.originalOtpContent = this.otpModal.querySelector(".otp-modal-content")?.innerHTML;
+            this.bindOtpModalElements();
+        }
+
         console.log("signup.js loaded, initializing...");
         this.loadCountries();
     }
 
-     // Regex Validators
+    /* ================= Validators ================= */
     isValidName(name) {
         return /^[A-Za-z\s]+$/.test(name);
     }
@@ -83,12 +91,12 @@ class SignupManager {
             this.isValidName(this.lastName.value.trim()) &&
             this.isValidEmail(this.email.value.trim()) &&
             this.isValidPhone(this.phone.value.trim()) &&
-            this.isValidPassword(this.password.value.trim()); // ✅ include password check
+            this.isValidPassword(this.password.value.trim());
 
         this.signupBtn.disabled = !valid;
     }
 
-
+    /* ================= Address Selection ================= */
     async loadCountries() {
         try {
             const res = await fetch(`${this.apiBasePath}/getCountries`);
@@ -158,10 +166,11 @@ class SignupManager {
         });
     }
 
-    submitSignup() {
-        if (this.signupBtn.disabled) return; // Prevent submission if invalid
+    /* ================= Signup & OTP (Modified to use auth.js) ================= */
+    async submitSignup() {
+        if (this.signupBtn.disabled) return;
 
-        const payload = {
+        this.payload = {
             first_name: this.firstName.value.trim(),
             middle_name: this.middleName.value.trim(),
             last_name: this.lastName.value.trim(),
@@ -175,9 +184,196 @@ class SignupManager {
             country: this.selectedCountry?.name || ''
         };
 
-        signup(payload); // Assuming signup is globally available
+        // Check if OTP functionality is available
+        if (this.otpModal) {
+            // Use OTP flow like the old signup.js
+            try {
+                const res = await fetch(`${this.apiBasePath}/send-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: this.payload.email })
+                });
+                const data = await res.json();
+
+             if (data.success) {
+    this.showOtpLoadingOverlay();
+
+    // Wait 2 seconds, then open OTP modal
+    setTimeout(() => {
+        this.hideOtpLoadingOverlay();
+        this.openOtpModal();
+    }, 2000); // adjust delay if needed
+} else {
+    alert("Failed to send OTP. Try again.");
+}
+
+            } catch (err) {
+                console.error("Signup error:", err);
+                alert("Something went wrong. Please try again.");
+            }
+        } else {
+            // Use direct signup through auth.js (like the new signup.js)
+            await authSignup(this.payload);
+        }
     }
 
+    async verifyOtp() {
+        const otp = this.otpInput.value.trim();
+        if (!otp || otp.length !== 6) {
+            alert("Enter a valid 6-digit OTP");
+            return;
+        }
+
+        try {
+            console.log("Sending verification request:", {
+                email: this.payload.email,
+                otp: otp,
+                user: this.payload
+            });
+
+            const verifyRes = await fetch(`${this.apiBasePath}/verify-otp`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: this.payload.email, otp, user: this.payload })
+            });
+            
+            const verifyData = await verifyRes.json();
+            console.log("Verification response:", verifyData);
+
+            if (verifyData.success) {
+                this.otpModal.querySelector(".otp-modal-content").innerHTML = `
+                    <div class="success-check">✔</div>
+                    <h2>Signup Successful!</h2>
+                    <p>Redirecting to login...</p>
+                `;
+
+                setTimeout(async () => {
+                    this.closeOtpModal();
+                    // Use auth.js showForm instead of manual redirect
+                    await showForm("login");
+                }, 1500);
+            } else {
+                alert(`Error: ${verifyData.message}`);
+                console.error("Verification failed:", verifyData);
+            }
+        } catch (err) {
+            console.error("Verify OTP error:", err);
+            alert("Something went wrong during OTP verification.");
+        }
+    }
+showOtpLoading() {
+    if (!this.otpModal) return;
+    this.otpModal.style.display = "flex";
+    this.otpModal.querySelector(".otp-modal-content").innerHTML = `
+        <div style="text-align:center; padding:20px;">
+            <p>Loading...</p>
+            <div class="spinner" style="margin-top:10px;">⏳</div>
+        </div>
+    `;
+}
+showOtpLoadingOverlay() {
+    const overlay = document.getElementById("otpLoadingOverlay");
+    if (overlay) overlay.style.display = "flex";
+}
+
+hideOtpLoadingOverlay() {
+    const overlay = document.getElementById("otpLoadingOverlay");
+    if (overlay) overlay.style.display = "none";
+}
+
+
+    /* ================= OTP Modal Functions ================= */
+    openOtpModal() {
+        if (!this.otpModal) return;
+        this.restoreOtpModal();
+        this.otpModal.style.display = "flex";
+        this.startOtpCountdown();
+    }
+
+    closeOtpModal() {
+        if (!this.otpModal) return;
+        this.otpModal.style.display = "none";
+        this.restoreOtpModal();
+    }
+
+    restoreOtpModal() {
+        if (!this.otpModal || !this.originalOtpContent) return;
+        this.otpModal.querySelector(".otp-modal-content").innerHTML = this.originalOtpContent;
+        this.bindOtpModalElements();
+    }
+
+    bindOtpModalElements() {
+        if (!this.otpModal) return;
+        
+        this.otpInput = document.getElementById("otpInput");
+        this.verifyOtpBtn = document.getElementById("verifyOtpBtn");
+        this.cancelOtpBtn = document.getElementById("cancelOtpBtn");
+        this.resendOtpBtn = document.getElementById("resendOtpBtn");
+
+        if (this.otpInput && this.verifyOtpBtn) {
+            this.otpInput.addEventListener("input", () => {
+                this.verifyOtpBtn.disabled = this.otpInput.value.trim().length !== 6;
+            });
+            this.verifyOtpBtn.disabled = true;
+            this.verifyOtpBtn.addEventListener("click", () => this.verifyOtp());
+        }
+        
+        if (this.cancelOtpBtn) {
+            this.cancelOtpBtn.addEventListener("click", () => this.closeOtpModal());
+        }
+        
+        if (this.resendOtpBtn) {
+            this.resendOtpBtn.addEventListener("click", () => this.resendOtp());
+        }
+    }
+
+    startOtpCountdown() {
+        if (!this.resendOtpBtn) return;
+
+        let timer = 30;
+        this.resendOtpBtn.disabled = true;
+
+        const countdown = setInterval(() => {
+            this.resendOtpBtn.textContent = `Resend OTP (${timer})`;
+            timer--;
+            if (timer < 0) {
+                clearInterval(countdown);
+                this.resendOtpBtn.disabled = false;
+                this.resendOtpBtn.textContent = "Resend OTP";
+            }
+        }, 1000);
+    }
+
+    resendOtp() {
+        if (!this.payload || !this.payload.email) return;
+
+        fetch(`${this.apiBasePath}/send-otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: this.payload.email })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+    this.showOtpLoadingOverlay();
+
+    // Wait 2 seconds, then open OTP modal
+    setTimeout(() => {
+        this.hideOtpLoadingOverlay();
+        this.openOtpModal();
+    }, 2000); // adjust delay if needed
+} else {
+    alert("Failed to send OTP. Try again.");
+}
+
+        })
+        .catch(err => {
+            console.error("Resend OTP error:", err);
+            alert("Something went wrong. Try again.");
+        });
+    }
+
+    /* ================= Go Back ================= */
     goBack() {
         history.back();
     }
@@ -186,7 +382,7 @@ class SignupManager {
 // Create singleton
 export const signupManager = new SignupManager(API_BASE_PATH);
 
-// Keep compatibility with existing HTML event attributes
+// Window bindings for compatibility with existing HTML event attributes
 window.selectCountry = (country) => signupManager.selectCountry(country);
 window.selectProvince = (province) => signupManager.selectProvince(province);
 window.selectCity = (city) => signupManager.selectCity(city);

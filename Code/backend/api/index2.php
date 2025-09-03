@@ -107,6 +107,15 @@ switch ($route) {
         require __DIR__ . '/routes/search-merchandise.php';
     break;
 
+    case 'send-otp':
+        require __DIR__ . '/routes/send-otp.php';
+    break;
+
+    case 'verify-otp':
+        require __DIR__ . '/routes/verify-otp.php';
+    break;
+
+
 
     default:
         http_response_code(404);

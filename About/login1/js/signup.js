@@ -7,6 +7,8 @@ class SignupManager {
         this.selectedCountry = null;
         this.selectedProvince = null;
         this.selectedCity = null;
+        this.otpModal = document.getElementById("otpModal");
+        this.originalOtpContent = this.otpModal.querySelector(".otp-modal-content").innerHTML;
 
         this.countryContainer = document.getElementById("country-buttons");
         this.provinceContainer = document.getElementById("province-buttons");

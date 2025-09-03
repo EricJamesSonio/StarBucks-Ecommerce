@@ -1,5 +1,8 @@
 Main folder - Starbucks-ecommerce
 
+
+scripts/
+│   ├── send-otp.php # automation for sending otp
 Code/
 ├── api/
 │   ├── .htaccess 
@@ -25,6 +28,8 @@ Code/
 │   │   │   ├── signup.php
 │   │   │   └── sizes.php
 |   |   |   └── history.php
+|   |   |   └── send-otp.php
+|   |   |   └── verify-otp.php
 │   │   │
 │   │   ├── tcpdf/                # Library for PDF receipts
 │   │   └── index.php             # Entry point of backend API
