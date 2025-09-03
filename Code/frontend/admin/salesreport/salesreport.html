@@ -42,7 +42,8 @@
     <button data-range="daily">Daily</button>
     <button data-range="weekly">Weekly</button>
     <button data-range="monthly">Monthly</button>
-    <button class="back-button">← Back to Admin Panel</button>
+    <button class="back-button" onclick="window.location.href='../panel/panel.html'">← Back to Admin Panel</button>
+
   </div>
 
   <label>From: <input type="date" id="startDate"></label>
@@ -55,15 +56,16 @@
   </div>
 
   <h3>Top Selling Items</h3>
-  <table border="1">
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th>Total Sold</th>
-      </tr>
-    </thead>
-    <tbody id="topSellingTable"></tbody>
-  </table>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Total Sold</th>
+      <th>Revenue</th> <!-- ✅ Added -->
+    </tr>
+  </thead>
+  <tbody id="topSellingTable"></tbody>
+</table>
 
   <script type="module" src="../../js/config.js"></script>
   <script src="./js/salesreport.js"></script>

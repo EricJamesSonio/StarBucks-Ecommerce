@@ -22,7 +22,7 @@ class SalesReportController {
             $params[] = $endDate . " 23:59:59";
         }
 
-        // ===== Total Sales =====
+        // ===== Total Sales (final after discounts) =====
         $sqlTotal = "SELECT SUM(final_amount) as total_sales
                      FROM receipt r
                      JOIN userorder uo ON uo.id = r.order_id
@@ -49,8 +49,11 @@ class SalesReportController {
         $totalOrders = $result->fetch_assoc()['total_orders'] ?? 0;
         $stmt->close();
 
-        // ===== Top Selling Items (only from paid orders) =====
-        $sqlTop = "SELECT si.name, SUM(oi.quantity) as total_sold
+        // ===== Top Selling Items (include revenue) =====
+        $sqlTop = "SELECT 
+                        si.name, 
+                        SUM(oi.quantity) AS total_sold, 
+                        SUM(oi.total_price) AS total_revenue
                    FROM order_item oi
                    JOIN starbucksitem si ON si.id = oi.item_id
                    JOIN userorder uo ON uo.id = oi.order_id

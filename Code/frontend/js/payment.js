@@ -42,16 +42,15 @@ class Checkout {
     }
 
     showPaymentModal(total) {
-        const discount = total * 0.10;
-        const final = total - discount;
+        const final = total; // ✅ no discount applied
 
         document.getElementById('paymentTotal').textContent = formatMoney(total);
-        document.getElementById('paymentDiscount').textContent = formatMoney(discount);
+        document.getElementById('paymentDiscount').textContent = formatMoney(0);
         document.getElementById('finalAmount').textContent = formatMoney(final);
         document.getElementById('cashInput').value = '';
         document.getElementById('paymentModal').style.display = 'flex';
 
-        this.paymentData = { total, discount, final };
+        this.paymentData = { total, discount: 0, final };
     }
 
     closePaymentModal() {
@@ -103,8 +102,8 @@ class Checkout {
             this.showReceipt({
                 items,
                 order_id: data.orderId,
-                discount_type: type,
-                discount_amount: formatMoney(discount),
+                discount_type: "none",
+                discount_amount: formatMoney(0),
                 total: formatMoney(total),
                 final: formatMoney(final),
                 paid: formatMoney(amt),

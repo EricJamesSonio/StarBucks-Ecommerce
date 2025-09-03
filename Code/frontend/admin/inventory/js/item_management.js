@@ -27,6 +27,14 @@ class ItemManager {
     this.merchCategoryId = null;
     this._allCategories = [];
   }
+  formatMoney(value) {
+  if (isNaN(value)) return "₱0.00";
+  return "₱" + Number(value).toLocaleString("en-PH", { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  });
+}
+
 
   async loadMerchCategories() {
     try {
@@ -150,7 +158,11 @@ class ItemManager {
     this.itemTableBody.innerHTML = items.map(item => `
       <tr data-id="${item.id}">
         <td><input value="${this.escapeHtml(item.name || '')}" class="edit-name"></td>
-        <td><input type="number" value="${item.price ?? 0}" step="0.01" class="edit-price"></td>
+   <td>
+  <input type="text" value="${this.formatMoney(item.price ?? 0)}" 
+         class="edit-price" data-raw="${item.price ?? 0}">
+</td>
+
         <td>${this.escapeHtml(item.category_name || '')}</td>
         <td>${this.escapeHtml(item.subcategory_name || '')}</td>
         <td><textarea class="edit-desc">${this.escapeHtml(item.description || "")}</textarea></td>
@@ -181,7 +193,11 @@ class ItemManager {
     this.merchTableBody.innerHTML = items.map(item => `
       <tr data-id="${item.id}">
         <td><input value="${this.escapeHtml(item.name || '')}" class="m-edit-name"></td>
-        <td><input type="number" value="${item.price ?? 0}" step="0.01" class="m-edit-price"></td>
+       <td>
+  <input type="text" value="${this.formatMoney(item.price ?? 0)}" 
+         class="m-edit-price" data-raw="${item.price ?? 0}">
+</td>
+
         <td>${this.escapeHtml(item.category_name || '')}</td>
         <td>${this.escapeHtml(item.subcategory_name || '')}</td>
         <td><textarea class="m-edit-desc">${this.escapeHtml(item.description || "")}</textarea></td>
@@ -414,16 +430,17 @@ class ItemManager {
       if (!row) return;
       const id = row.dataset.id;
 
-      if (e.target.classList.contains("btnUpdate")) {
-        const updated = {
-          id,
-          name: row.querySelector(".edit-name").value,
-          price: row.querySelector(".edit-price").value,
-          description: row.querySelector(".edit-desc").value
-        };
-        this.updateItem(updated);
-        return;
-      }
+    if (e.target.classList.contains("btnUpdate")) {
+  const updated = {
+    id,
+    name: row.querySelector(".edit-name").value,
+    price: parseFloat(row.querySelector(".edit-price").dataset.raw || 0),
+    description: row.querySelector(".edit-desc").value
+  };
+  this.updateItem(updated);
+  return;
+}
+
 
       if (e.target.classList.contains("btnDelete")) {
         if (confirm("Delete this item?")) {
@@ -481,16 +498,17 @@ class ItemManager {
       if (!row) return;
       const id = row.dataset.id;
 
-      if (e.target.classList.contains("m-btnUpdate")) {
-        const updated = {
-          id,
-          name: row.querySelector(".m-edit-name").value,
-          price: row.querySelector(".m-edit-price").value,
-          description: row.querySelector(".m-edit-desc").value
-        };
-        this.updateMerchandise(updated);
-        return;
-      }
+   if (e.target.classList.contains("m-btnUpdate")) {
+  const updated = {
+    id,
+    name: row.querySelector(".m-edit-name").value,
+    price: parseFloat(row.querySelector(".m-edit-price").dataset.raw || 0),
+    description: row.querySelector(".m-edit-desc").value
+  };
+  this.updateMerchandise(updated);
+  return;
+}
+
 
       if (e.target.classList.contains("m-btnDelete")) {
         if (confirm("Delete this merchandise?")) {
@@ -518,7 +536,28 @@ class ItemManager {
     document.getElementById("btnBack").addEventListener("click", () => {
       window.location.href = "../inventory.html";
     });
+// Format price fields on blur (items)
+this.itemTableBody.addEventListener("blur", (e) => {
+  if (e.target.classList.contains("edit-price")) {
+    const raw = parseFloat(e.target.value.replace(/[^\d.-]/g, "")) || 0;
+    e.target.dataset.raw = raw;
+    e.target.value = this.formatMoney(raw);
   }
+}, true);
+
+// Format price fields on blur (merchandise)
+this.merchTableBody.addEventListener("blur", (e) => {
+  if (e.target.classList.contains("m-edit-price")) {
+    const raw = parseFloat(e.target.value.replace(/[^\d.-]/g, "")) || 0;
+    e.target.dataset.raw = raw;
+    e.target.value = this.formatMoney(raw);
+  }
+}, true);
+
+  }
+
+
+  
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -37,6 +37,16 @@ class DateRangeHelper {
         };
     }
 }
+class MoneyFormatter {
+    static format(value) {
+        if (isNaN(value)) return "₱0.00";
+        return "₱" + Number(value).toLocaleString("en-PH", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+}
+
 
 class SalesReportService {
     constructor(apiBasePath) {
@@ -109,18 +119,26 @@ class SalesReportController {
             return;
         }
 
-        this.totalSalesEl.textContent = `₱${parseFloat(data.total_sales).toFixed(2)}`;
+        this.totalSalesEl.textContent = MoneyFormatter.format(data.total_sales);
+
         this.totalOrdersEl.textContent = data.total_orders;
         this.renderTopSelling(data.top_selling);
     }
 
     renderTopSelling(items) {
-        this.topSellingTableEl.innerHTML = "";
-        items.forEach(item => {
-            const row = `<tr><td>${item.name}</td><td>${item.total_sold}</td></tr>`;
-            this.topSellingTableEl.innerHTML += row;
-        });
-    }
+    this.topSellingTableEl.innerHTML = "";
+    items.forEach(item => {
+        const revenue = item.total_revenue ? MoneyFormatter.format(item.total_revenue) : "₱0.00";
+        const row = `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.total_sold}</td>
+                <td>${revenue}</td>
+            </tr>`;
+        this.topSellingTableEl.innerHTML += row;
+    });
+}
+
 }
 
 // ===== Initialization =====
