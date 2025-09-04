@@ -3,6 +3,9 @@ import { loadSizes, checkLoginOnLoad } from './session.js';
 import { loadCategory, showCategories, loadTopSelling } from './api.js';
 import { openModal, closeModal, addToCart } from './modal.js';
 import { checkout, closePaymentModal, processPayment } from './payment.js';
+// main.js
+import { logout } from '../login/js/auth.js';  // add this
+
 
 // 🔹 Profile modal elements
 const profileIcon = document.getElementById("profile-icon");
@@ -213,3 +216,5 @@ window.addToCart = addToCart;
 window.checkout = checkout;
 window.closePaymentModal = closePaymentModal;
 window.processPayment = processPayment;
+window.logout = logout;
+
