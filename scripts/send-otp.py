@@ -1,7 +1,16 @@
 import smtplib
 import sys
 import re
+import os
 from email.mime.text import MIMEText
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
+# Get email credentials from environment
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
 
 def is_valid_email(email):
     return re.match(r"^[^@]+@[^@]+\.[^@]+$", email)
@@ -9,14 +18,14 @@ def is_valid_email(email):
 def send_otp(email, otp):
     msg = MIMEText(f"Your OTP is {otp}. It expires in 5 minutes.")
     msg["Subject"] = "Starbucks OTP"
-    msg["From"] = "eriesjoy1209@gmail.com"
+    msg["From"] = EMAIL_USER
     msg["To"] = email
 
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.starttls()
-        server.login("eriesjoy1209@gmail.com", "qift bzzq talp sbpf")
+        server.login(EMAIL_USER, EMAIL_PASS)
         server.send_message(msg)
-        print(f"Sending OTP {otp} to {email}")  # ✅ Debug log
+        print(f"✅ Sending OTP {otp} to {email}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:

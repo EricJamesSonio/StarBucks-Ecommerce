@@ -42,7 +42,7 @@ Code/
 │       ├── Order.php
 │       ├── Payment.php
 │       ├── Size.php
-│       └── User.php
+│       └── User.php 
 │       └── Cart.php
 │
 ├── database/

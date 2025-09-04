@@ -1,6 +1,7 @@
 # requirements.txt
 # No external dependencies required
-python_version >= 3.8
+python-dotenv
+
 
 
 # type in terminal
