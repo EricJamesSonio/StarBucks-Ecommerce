@@ -168,11 +168,25 @@ class AuthController {
     }, 500);
   }
 
-  logout() {
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("isGuest");
+ async logout() {
+  // clear frontend storage
+  localStorage.removeItem("loggedInUser");
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("isGuest");
+
+  try {
+    // clear backend session
+    await fetch(`${API_BASE_PATH}/logout`, {
+      method: "POST",
+      credentials: "include"
+    });
+  } catch (err) {
+    console.warn("Logout request failed:", err);
   }
+
+  // redirect to login
+  window.location.href = "../../frontend/login/login.html";
+}
 
   isLoggedIn() {
     return localStorage.getItem("loggedInUser") !== null;

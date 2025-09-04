@@ -9,9 +9,10 @@ createTable($con, 'user', "
         first_name VARCHAR(50) NOT NULL,
         middle_name VARCHAR(50),
         last_name VARCHAR(50) NOT NULL,
+        image_url VARCHAR(255) DEFAULT 'default.png', -- store only filename, front-end will prefix with IMAGES_BASE_PATH
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)
+    )
 ");
 
 ?>

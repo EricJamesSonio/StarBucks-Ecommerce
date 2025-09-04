@@ -115,6 +115,11 @@ switch ($route) {
         require __DIR__ . '/routes/verify-otp.php';
     break;
 
+    case 'profile':
+        require __DIR__ . '/routes/profile.php';
+        break;
+
+
 
 
     default:
