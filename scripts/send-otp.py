@@ -25,7 +25,8 @@ def send_otp(email, otp):
         server.starttls()
         server.login(EMAIL_USER, EMAIL_PASS)
         server.send_message(msg)
-        print(f"✅ Sending OTP {otp} to {email}")
+        print(f"Sending OTP {otp} to {email}")  # match working version
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
