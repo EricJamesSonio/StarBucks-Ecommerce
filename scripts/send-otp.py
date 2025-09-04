@@ -12,6 +12,12 @@ load_dotenv()
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
 
+# Debug log for environment values
+if EMAIL_USER and EMAIL_PASS:
+    print("DEBUG: Loaded credentials ->", EMAIL_USER, EMAIL_PASS[:4] + "****")
+else:
+    print("DEBUG: Failed to load EMAIL_USER or EMAIL_PASS from .env")
+
 def is_valid_email(email):
     return re.match(r"^[^@]+@[^@]+\.[^@]+$", email)
 
@@ -25,8 +31,7 @@ def send_otp(email, otp):
         server.starttls()
         server.login(EMAIL_USER, EMAIL_PASS)
         server.send_message(msg)
-        print(f"Sending OTP {otp} to {email}")  # match working version
-
+        print(f"DEBUG: Sending OTP {otp} to {email}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
