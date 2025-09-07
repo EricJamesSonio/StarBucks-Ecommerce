@@ -20,7 +20,7 @@
 </div>
 
 
-  <main>
+  <!-- <main>
     <section id="categorySelect">
       <h2>Choose a Category</h2>
 <button onclick="window.menu.setCategory(2); loadCategory('Food')">🍽️ Food</button>
@@ -39,7 +39,32 @@
 
 
     <section id="itemList"></section>
-  </main>
+  </main> -->
+
+
+  <main>
+  <div class="container">
+    <!-- Left sidebar for buttons -->
+    <div class="sidebar" id="sidebar">
+      <h2>Categories</h2>
+      <button class="category-btn" onclick="window.menu.setCategory(2); loadCategory('Food')">🍽️ Food</button>
+      <button class="category-btn" onclick="window.menu.setCategory(1); loadCategory('Beverages')">🥤 Beverages</button>
+      <button class="category-btn" onclick="window.menu.setCategory(3); loadCategory('Merchandise')">🛍️ Merchandise</button>
+      
+      <div id="subcategorySection" style="display:none;">
+        <h3>Subcategories</h3>
+        <div id="subcategoryButtons"></div>
+      </div>
+      
+      <button id="backButton" onclick="window.menu.resetCategory(); showCategories()" style="display:none">🔙 Back</button>
+    </div>
+    
+    <!-- Right content area for products -->
+    <div class="content" id="content">
+      <div id="itemList"></div>
+    </div>
+  </div>
+</main>
 
   <!-- Modal -->
   <div id="itemModal" class="modal" style="display: none;">
