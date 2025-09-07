@@ -26,59 +26,59 @@ body {
   --big-font-size: 4rem;
 }
 
-/* Header Navigation */
-header {
+/* Container for two-panel layout */
+.container {
   display: flex;
-  justify-content: flex-end;
-  gap: 1.5rem;
-  padding: 1rem 2rem;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Left sidebar for categories */
+.sidebar {
+  width: 25%;
   background-color: var(--main-color-darkgreen);
-  box-shadow: 0 2px 6px rgba(0, 72, 43, 0.7);
+  padding: 20px;
+  border-right: 2px solid var(--main-color-green);
 }
 
-/* Category Section */
-#categorySelect {
-  margin-top: 3rem;
-  text-align: center;
+/* Right content area for products */
+.content {
+  width: 75%;
+  padding: 20px;
 }
 
-#categorySelect h2 {
-  font-size: 2.25rem;
-  margin-bottom: 1.2rem;
-  color: var(--main-color-lightgreen);
-  font-weight: 700;
-  letter-spacing: 1.2px;
-}
-
-#categorySelect button {
-  margin: 0 1rem;
+/* Category buttons */
+.category-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  text-align: left;
   background-color: var(--main-color-green);
   color: #f0f4ef;
-  padding: 0.65rem 1.8rem;
-  border-radius: 40px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
   transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0,112,74,0.3);
 }
 
-#categorySelect button:hover {
+.category-btn:hover {
   background-color: var(--main-color-lightgreen);
-  box-shadow: 0 6px 12px rgba(0,153,89,0.5);
 }
 
-/* Item Section */
-#itemList {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 2rem 1rem;
-  gap: 2rem;
+/* Subcategory section */
+#subcategorySection {
+  margin-top: 20px;
 }
 
-/* Item Cards */
+#subcategorySection h3 {
+  color: var(--unique-color-yellow);
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+/* Item cards */
 .item-card {
   background-color: var(--bg-cream);
   color: var(--main-color-darkgreen);
@@ -92,6 +92,7 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px;
 }
 
 .item-card:hover {
@@ -110,6 +111,24 @@ header {
   box-shadow: 0 3px 10px rgba(0, 72, 43, 0.2);
 }
 
+.item-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.item-description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.item-price {
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
 /* Back Button */
 #backButton {
   display: block;
@@ -124,11 +143,31 @@ header {
   font-size: 1.1rem;
   box-shadow: 0 4px 12px rgba(0,112,74,0.3);
   transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 #backButton:hover {
   background-color: var(--main-color-lightgreen);
   box-shadow: 0 6px 16px rgba(0,153,89,0.5);
+}
+
+/* Item List */
+#itemList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 1rem;
+  gap: 1.5rem;
+}
+
+/* Header Navigation */
+header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background-color: var(--main-color-darkgreen);
+  box-shadow: 0 2px 6px rgba(0, 72, 43, 0.7);
 }
 
 /* Modal Common Styles */
@@ -193,6 +232,69 @@ header {
   background-color: #f9fcf8;
 }
 
+/* Subcategory titles */
+.subcategory-title {
+    color: var(--main-color-lightgreen);
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--main-color-green);
+    width: 100%;
+}
+
+/* Container for items in a subcategory */
+.subcategory-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+/* Subcategory headers */
+.subcategory-header {
+    color: var(--main-color-lightgreen);
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--main-color-green);
+    width: 100%;
+}
+
+/* Container for items in each subcategory */
+.subcategory-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+/* Make sure item cards display properly */
+.item-card {
+    background-color: var(--bg-cream);
+    color: var(--main-color-darkgreen);
+    width: 220px;
+    border-radius: 20px;
+    padding: 1.25rem 1rem 1.5rem 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(0, 72, 43, 0.15);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item-card:hover {
+    background-color: var(--main-color-lightgreen);
+    color: #fff;
+    transform: scale(1.06);
+    box-shadow: 0 10px 20px rgba(0, 153, 89, 0.5);
+}
+
 /* Buttons */
 button {
   background-color: var(--main-color-green);
@@ -210,28 +312,6 @@ button {
 button:hover {
   background-color: var(--main-color-lightgreen);
   box-shadow: 0 8px 22px rgba(0,153,89,0.6);
-}
-
-/* Responsive Tweaks */
-@media (max-width: 768px) {
-  .item-card {
-    width: 90%;
-  }
-
-  header {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  #categorySelect h2 {
-    font-size: 1.8rem;
-  }
-
-  .modal-content {
-    padding: 2rem 1.5rem;
-    max-width: 90vw;
-  }
 }
 
 /* Search Container */
@@ -288,6 +368,7 @@ button:hover {
   color: #fff;
   border-radius: 12px;
 }
+
 /* Navigation bar container */
 #head-nav {
   display: flex;
@@ -431,6 +512,7 @@ button:hover {
     padding: .6rem 1rem;
     border-radius: 20px;
 }
+
 .nav-list nav a{
     font-size: .9rem;
     text-transform: uppercase;
@@ -440,15 +522,40 @@ button:hover {
     padding: .5rem 1.5rem;
     border-radius: 20px;
 }
+
 .nav-list nav a:hover{
     background-color: var(--main-color-darkgreen);
     color: white;
     font-weight: 600;
     background-color: #00361f;
+}
 
-    
-/* Responsive navigation for mobile */
+/* Responsive Tweaks */
 @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .sidebar, .content {
+    width: 100%;
+  }
+  
+  .item-card {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .modal-content {
+    padding: 2rem 1.5rem;
+    max-width: 90vw;
+  }
+  
   #head-nav {
     flex-direction: column;
     height: auto;
@@ -475,12 +582,10 @@ button:hover {
     display: none; /* Disable hover dropdown on mobile */
   }
 
-  /* For mobile dropdown toggle, you’d need JS (optional) */
-
   #icon-list {
     width: 100%;
     justify-content: center;
     gap: 1rem;
     margin-top: 1rem;
   }
-}}
+}
