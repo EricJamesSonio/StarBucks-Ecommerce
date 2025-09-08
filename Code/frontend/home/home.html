@@ -34,99 +34,28 @@
     </section>
     
     <section id="menu">
-        <nav>
+    <nav>
         <ul>
-            <li><div><a href=# onclick="loadTopSelling('Beverages')">Beverages</li>
-            <li><div><a href="#" onclick="loadTopSelling('Food')">food</a></div></li>
-            <li><div><a href="#" onclick="loadTopSelling('Merchandise')">Merchandise</a></div></li>
+            <li><div><a href="#menu" onclick="loadTopSelling('Beverages')">Beverages</a></div></li>
+            <li><div><a href="#menu" onclick="loadTopSelling('Food')">Food</a></div></li>
+            <li><div><a href="#menu" onclick="loadTopSelling('Merchandise')">Merchandise</a></div></li>
         </ul>
-        </nav>
+    </nav>
 
-        <div id="foodSelection">
-            <ul id="box">
-                <li class="prodInfo">
-                    <div class="contents">
-                        <img src="../assets/ClassicCup.png" alt="product">
-                        <h2>caramel latte</h2>
-                        <div class="ingInfo">
-                        <ul id="ingName">
-                            <li>milk</li>
-                            <li>cream</li>
-                            <li>toppings</li>
-                        </ul>
-                        <ul id="ingOpt">
-                            <a href="">option</a>
-                            <a href="">option</a>
-                            <a href="">option</a>
-                        </ul>
-                        </div>
-                    
-                    <button type="submit">add to cart</button>
-                    </div>
-                </li>
-                <li class="prodInfo">
-                    <div class="contents">
-                        <img src="../assets/ClassicCup.png" alt="product">
-                        <h2>mocha frappe</h2>
-                        <div class="ingInfo">
-                        <ul id="ingName">
-                            <li>milk</li>
-                            <li>cream</li>
-                            <li>toppings</li>
-                        </ul>
-                        <ul id="ingOpt">
-                            <a href="">option</a>
-                            <a href="">option</a>
-                            <a href="">option</a>
-                        </ul>
-                        </div>
-                    
-                    <button type="submit">add to cart</button>
-                    </div>
-                </li>
-                <li class="prodInfo">
-                    <div  class="contents">
-                        <img src="../assets/ClassicCup.png" alt="product">
-                        <h2>cappucinno</h2>
-                        <div class="ingInfo">
-                        <ul id="ingName">
-                            <li>milk</li>
-                            <li>cream</li>
-                            <li>toppings</li>
-                        </ul>
-                        <ul id="ingOpt">
-                            <a href="">option</a>
-                            <a href="">option</a>
-                            <a href="">option</a>
-                        </ul>
-                        </div>
-                    
-                    <button type="submit">add to cart</button>
-                    </div>
-                </li>                        
-                <li class="prodInfo">
-                    <div  class="contents">
-                        
-                        <img src="../assets/ClassicCup.png" alt="product">
-                        <h2>brewed coffee</h2>
-                        <div class="ingInfo">
-                        <ul id="ingName">
-                            <li>milk</li>
-                            <li>cream</li>
-                            <li>toppings</li>
-                        </ul>
-                        <ul id="ingOpt">
-                            <a href="">option</a>
-                            <a href="">option</a>
-                            <a href="">option</a>
-                        </ul>
-                        </div>
-                    
-                    <button type="submit">add to cart</button>
-                    </div>
-                </li>
-            </ul>
+    <div id="foodSelection">
+        <h2>Top Selling Items</h2>
+        <div id="itemList" class="top-selling-container">
+            <!-- Top selling items will be dynamically inserted here by displayTopSelling() -->
+            <!-- Example of what will be generated:
+            <div class="item-card">
+                <img src="../assets/ClassicCup.png" class="item-img" alt="Product Name">
+                <div class="item-name">Product Name</div>
+                <div class="item-price">₱99.99</div>
+                <div>Total Sold: 150</div>
+            </div>
+            -->
         </div>
+    </div>
 </section>
 
     <section id="unmatched">

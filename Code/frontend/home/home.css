@@ -306,143 +306,173 @@ body, html {
     text-transform: uppercase;
 }
 
+/* Top Selling Items Section */
 #menu #foodSelection {
     width: 100%;
-    height: 70vh;
-    display: flex;
-    justify-content: center;
-    padding: 0 1rem;
-}
-
-#menu #foodSelection #box {
-    display: flex;
-    list-style: none;
-    align-items: center;
-    width: 100%;
-    height: inherit;
-    gap: clamp(1rem, 5vw, 5rem);
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-#menu #foodSelection ul .prodInfo {
-    background-color: #ffffff;
-    height: clamp(250px, 36vh, 36vh);
-    width: clamp(150px, 12vw, 12vw);
-    min-width: 150px;
-    border-radius: 20px;
-    filter: drop-shadow(15px 10px 5px rgb(0, 0, 0, .4));
-    transition: all 0.3s ease;
-}
-
-#menu #foodSelection .contents {
-    position: relative;
-    bottom: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 0.5rem;
-    z-index: 10; /* Ensure content is above images */
+    padding: 2rem 1rem;
 }
 
 #menu #foodSelection h2 {
     text-transform: uppercase;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    margin: 2rem 0;
+    font-size: clamp(1.2rem, 3vw, 2rem);
     text-align: center;
+    color: var(--main-color-lightgreen);
+    font-weight: 700;
 }
 
-#menu #foodSelection .ingInfo {
+/* Top Selling Container */
+.top-selling-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 90%;
-    padding-bottom: 1rem;
-}
-
-#menu #foodSelection .ingInfo ul {
-    list-style: none;
-    display: flex-block;
     flex-wrap: wrap;
-    width: 2rem;
-    height: 90%;
-    gap: 10px;
+    justify-content: center;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
 }
 
-#menu #foodSelection #ingName li {
-    margin-bottom: 10px;
-}
-
-#menu #foodSelection .ingInfo ul li, a {
-    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
-    text-transform: uppercase;
-    font-weight: 500;
-} 
-
-#menu #foodSelection #ingOpt {
-    display: flex;
-    justify-content: flex-end;
-}
-
-#menu #foodSelection ul li img {
-    height: clamp(150px, 27vh, 27vh);
-    width: clamp(80px, 15vh, 15vh);
-    filter: drop-shadow(0px 3px 5px rgb(0,0,0, .7));
-    object-fit: cover;
-    z-index: 1; /* Keep images below interactive content */
-    position: relative;
-}
-
-#menu #foodSelection button {
-    background-color: var(--main-color-lightgreen);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+/* Item Cards */
+.item-card {
+    background-color: var(--bg-cream);
+    color: var(--main-color-darkgreen);
+    width: clamp(250px, 25vw, 300px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
     cursor: pointer;
-    position: relative;
-    z-index: 20; /* Ensure buttons are always clickable */
+    box-shadow: 0 6px 12px rgba(0, 72, 43, 0.15);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item-card:hover {
+    background-color: var(--main-color-lightgreen);
+    color: #fff;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 153, 89, 0.4);
+}
+
+.item-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 72, 43, 0.2);
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+}
+
+.item-price {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    margin-bottom: 0.5rem;
+}
+
+.item-card > div:last-child {
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    font-weight: 500;
     margin-top: 0.5rem;
 }
 
-#menu #foodSelection .prodInfo:hover {
-    background-color: var(--main-color-lightgreen);
-    height: clamp(270px, 39vh, 39vh);
-    width: clamp(170px, 14vw, 14vw);
-    cursor: pointer;
-}
-
-/* menu-hoverItems */
-#menu #foodSelection .prodInfo:hover h2 {
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+/* Hover Effects */
+.item-card:hover .item-name {
     color: white;
+    font-size: clamp(1rem, 2vw, 1.3rem);
 }
 
-#menu #foodSelection .prodInfo:hover #ingName li {
-    color: white;
-    font-size: clamp(0.8rem, 2vw, 1rem);
+.item-card:hover .item-price {
+    color: #ffdddd;
 }
 
-#menu #foodSelection .prodInfo:hover #ingOpt a {
-    color: rgb(0, 214, 139);
-    font-weight: 500;
-    font-size: clamp(0.8rem, 2vw, 1rem);
+.item-card:hover > div:last-child {
+    color: #e0e0e0;
+    font-size: clamp(0.9rem, 1.7vw, 1.1rem);
 }
 
-#menu #foodSelection .prodInfo:hover .ingInfo {
-    gap: 4vw;
-    font-size: clamp(0.8rem, 2vw, 1rem);
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .top-selling-container {
+        gap: 1.5rem;
+    }
+    
+    .item-card {
+        width: clamp(220px, 30vw, 280px);
+        padding: 1.2rem;
+    }
 }
 
-#menu #foodSelection .prodInfo:hover button {
-    position: relative;
-    top: 10px;
-    background-color: white;
-    color: var(--main-color-lightgreen);
-    font-weight: 700;
-    text-transform: uppercase;
+@media (max-width: 768px) {
+    #menu #foodSelection {
+        padding: 1.5rem 0.5rem;
+    }
+    
+    .top-selling-container {
+        gap: 1.2rem;
+    }
+    
+    .item-card {
+        width: clamp(200px, 45vw, 250px);
+        padding: 1rem;
+    }
+    
+    .item-img {
+        height: 140px;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-selling-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .item-card {
+        width: 90%;
+        max-width: 280px;
+        padding: 1rem;
+    }
+    
+    .item-img {
+        height: 130px;
+    }
+    
+    #menu #foodSelection h2 {
+        margin: 1.5rem 0;
+        font-size: 1.4rem;
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 360px) {
+    .item-card {
+        width: 95%;
+        padding: 0.8rem;
+    }
+    
+    .item-img {
+        height: 120px;
+    }
+    
+    .item-name {
+        font-size: 0.9rem;
+    }
+    
+    .item-price {
+        font-size: 1rem;
+    }
 }
 
 /* unmatched */
