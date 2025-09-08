@@ -20,7 +20,7 @@
 
 section {
     width: 100vw;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 body, html {
@@ -483,6 +483,8 @@ body, html {
     position: relative;
     background-color: var(--main-color-darkgreen);
     padding: 2rem;
+    overflow: hidden;
+    height: 100vh;
 }
 
 #unmatched h1 {
