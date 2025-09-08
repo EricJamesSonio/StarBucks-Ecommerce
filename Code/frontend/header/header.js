@@ -8,7 +8,7 @@ class HeaderComponent {
                 </li>
                 <li class="nav-list">
                     <nav>
-                        <a href="../home/index.html">Home</a>
+                        <a href="../home/home.html">Home</a>
                         <a href="../menu/menu.html">Menu</a>
                         <a href="../about/about.html">About Us</a>
                     </nav>
@@ -42,7 +42,7 @@ class HeaderComponent {
                     width: 100%;
                     padding: 1rem 2rem;
                     background-color: var(--main-color-darkgreen);
-                    box-shadow: 0 3px 8px rgba(0, 54, 31, 0.7);
+                    box-shadow: 0 3px 8px rgba(0, 54, 31, 0.9);
                     position: sticky;
                     top: 0;
                     z-index: 1000;
