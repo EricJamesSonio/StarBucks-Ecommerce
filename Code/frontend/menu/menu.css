@@ -160,15 +160,6 @@ body {
   gap: 1.5rem;
 }
 
-/* Header Navigation */
-header {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1.5rem;
-  padding: 1rem 2rem;
-  background-color: var(--main-color-darkgreen);
-  box-shadow: 0 2px 6px rgba(0, 72, 43, 0.7);
-}
 
 /* Modal Common Styles */
 .modal {
@@ -316,9 +307,11 @@ button:hover {
 
 /* Search Container */
 .search-container {
-  position: relative;
+  position: absolute;
   width: 300px;
   margin: 1rem auto 2rem auto;
+  display: inline-block;
+  left: 50vw;
 }
 
 #searchInput {
