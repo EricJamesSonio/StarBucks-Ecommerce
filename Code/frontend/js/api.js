@@ -81,25 +81,35 @@ class CategoryUI {
     }
 
     displayTopSelling(items) {
-        const itemList = document.getElementById('itemList');
-        itemList.innerHTML = '<h2>Top Selling Items</h2>';
-        
-        const top4 = items.slice(0, 4);
-        top4.forEach(item => {
-            const imageUrl = this.imageManager.getImage(item.image_url);
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            card.onclick = () => openModal(item);
-
-            card.innerHTML = `
-                <img src="${imageUrl}" class="item-img" alt="${item.name}">
-                <div class="item-name">${item.name}</div>
-                <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
-                <div>Total Sold: ${item.total_sold}</div>
-            `;
-            itemList.appendChild(card);
-        });
+    const itemList = document.getElementById('itemList');
+    if (!itemList) {
+        console.error('itemList element not found');
+        return;
     }
+    
+    itemList.innerHTML = '<h2>Top Selling Items</h2>';
+    
+    if (items.length === 0) {
+        itemList.innerHTML += '<p>No top selling items found.</p>';
+        return;
+    }
+
+    const top4 = items.slice(0, 4);
+    top4.forEach(item => {
+        const imageUrl = this.imageManager.getImage(item.image_url);
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.onclick = () => openModal(item);
+
+        card.innerHTML = `
+            <img src="${imageUrl}" class="item-img" alt="${item.name}">
+            <div class="item-name">${item.name}</div>
+            <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
+            <div>Total Sold: ${item.total_sold}</div>
+        `;
+        itemList.appendChild(card);
+    });
+}
 
     displaySubcategories(subcategories, onClick) {
         const container = document.getElementById('subcategoryButtons');
@@ -224,15 +234,23 @@ class CategoryController {
             return;
         }
 
-        document.getElementById('backButton').style.display = 'block';
-
         try {
             const result = await this.service.fetchTopSelling();
             if (!result.status) throw new Error('No data');
-            const byCat = result.data.filter(item => item.category_id == catId);
+            
+            // Filter items by category and sort by total_sold
+            const byCat = result.data
+                .filter(item => item.category_id == catId)
+                .sort((a, b) => b.total_sold - a.total_sold);
+            
             this.ui.displayTopSelling(byCat);
         } catch (err) {
             console.error('Could not load top-selling:', err);
+            // Show error in the foodSelection section
+            const foodSelection = document.getElementById('foodSelection');
+            if (foodSelection) {
+                foodSelection.innerHTML = '<p>Could not load top selling items. Please try again later.</p>';
+            }
         }
     }
 
@@ -352,9 +370,11 @@ export function loadCategory(categoryName) {
 export function showCategories() {
     categoryUI.showCategories();
 }
+export function loadSubcategories(categoryId) {
+    categoryController.loadSubcategoriesForSidebar(categoryId);
+}
 export function loadAllItemsByCategory(categoryId) {
-    // This function now requires subcategories data, so we need to handle it differently
-    console.warn("loadAllItemsByCategory requires subcategories data. Use loadCategory instead.");
+    categoryController.loadAllItemsByCategory(categoryId);
 }
 
 // Make functions globally available
@@ -368,6 +388,14 @@ window.loadCategory = function(categoryName) {
 
 window.showCategories = function() {
     categoryUI.showCategories();
+};
+
+window.loadSubcategories = function(categoryId) {
+    categoryController.loadSubcategoriesForSidebar(categoryId);
+};
+
+window.loadAllItemsByCategory = function(categoryId) {
+    categoryController.loadAllItemsByCategory(categoryId);
 };
 
 // Initialize menu object if not already defined
