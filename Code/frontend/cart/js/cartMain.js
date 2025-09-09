@@ -30,6 +30,8 @@ export async function initCartPage() {
     }
 
     if (subtotalEl && discountEl && deliveryEl && totalEl) {
+      updateTotal(subtotalEl, discountEl, deliveryEl, totalEl);
+      
       const observer = new MutationObserver(() => {
         updateTotal(subtotalEl, discountEl, deliveryEl, totalEl);
       });
