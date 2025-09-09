@@ -38,9 +38,7 @@
                 <li><div><a href="#menu" onclick="loadTopSelling('Merchandise')">Merchandise</a></div></li>
             </ul>
         </nav>
-
         <div id="foodSelection">
-            <h2>Top Selling Items</h2>
             <div id="itemList" class="top-selling-container">
                 <!-- Top selling items will be dynamically inserted here -->
             </div>
@@ -69,7 +67,44 @@
         </div>
     </section>
 
-
+ <!-- Modal -->
+  <div id="itemModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h2 id="modalItemName"></h2>
+      <label>Size:
+        <select id="modalSize"></select>
+      </label>
+      <label>Quantity:
+        <input type="number" id="modalQuantity" value="1" min="1" />
+      </label>
+      <div class="modal-actions">
+        <button onclick="addToCart()">Add to Cart</button>
+        <button onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+  
     <script type="module" src="../../frontend/js/main.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    loadTopSelling('Beverages'); // automatically loads beverages
+  });
+  
+    document.querySelectorAll(".item-name").forEach(el => {
+  if (el.scrollWidth > el.clientWidth && !el.querySelector("span")) {
+    let text = el.textContent.trim();
+    el.innerHTML = `<span>${text}</span>`;
+    el.classList.add("marquee");
+
+    const span = el.querySelector("span");
+    const distance = span.scrollWidth + el.clientWidth; // total distance to scroll
+    const speed = 100; // pixels per second, adjust this value for speed
+
+    const duration = distance / speed; // time in seconds
+    span.style.animationDuration = `${duration}s`;
+  }
+});
+
+</script>
 </body>
 </html>

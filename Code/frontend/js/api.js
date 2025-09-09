@@ -80,17 +80,18 @@ class CategoryUI {
         document.getElementById('backButton').style.display = 'block';
     }
 
-    displayTopSelling(items) {
+   displayTopSelling(items) {
     const itemList = document.getElementById('itemList');
     if (!itemList) {
         console.error('itemList element not found');
         return;
     }
-    
-    itemList.innerHTML = '<h2>Top Selling Items</h2>';
-    
+
+    // ✅ Always clear first so it replaces instead of stacking
+    itemList.innerHTML = "";
+
     if (items.length === 0) {
-        itemList.innerHTML += '<p>No top selling items found.</p>';
+        itemList.innerHTML = '<p>No top selling items found.</p>';
         return;
     }
 
@@ -101,15 +102,36 @@ class CategoryUI {
         card.className = 'item-card';
         card.onclick = () => openModal(item);
 
+        // Create name container first (empty)
+        const nameContainer = document.createElement('div');
+        nameContainer.className = 'item-name';
+        nameContainer.textContent = item.name;
+
+        // After inserting text, check overflow for marquee
+        requestAnimationFrame(() => {
+            if (nameContainer.scrollWidth > nameContainer.clientWidth) {
+                let text = nameContainer.textContent.trim();
+                nameContainer.innerHTML = `<span>${text}</span>`;
+                nameContainer.classList.add("marquee");
+            }
+        });
+
+        // Fill the card
         card.innerHTML = `
             <img src="${imageUrl}" class="item-img" alt="${item.name}">
-            <div class="item-name">${item.name}</div>
             <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
             <div>Total Sold: ${item.total_sold}</div>
+            <button class="addToCartBtn" onclick="addToCart()">Add To Cart</button>
         `;
+
+        // Insert nameContainer at the right spot (before price)
+        card.insertBefore(nameContainer, card.querySelector(".item-price"));
+
         itemList.appendChild(card);
     });
 }
+
+
 
     displaySubcategories(subcategories, onClick) {
         const container = document.getElementById('subcategoryButtons');
@@ -241,7 +263,8 @@ class CategoryController {
             // Filter items by category and sort by total_sold
             const byCat = result.data
                 .filter(item => item.category_id == catId)
-                .sort((a, b) => b.total_sold - a.total_sold);
+                .sort((a, b) => b.total_sold - a.total_sold)
+                .slice(0,4)
             
             this.ui.displayTopSelling(byCat);
         } catch (err) {
