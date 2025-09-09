@@ -1,7 +1,15 @@
 // headerComponent.js - Main HeaderComponent class
 import { headerHTML } from './headerTemplate.js';
 import { headerCSS } from './headerStyles.js';
-import { updateProfileImageInHeader, loadUserProfile, ensureCSSVariables, uploadProfileImage } from './headerUtils.js';
+import { 
+  updateProfileImageInHeader, 
+  loadUserProfile, 
+  ensureCSSVariables, 
+  uploadProfileImage,
+  loadCountries,   // 🔹 add
+  loadProvinces,   // 🔹 add
+  loadCities       // 🔹 add
+} from './headerUtils.js';
 
 class HeaderComponent {
     constructor() {
@@ -108,40 +116,64 @@ class HeaderComponent {
         }
     }
 
-    setupProfileModal() {
-        // Wait for DOM to be fully loaded
-        setTimeout(() => {
-            const profileIcon = document.getElementById('profile-icon');
-            const profileModal = document.getElementById('profile-modal');
-            const closeProfile = document.getElementById('close-profile');
+setupProfileModal() {
+  // Wait for DOM to be fully loaded
+  setTimeout(() => {
+    const profileIcon = document.getElementById('profile-icon');
+    const profileModal = document.getElementById('profile-modal');
+    const closeProfile = document.getElementById('close-profile');
 
-            if (profileIcon && profileModal && closeProfile) {
-                // Open modal on profile icon click
-                profileIcon.addEventListener('click', () => {
-                    profileModal.style.display = "block";
-                    // Load user profile when modal opens
-                    if (typeof loadUserProfile === 'function') {
-                        loadUserProfile();
-                    }
-                });
+    if (profileIcon && profileModal && closeProfile) {
+      profileIcon.addEventListener('click', () => {
+        profileModal.style.display = "block";
+        if (typeof loadUserProfile === 'function') {
+          loadUserProfile();
+        }
+      });
 
-                // Close modal on X click
-                closeProfile.addEventListener('click', () => {
-                    profileModal.style.display = "none";
-                });
+      closeProfile.addEventListener('click', () => {
+        profileModal.style.display = "none";
+      });
 
-                // Close modal if clicked outside content
-                window.addEventListener('click', (event) => {
-                    if (event.target === profileModal) {
-                        profileModal.style.display = "none";
-                    }
-                });
-            }
-
-            // Listen for profile image updates from the modal
-            this.setupProfileImageUpdateListener();
-        }, 100);
+      window.addEventListener('click', (event) => {
+        if (event.target === profileModal) {
+          profileModal.style.display = "none";
+        }
+      });
     }
+
+    // ✅ Attach dropdown events here
+    const countrySelect = document.getElementById("country");
+    const provinceSelect = document.getElementById("province");
+    const citySelect = document.getElementById("city");
+
+    if (countrySelect) {
+      // Load countries immediately when modal initializes
+      loadCountries();
+
+      countrySelect.addEventListener("change", (e) => {
+        const countryId = e.target.value;
+        if (countryId) {
+          loadProvinces(countryId);
+          if (citySelect) {
+            citySelect.innerHTML = `<option value="">-- Select City --</option>`;
+          }
+        }
+      });
+    }
+
+    if (provinceSelect) {
+      provinceSelect.addEventListener("change", (e) => {
+        const provinceId = e.target.value;
+        if (provinceId) loadCities(provinceId);
+      });
+    }
+
+    // Listen for profile image updates
+    this.setupProfileImageUpdateListener();
+  }, 100);
+}
+
 
     setupProfileImageUpdateListener() {
         // Create a custom event listener for profile image updates
@@ -242,39 +274,37 @@ class HeaderComponent {
             profileForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                const formData = {
-                    first_name: document.getElementById('first_name').value,
-                    middle_name: document.getElementById('middle_name').value,
-                    last_name: document.getElementById('last_name').value,
-                    address: {
-                        street: document.getElementById('street').value,
-                        country: document.getElementById('country').value,
-                        province: document.getElementById('province').value,
-                        city: document.getElementById('city').value
-                    },
-                    image_url: document.getElementById('profile-image-url').value
-                };
+                const payload = {
+  first_name: document.getElementById("first_name").value,
+  middle_name: document.getElementById("middle_name").value,
+  last_name: document.getElementById("last_name").value,
+  street: document.getElementById("street").value,
+  country: parseInt(document.getElementById("country").value) || null,
+  province: parseInt(document.getElementById("province").value) || null,
+  city: parseInt(document.getElementById("city").value) || null,
+  image_url: document.getElementById("profile-image").src
+};
 
-                try {
-                    const response = await fetch(`${API_BASE_PATH}/profile/update`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(formData)
-                    });
+try {
+  const response = await fetch(`${API_BASE_PATH}/profile`, {   // ✅ match main.js
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload)
+  });
 
-                    if (response.ok) {
-                        alert('Profile updated successfully!');
-                        document.getElementById('profile-modal').style.display = 'none';
-                    } else {
-                        alert('Failed to update profile');
-                    }
-                } catch (error) {
-                    console.error('Error updating profile:', error);
-                    alert('Error updating profile');
-                }
+  const data = await response.json();
+  if (data.status) {
+    alert(data.message || "Profile updated successfully!");
+    document.getElementById("profile-modal").style.display = "none";
+  } else {
+    alert(data.message || "Failed to update profile.");
+  }
+} catch (error) {
+  console.error("Error updating profile:", error);
+  alert("Error updating profile");
+}
+
             });
         }
 
@@ -329,6 +359,11 @@ class HeaderComponent {
             }
         }
     }
+
+    
 }
+
+
+
 
 export { HeaderComponent };
