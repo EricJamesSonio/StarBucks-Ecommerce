@@ -1,6 +1,10 @@
 // history.js
 import { API_BASE_PATH, IMAGES_BASE_PATH } from './config.js';
+import { checkoutManager} from './payment.js';
 
+function formatMoney(amount) {
+    return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 export class HistoryService {
     constructor(apiBasePath) {
         this.apiBasePath = apiBasePath;
@@ -42,7 +46,7 @@ export class HistoryUI {
                 return `
                     <div class="receipt-item">
                         ${imgPath ? `<img src="${imgPath}" alt="${item.name}" class="item-img">` : ""}
-                        <span>${item.qty} × ${item.name} - ₱${item.price}</span>
+                        <span>${item.qty} × ${item.name} - ₱${formatMoney(item.price)}</span>
                     </div>
                 `;
             }).join('');
@@ -51,14 +55,39 @@ export class HistoryUI {
                 <h3>Receipt ID: ${receipt.id}</h3>
                 <p><strong>Date:</strong> ${receipt.date}</p>
                 <div><strong>Items:</strong><br>${itemBadges}</div>
-                <p><strong>Total:</strong> ₱${receipt.total}</p>
+                <p><strong>Total:</strong> ₱${formatMoney(receipt.total)}</p>
+                <button class="view-receipt-btn">View Receipt</button>
                 <hr>
             `;
+
+            // Add event listener to View Receipt button
+            const btn = div.querySelector(".view-receipt-btn");
+            btn.addEventListener("click", () => {
+                const items = receipt.items.map(item => ({
+                    name: item.name + (item.size_name ? ` (${item.size_name})` : ""),
+                    quantity: item.qty,
+                    price: parseFloat(item.price),
+                    total: parseFloat(item.price) * item.qty
+                }));
+
+                checkoutManager.showReceipt({
+                    items,
+                    order_id: receipt.id,
+                    discount_type: receipt.discount_type || "none",
+                    discount_amount: formatMoney(receipt.discount_amount || 0),
+                    total: formatMoney(receipt.total),
+                    final: formatMoney(receipt.final_amount || receipt.total),
+                    paid: formatMoney(receipt.paid || receipt.total),
+                    change: formatMoney(receipt.change || 0),
+                    date: receipt.date
+                });
+            });
 
             this.container.appendChild(div);
         });
     }
 }
+
 
 export class HistoryController {
     constructor(service, ui) {

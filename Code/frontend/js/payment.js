@@ -121,9 +121,13 @@ class Checkout {
     }
 
     showReceipt(data) {
-        document.getElementById("receiptContainer").style.display = "block";
-
+        const receiptContainer = document.getElementById("receiptContainer");
         const receiptBox = document.getElementById("receiptBox");
+
+        // Make the modal visible
+        receiptContainer.style.display = "flex";
+
+        // Build items HTML
         const itemsHTML = data.items.map(item => `
             <tr>
                 <td>${item.name}</td>
@@ -133,7 +137,9 @@ class Checkout {
             </tr>
         `).join("");
 
+        // Add close button inside the modal
         receiptBox.innerHTML = `
+            <span class="modal-close" onclick="document.getElementById('receiptContainer').style.display='none'">&times;</span>
             <h2>☕ Starbucks Receipt</h2>
             <p><strong>Order ID:</strong> ${data.order_id}</p>
 
@@ -161,6 +167,7 @@ class Checkout {
             <button onclick="window.print()">🖨️ Print</button>
         `;
     }
+
 }
 
 // ===== Singleton Export =====
