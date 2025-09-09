@@ -177,7 +177,7 @@ class SignupManager {
             email: this.email.value.trim(),
             password: this.password.value,
             phone: this.phone.value.trim(),
-            street: document.getElementById('street').value.trim(),
+            street: document.querySelectorAll("input#street")[1]?.value.trim() || "",            
             city: this.selectedCity?.name || '',
             province: this.selectedProvince?.name || '',
             postal_code: document.getElementById('postalCode').value.trim(),
