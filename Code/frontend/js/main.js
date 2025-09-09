@@ -34,44 +34,45 @@ if (profileIcon && profileModal && closeProfile) {
     });
   }
 
-  // Save profile form
-  const profileForm = document.getElementById("profile-form");
-  if (profileForm) {
-    profileForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+// Profile form submission
+const profileForm = document.getElementById('profile-form');
+if (profileForm) {
+  profileForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-      const payload = {
-        first_name: document.getElementById("first_name").value,
-        middle_name: document.getElementById("middle_name").value,
-        last_name: document.getElementById("last_name").value,
-        street: document.getElementById("street").value,
-        country: parseInt(document.getElementById("country").value) || null,
-        province: parseInt(document.getElementById("province").value) || null,
-        city: parseInt(document.getElementById("city").value) || null,
-        image_url: document.getElementById("profile-image").src
-      };
+    const payload = {
+      first_name: document.getElementById("first_name").value,
+      middle_name: document.getElementById("middle_name").value,
+      last_name: document.getElementById("last_name").value,
+      street: document.getElementById("street").value,
+      country: parseInt(document.getElementById("country").value) || null,
+      province: parseInt(document.getElementById("province").value) || null,
+      city: parseInt(document.getElementById("city").value) || null,
+      image_url: document.getElementById("profile-image").src
+    };
 
-      try {
-        const res = await fetch(`${API_BASE_PATH}/profile`, {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
+    try {
+      const response = await fetch(`${API_BASE_PATH}/profile`, {   // ✅ only this one
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
 
-        if (data.status) {
-          alert(data.message || "Profile updated successfully!");
-        } else {
-          alert(data.message || "Failed to update profile.");
-        }
-      } catch (err) {
-        console.error("Profile update failed:", err);
-        alert("Profile update failed. Please try again.");
+      const data = await response.json();
+      if (data.status) {
+        alert(data.message || "Profile updated successfully!");
+        document.getElementById("profile-modal").style.display = "none";
+      } else {
+        alert(data.message || "Failed to update profile.");
       }
-    });
-  }
-}
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error updating profile");
+    }
+  });
+}}
+
 
 // 🔹 Load dropdowns
 async function loadCountries() {

@@ -48,7 +48,7 @@ async setCategory(categoryId) {
     window.logout = () => {
       localStorage.clear();
       fetch(`${API_BASE_PATH}/logout`, { credentials: 'include' })
-        .then(() => window.location.href = '../../design/home/index.html');
+        .then(() => window.location.href = '../../frontend/home/home.html');
     };
   }
 

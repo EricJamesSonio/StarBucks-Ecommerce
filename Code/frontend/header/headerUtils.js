@@ -8,50 +8,82 @@ export function updateProfileImageInHeader(imageUrl) {
     document.dispatchEvent(event);
 }
 
-// Load user profile function
 export async function loadUserProfile() {
-    try {
-        const res = await fetch(`${API_BASE_PATH}/profile`, {
-            method: "GET",
-            credentials: "include"
-        });
+  try {
+    const res = await fetch(`${API_BASE_PATH}/profile`, {
+      method: "GET",
+      credentials: "include"
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.status) return;
 
-        if (!res.ok) {
-            if (res.status === 401) {
-                console.log("Please log in to view profile");
-                // Optionally show login prompt or redirect
-                return;
-            }
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
+    const user = data.user;
 
-        const data = await res.json();
-        if (!data.status) return;
+    // Fill text fields
+    document.getElementById("first_name").value = user.first_name || "";
+    document.getElementById("middle_name").value = user.middle_name || "";
+    document.getElementById("last_name").value = user.last_name || "";
+    document.getElementById("street").value = user.address?.street || "";
 
-        const user = data.user;
-        document.getElementById("first_name").value = user.first_name || "";
-        document.getElementById("middle_name").value = user.middle_name || "";
-        document.getElementById("last_name").value = user.last_name || "";
-        document.getElementById("street").value = user.address?.street || "";
-
-        if (user.image_url) {
-            document.getElementById("profile-image").src = user.image_url;
-            document.getElementById("profile-image-url").value = user.image_url;
-
-            // Also update the header if the function exists
-            if (typeof updateProfileImageInHeader === 'function') {
-                updateProfileImageInHeader(user.image_url);
-            }
-        }
-
-        // Load countries, provinces, cities if needed
-        // await loadCountries();
-        // ... etc
-
-    } catch (err) {
-        console.error("Failed to load user profile:", err);
-        alert("Failed to load profile. Please try again.");
+    // Image
+    if (user.image_url) {
+      document.getElementById("profile-image").src = user.image_url;
+      document.getElementById("profile-icon").src = user.image_url;
+      document.getElementById("profile-image-url").value = user.image_url;
     }
+
+    // 🔹 Load dropdowns
+    await loadCountries();
+    if (user.address?.country) {
+      document.getElementById("country").value = user.address.country;
+      await loadProvinces(user.address.country);
+
+      if (user.address?.province) {
+        document.getElementById("province").value = user.address.province;
+        await loadCities(user.address.province);
+
+        if (user.address?.city) {
+          document.getElementById("city").value = user.address.city;
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load user profile:", err);
+  }
+}
+
+export async function loadCountries() {
+  const res = await fetch(`${API_BASE_PATH}/getCountries`);
+  const countries = await res.json();
+  const select = document.getElementById("country");
+  if (!select) return;
+  select.innerHTML = `<option value="">-- Select Country --</option>`;
+  countries.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
+
+export async function loadProvinces(countryId) {
+  const res = await fetch(`${API_BASE_PATH}/getProvince?country_id=${countryId}`);
+  const provinces = await res.json();
+  const select = document.getElementById("province");
+  if (!select) return;
+  select.innerHTML = `<option value="">-- Select Province --</option>`;
+  provinces.forEach(p => {
+    select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+  });
+}
+
+export async function loadCities(provinceId) {
+  const res = await fetch(`${API_BASE_PATH}/getCities?province_id=${provinceId}`);
+  const cities = await res.json();
+  const select = document.getElementById("city");
+  if (!select) return;
+  select.innerHTML = `<option value="">-- Select City --</option>`;
+  cities.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
 }
 
 // Ensure CSS variables are defined
