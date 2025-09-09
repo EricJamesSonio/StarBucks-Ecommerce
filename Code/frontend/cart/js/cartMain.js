@@ -13,7 +13,7 @@ export async function initCartPage() {
     // --- Format values after cart is rendered ---
     const subtotalEl = document.querySelector(".cartTotal");
     const discountEl = document.querySelector(".cartDiscount");
-    const totalEl = document.querySelector(".amt li:last-child");
+    const totalEl = document.querySelector(".amt .cartTotalAmt");
     const deliveryEl = document.querySelector(".del-info li:last-child");
 
     if (subtotalEl) {
@@ -33,6 +33,7 @@ export async function initCartPage() {
 
     // Checkout modal
     const payTotal = document.getElementById("paymentTotal");
+
     const payDiscount = document.getElementById("paymentDiscount");
     const finalAmt = document.getElementById("finalAmount");
 
