@@ -13,8 +13,8 @@ export async function initCartPage() {
     // --- Format values after cart is rendered ---
     const subtotalEl = document.querySelector(".cartTotal");
     const discountEl = document.querySelector(".cartDiscount");
-    const totalEl = document.querySelector(".amt .cartTotalAmt");
-    const deliveryEl = document.querySelector(".del-info li:last-child");
+    const totalEl = document.querySelector(".cartTotalAmt");
+    const deliveryEl = document.querySelector(".deliveryFee");
 
     if (subtotalEl) {
       subtotalEl.textContent = formatMoney(parseFloat(subtotalEl.textContent)).replace("₱", "");
@@ -23,12 +23,27 @@ export async function initCartPage() {
       discountEl.textContent = formatMoney(parseFloat(discountEl.textContent)).replace("₱", "");
     }
     if (deliveryEl) {
-      let fee = deliveryEl.textContent.replace("₱", "").trim();
-      deliveryEl.textContent = formatMoney(parseFloat(fee));
+      deliveryEl.textContent = formatMoney(parseFloat(deliveryEl.textContent)).replace("₱", "");
     }
     if (totalEl) {
-      let totalVal = totalEl.textContent.replace("₱", "").trim();
-      totalEl.textContent = formatMoney(parseFloat(totalVal));
+      totalEl.textContent = formatMoney(parseFloat(totalEl.textContent)).replace("₱", "");
+    }
+
+    if (subtotalEl && discountEl && deliveryEl && totalEl) {
+      const observer = new MutationObserver(() => {
+        updateTotal(subtotalEl, discountEl, deliveryEl, totalEl);
+      });
+      observer.observe(subtotalEl, { childList: true, characterData: true, subtree: true });
+    }
+    
+    
+    function updateTotal(subtotalEl, discountEl, deliveryEl, totalEl) {
+      const subtotal = parseFloat(subtotalEl.textContent) || 0;
+      const discount = parseFloat(discountEl.textContent) || 0;
+      const delivery = parseFloat(deliveryEl.textContent) || 0;
+
+      const total = subtotal - discount + delivery;
+      totalEl.textContent = formatMoney(total).replace("₱", "");
     }
 
     // Checkout modal
