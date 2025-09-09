@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HomePage</title>
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="./css/home.css">
 
 </head>
 <body>
@@ -18,7 +18,6 @@
                 <h1 class="title" id="intro2">What's <span id="intro3">Yours?</span></h1>
                 <h2 class="title" id="CoffeeName">Classic Ice Coffee </h2><span id="rating">Best Rating</span>
                 <p id="description">"Indulge in the bold, smooth taste of Starbucks Iced Coffee — a refreshing escape in every sip. Expertly brewed from carefully selected, ethically sourced Arabica beans, it delivers a rich and satisfying flavor that's perfectly chilled to invigorate your senses. Whether you're powering through a busy workday, taking a moment to recharge, or simply enjoying the sunshine, this energizing blend is crafted to keep you cool, focused, and refreshed."</p>
-                <button class="button Cart" type="submit"><span>Add to Cart</span></button>
             </div>
         </div>
         <div id="right">
@@ -60,10 +59,8 @@
             <span>starbucks</span>
         </div>
         <div class="word-con first-text">
-            <span class="quote">Starbucks redefines the coffee experience with every cup, blending quality, flavor and comfort</span>
         </div>
         <div class="word-con sec">
-            <span class="quote">At Starbucks every sip is a journey into a world of rich aromatic coffee perfection.</span>
         </div>
     </section>
 
@@ -89,7 +86,7 @@
     document.addEventListener("DOMContentLoaded", () => {
     loadTopSelling('Beverages'); // automatically loads beverages
   });
-  
+
     document.querySelectorAll(".item-name").forEach(el => {
   if (el.scrollWidth > el.clientWidth && !el.querySelector("span")) {
     let text = el.textContent.trim();
