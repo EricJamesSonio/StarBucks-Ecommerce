@@ -16,9 +16,10 @@
 /* Item Cards                */
 /* ========================= */
 .item-card {
+    margin: 5vh 0 10vh 0;
     flex: 1 1 calc(25% - 1.5rem); /* 4 per row on large screens */
     max-width: calc(25% - 1.5rem);
-    height: 380px; /* ✅ consistent height for all cards */
+    height: 500px; /* ✅ consistent height for all cards */
     background-color: #ffffff;
     color: var(--main-color-darkgreen, #1e3932);
     border-radius: 20px;
@@ -46,7 +47,7 @@
 /* ========================= */
 .item-img {
     width: 90%;
-    height: 180px;
+    height: 270px;
     object-fit: cover;
     border-radius: 15px;
     margin-bottom: 1rem;

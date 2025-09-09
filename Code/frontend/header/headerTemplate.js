@@ -8,7 +8,7 @@ export const headerHTML = `
             <nav>
                 <a href="../home/home.html">Home</a>
                 <a href="../menu/menu.html">Menu</a>
-                <a href="../about/about.html">About Us</a>
+                <a href="../aboutUs/aboutUs.html">About Us</a>
             </nav>
         </li>
         <li class="icon-list-container">

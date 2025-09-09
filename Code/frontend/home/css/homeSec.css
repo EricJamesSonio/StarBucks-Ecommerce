@@ -129,7 +129,7 @@
 }
 
 /* Tablet Responsiveness (481px - 1024px) */
-@media (min-width: 481px) and (max-width: 1024px) {
+@media (min-width: 481px) and (max-width: 1260px) {
     #home {
         flex-direction: column; /* stack left and right */
         height: auto;
