@@ -7,14 +7,38 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <script type="module" src="../header/header.js"></script>
-    <script type="module" src="../js/main.js"></script>
+
+    <!-- Navbar -->
+   <ul id="head-nav">
+        <li>
+            <img class="logo" src="../assets/starbucksLogo-nocircle.png" alt="starbucks">
+        </li>
+        <li class="nav-list">
+            <nav>
+                <a href="../home/home.html">Home</a>
+                <a href="../menu/menu.html">Menu</a>
+                <a href="">About Us</a>
+            </nav>
+        </li>
+        <li >
+            <ul id="icon-list">
+            <li>
+                <img class="icon" src="../assets/shopping-cart.png" alt="cart">
+            </li>
+            <li>
+                <img class="icon" src="../assets/user.png" alt="user">
+            </li>
+            <button onclick="window.location.href='../../frontend/login/login.html'">SIGN UP</button>
+            </ul>
+        </li>
+    </ul>
+
     <!-- Main Content -->   
      <div id="line"></div>
     <main class="root-container">
         <!-- Left Form -->
         <section class="container">
-        <div id="con1" style="margin-top:10vh"></div>
+        <div id="con1"></div>
 
         </section>
 
