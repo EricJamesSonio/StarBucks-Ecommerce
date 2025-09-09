@@ -99,7 +99,7 @@ class CartUI {
                 <span class="prod-price">₱${parseFloat(item.price || 0).toFixed(2)}</span>
             </div>
             <div class="end-config">
-                <div class="cross">x</div>
+                <div class="cross"></div>
                 <div class="qty-config">
                     <button class="add-qty">+</button>
                     <span class="qty">${item.quantity || 1}</span>
