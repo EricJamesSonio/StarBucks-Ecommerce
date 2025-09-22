@@ -282,36 +282,36 @@ setupProfileModal() {
             profileForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                const payload = {
-  first_name: document.getElementById("first_name").value,
-  middle_name: document.getElementById("middle_name").value,
-  last_name: document.getElementById("last_name").value,
-  street: document.getElementById("street").value,
-  country: parseInt(document.getElementById("country").value) || null,
-  province: parseInt(document.getElementById("province").value) || null,
-  city: parseInt(document.getElementById("city").value) || null,
-  image_url: document.getElementById("profile-image").src
-};
+                        const payload = {
+        first_name: document.getElementById("first_name").value,
+        middle_name: document.getElementById("middle_name").value,
+        last_name: document.getElementById("last_name").value,
+        street: document.getElementById("street").value,
+        country: parseInt(document.getElementById("country").value) || null,
+        province: parseInt(document.getElementById("province").value) || null,
+        city: parseInt(document.getElementById("city").value) || null,
+        image_url: document.getElementById("profile-image").src
+        };
 
-try {
-  const response = await fetch(`${API_BASE_PATH}/profile`, {   // ✅ match main.js
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(payload)
-  });
+        try {
+        const response = await fetch(`${API_BASE_PATH}/profile`, {   // ✅ match main.js
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(payload)
+        });
 
-  const data = await response.json();
-  if (data.status) {
-    alert(data.message || "Profile updated successfully!");
-    document.getElementById("profile-modal").style.display = "none";
-  } else {
-    alert(data.message || "Failed to update profile.");
-  }
-} catch (error) {
-  console.error("Error updating profile:", error);
-  alert("Error updating profile");
-}
+        const data = await response.json();
+        if (data.status) {
+            alert(data.message || "Profile updated successfully!");
+            document.getElementById("profile-modal").style.display = "none";
+        } else {
+            alert(data.message || "Failed to update profile.");
+        }
+        } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Error updating profile");
+        }
 
             });
         }

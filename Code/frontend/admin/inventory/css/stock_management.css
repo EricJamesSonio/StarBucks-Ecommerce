@@ -334,3 +334,53 @@ form button:hover { background-color: #219150; }
   margin: 0;
   font-size: 14px;
 }
+.stock-quantity.low {
+  color: red;
+  font-weight: bold;
+}
+
+.low-stock-card {
+  border: 2px solid red;
+  box-shadow: 0 0 10px rgba(255,0,0,0.4);
+}
+#thresholdSection {
+  margin: 20px 0;
+  padding: 15px;
+  border: 2px solid #00704a; /* Starbucks green */
+  border-radius: 10px;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#thresholdSection h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+  flex-basis: 100%;
+}
+
+#thresholdInput {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+#btnSetThreshold {
+  padding: 6px 15px;
+  background: #00704a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#btnSetThreshold:hover {
+  background: #005f3a;
+}
