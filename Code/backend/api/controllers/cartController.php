@@ -68,13 +68,26 @@ class CartController {
             $this->respond(["error" => "Invalid JSON payload", "debug" => $input], 400);
         }
 
-        $itemId = filter_var($payload['item_id'] ?? null, FILTER_VALIDATE_INT);
-        $sizeId = isset($payload['size_id']) ? filter_var($payload['size_id'], FILTER_VALIDATE_INT) : null;
-        $quantity = filter_var($payload['quantity'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        $itemType = $payload['item_type'] ?? 'starbucksitem'; // Default to starbucksitem for backward compatibility
+        $itemId   = filter_var($payload['item_id'] ?? null, FILTER_VALIDATE_INT);
+        $sizeId   = isset($payload['size_id']) 
+                    ? filter_var($payload['size_id'], FILTER_VALIDATE_INT) 
+                    : null;
+        $quantity = filter_var(
+            $payload['quantity'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+        $itemType = $payload['item_type'] ?? 'starbucksitem';
 
         if (!$itemId || !$quantity) {
             $this->respond(["error" => "Missing item_id or quantity"], 400);
+        }
+
+        // 🚫 Block admins from adding to cart
+        if ($this->isLoggedIn && strtolower($_SESSION['account_type'] ?? '') === 'admin') {
+            $this->respond([
+                "error" => "❌ Admins cannot add items to the cart."
+            ], 403);
         }
 
         // Ensure guest token exists
@@ -83,16 +96,23 @@ class CartController {
             $_SESSION['guest_token'] = $this->guestToken;
         }
 
-        // Logged-in or guest DB cart
+        // Normal flow: logged-in user or guest with token
         if ($this->userId !== null || $this->guestToken !== null) {
-            $ok = $this->cartModel->addOrUpdateCartItem($this->userId, $this->guestToken, $itemId, $sizeId, $quantity, $itemType);
+            $ok = $this->cartModel->addOrUpdateCartItem(
+                $this->userId,
+                $this->guestToken,
+                $itemId,
+                $sizeId,
+                $quantity,
+                $itemType
+            );
             if ($ok) {
                 $this->respond(["success" => true, "message" => "Item added to cart"]);
             } else {
                 $this->respond(["error" => "Failed to add item"], 500);
             }
         } else {
-            // Guest session-only cart - calculate price dynamically
+            // Guest session cart fallback
             if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 
             $found = false;
@@ -106,8 +126,8 @@ class CartController {
 
             if (!$found) {
                 $_SESSION['cart'][] = [
-                    "item_id" => $itemId,
-                    "size_id" => $sizeId,
+                    "item_id"  => $itemId,
+                    "size_id"  => $sizeId,
                     "quantity" => $quantity
                 ];
             }
@@ -115,6 +135,8 @@ class CartController {
             $this->respond(["success" => true, "message" => "Item added to guest cart"]);
         }
     }
+
+
 
     private function handleDelete(): void {
         if ($this->isLoggedIn && $this->userId !== null) {

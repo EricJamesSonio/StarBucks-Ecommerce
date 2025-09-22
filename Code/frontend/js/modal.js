@@ -95,61 +95,67 @@ class Modal {
     }
 
     async addToCart() {
-        const qty = parseInt(this.quantityInput.value, 10);
-        if (qty < 1) return;
+        const userData = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
+        if (userData.type && userData.type.toLowerCase() === "admin") {
+            alert("❌ Could not add to cart : ❌ Admins cannot add items to the cart.");
+            this.close();
+            return;
+        }
+            const qty = parseInt(this.quantityInput.value, 10);
+            if (qty < 1) return;
 
-        const selectedOption = this.sizeSelect.options[this.sizeSelect.selectedIndex];
-        const sizeId = selectedOption.value || null; // Handle empty value for default size
-        const mod = parseFloat(selectedOption.dataset.modifier || '0.00');
-        const unitPrice = parseFloat(this.currentItem.price) + mod;
+            const selectedOption = this.sizeSelect.options[this.sizeSelect.selectedIndex];
+            const sizeId = selectedOption.value || null; // Handle empty value for default size
+            const mod = parseFloat(selectedOption.dataset.modifier || '0.00');
+            const unitPrice = parseFloat(this.currentItem.price) + mod;
 
-        const guestToken = await this.initGuestIfNeeded();
+            const guestToken = await this.initGuestIfNeeded();
 
-        // Determine item type based on the current item's category or other properties
-        const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise' ? 'merchandise' : 'starbucksitem';
+            // Determine item type based on the current item's category or other properties
+            const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise' ? 'merchandise' : 'starbucksitem';
 
-        const payload = {
-            item_id: this.currentItem.id,
-            item_type: itemType,
-            quantity: qty,
-            guest_token: guestToken
-        };
+            const payload = {
+                item_id: this.currentItem.id,
+                item_type: itemType,
+                quantity: qty,
+                guest_token: guestToken
+            };
 
-        // Only add size_id if it's not empty/null
-        if (sizeId) {
-            payload.size_id = sizeId;
+            // Only add size_id if it's not empty/null
+            if (sizeId) {
+                payload.size_id = sizeId;
+            }
+
+            try {
+                const res = await fetch(`${this.apiBasePath}/cart`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                let data = {};
+                try { data = await res.json(); } catch { console.warn('No JSON returned from /cart'); }
+
+                if (!res.ok) throw new Error(data.error || data.message || res.statusText);
+
+                alert(`✅ Added ${this.currentItem.name} ×${qty} to your cart.`);
+            } catch (err) {
+                console.error("Cart sync failed:", err);
+                alert(`❌ Could not add to cart: ${err.message}`);
+            }
+
+            this.close();
         }
 
-        try {
-            const res = await fetch(`${this.apiBasePath}/cart`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            let data = {};
-            try { data = await res.json(); } catch { console.warn('No JSON returned from /cart'); }
-
-            if (!res.ok) throw new Error(data.error || data.message || res.statusText);
-
-            alert(`✅ Added ${this.currentItem.name} ×${qty} to your cart.`);
-        } catch (err) {
-            console.error("Cart sync failed:", err);
-            alert(`❌ Could not add to cart: ${err.message}`);
+        show() {
+            this.modalElement.style.display = 'flex';
         }
 
-        this.close();
+        hide() {
+            this.modalElement.style.display = 'none';
+        }
     }
-
-    show() {
-        this.modalElement.style.display = 'flex';
-    }
-
-    hide() {
-        this.modalElement.style.display = 'none';
-    }
-}
 
 // ===== Singleton Export =====
 export const modal = new Modal(API_BASE_PATH);
