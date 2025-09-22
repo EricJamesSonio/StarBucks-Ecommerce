@@ -9,6 +9,7 @@ export const headerHTML = `
                 <a href="../home/home.html">Home</a>
                 <a href="../menu/menu.html">Menu</a>
                 <a href="../aboutUs/aboutUs.html">About Us</a>
+                <a href="../../frontend/admin/panel/panel.html" id="admin-link" style="display:none;">Admin Dashboard</a>
             </nav>
         </li>
         <li class="icon-list-container">
@@ -27,6 +28,7 @@ export const headerHTML = `
             </ul>
         </li>
     </ul>
+
 
     <!-- Profile Modal -->
     <div id="profile-modal" class="modal">

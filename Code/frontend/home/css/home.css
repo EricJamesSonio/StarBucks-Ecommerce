@@ -145,3 +145,15 @@ body, html {
     top: 80vh;
     right: clamp(5vw, 10vw, 10vw);
 }
+#admin-btn-container button {
+  padding: 10px 20px;
+  background: #006241; /* Starbucks green */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#admin-btn-container button:hover {
+  background: #004d33;
+}

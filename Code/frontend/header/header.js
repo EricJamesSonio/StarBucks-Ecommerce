@@ -6,3 +6,5 @@ document.addEventListener('DOMContentLoaded', function() {
     const header = new HeaderComponent();
     header.render();
 });
+
+

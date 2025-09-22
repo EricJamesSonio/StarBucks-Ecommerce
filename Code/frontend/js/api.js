@@ -121,7 +121,7 @@ class CategoryUI {
             <img src="${imageUrl}" class="item-img" alt="${item.name}">
             <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
             <div>Total Sold: ${item.total_sold}</div>
-            <button class="addToCartBtn" onclick="addToCart()">Add To Cart</button>
+            <button class="addToCartBtn" onclick="">Add To Cart</button>
         `;
 
         // Insert nameContainer at the right spot (before price)

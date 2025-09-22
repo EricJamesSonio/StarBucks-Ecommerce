@@ -187,12 +187,20 @@ setupProfileModal() {
     }
 
     initProfileModal() {
-        // Auth/Admin Button Logic
         const userData = localStorage.getItem("loggedInUser");
         const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
+
         if (isLoggedIn && userData) {
             const user = JSON.parse(userData);
+
+            // Check if user.type is admin
+            if (user.type && user.type.toLowerCase() === "admin") {
+                const adminLink = document.getElementById("admin-link");
+                if (adminLink) {
+                    adminLink.style.display = "inline-block";
+                }
+            }
 
             // Update sign up button to logout
             const signUpButton = document.querySelector('#icon-list button');
