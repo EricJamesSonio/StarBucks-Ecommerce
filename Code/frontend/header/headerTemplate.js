@@ -23,7 +23,7 @@ export const headerHTML = `
                     <img class="icon" id="profile-icon" src="../assets/user.png" alt="user">
                 </li>
                 <li>
-                    <button onclick="window.location.href='../login/login.html'">SIGN UP</button>
+                    <button onclick="window.location.href='../login/login.html'">LOG IN</button>
                 </li>
             </ul>
         </li>
