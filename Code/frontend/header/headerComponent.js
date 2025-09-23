@@ -1,6 +1,8 @@
 // headerComponent.js - Main HeaderComponent class
 import { headerHTML } from './headerTemplate.js';
 import { headerCSS } from './headerStyles.js';
+import { logout } from "../../frontend/login/js/auth.js";  // adjust the path if needed
+
 import {  
   loadUserProfile, 
   ensureCSSVariables, 
@@ -160,15 +162,15 @@ setupProfileModal() {
             }
 
             // Update sign up button to logout
-            const signUpButton = document.querySelector('#icon-list button');
-            if (signUpButton) {
-                signUpButton.textContent = "LOGOUT";
-                signUpButton.onclick = () => {
-                    localStorage.removeItem("loggedInUser");
-                    localStorage.removeItem("isLoggedIn");
-                    window.location.reload();
-                };
-            }
+// Update sign up button to logout
+const signUpButton = document.querySelector('#icon-list button');
+if (signUpButton) {
+    signUpButton.textContent = "LOGOUT";
+    signUpButton.onclick = () => {
+        logout(); // ✅ use the auth logout
+    };
+}
+
         }
 
 
