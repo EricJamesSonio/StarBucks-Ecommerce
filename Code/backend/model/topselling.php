@@ -15,6 +15,7 @@ class TopSelling {
                 COALESCE(si.price, m.price) as price,
                 COALESCE(si.category_id, m.category_id) as category_id,
                 COALESCE(si.image_url, m.image_url) as image_url,
+                COALESCE(si.description, m.description) as description,
                 SUM(oi.quantity) AS total_sold,
                 CASE WHEN si.id IS NOT NULL THEN 'starbucksitem' ELSE 'merchandise' END AS item_type
             FROM order_item oi

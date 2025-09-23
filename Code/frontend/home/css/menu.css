@@ -15,7 +15,7 @@
 }
 
 #menu nav ul {
-    width: min(90%, 65%);
+    width: min(70%, 65%);
     height: clamp(6vh, 9vh, 9vh);
     background-color: #fff;
     border-radius: 70px;

@@ -97,6 +97,7 @@ class CategoryUI {
 
     const top4 = items.slice(0, 4);
     top4.forEach(item => {
+
         const imageUrl = this.imageManager.getImage(item.image_url);
         const card = document.createElement('div');
         card.className = 'item-card';
@@ -107,6 +108,15 @@ class CategoryUI {
         nameContainer.className = 'item-name';
         nameContainer.textContent = item.name;
 
+        // Fill the card
+        card.innerHTML = `
+            <img src="${imageUrl}" class="item-img" alt="${item.name}">
+            <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
+            <div>Sold: ${item.total_sold}</div>
+            <div class="description"><p>"${item.description}"</p></div>
+            <button class="addToCartBtn" onclick="">Add To Cart</button>
+        `;
+        
         // After inserting text, check overflow for marquee
         requestAnimationFrame(() => {
             if (nameContainer.scrollWidth > nameContainer.clientWidth) {
@@ -115,14 +125,6 @@ class CategoryUI {
                 nameContainer.classList.add("marquee");
             }
         });
-
-        // Fill the card
-        card.innerHTML = `
-            <img src="${imageUrl}" class="item-img" alt="${item.name}">
-            <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
-            <div>Total Sold: ${item.total_sold}</div>
-            <button class="addToCartBtn" onclick="">Add To Cart</button>
-        `;
 
         // Insert nameContainer at the right spot (before price)
         card.insertBefore(nameContainer, card.querySelector(".item-price"));
