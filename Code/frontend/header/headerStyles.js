@@ -15,6 +15,7 @@ export const headerCSS = `
         gap: 1.5rem;
         box-sizing: border-box;
         margin: 0;
+        list-style: none;
     }
 
     /* ===== LOGO ===== */
