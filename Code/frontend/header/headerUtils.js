@@ -1,6 +1,4 @@
-// headerUtils.js - Utility functions and helpers for the header component
-
-// Custom event to trigger profile image updates
+import { API_BASE_PATH } from '../js/config.js';
 export function updateProfileImageInHeader(imageUrl) {
     const event = new CustomEvent('profileImageUpdated', {
         detail: { imageUrl: imageUrl }

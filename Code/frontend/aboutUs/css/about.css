@@ -1,6 +1,4 @@
-/* ================= GENERAL ================= */
-@import url("itemCard.css");
-@import url("homeSec.css");
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
