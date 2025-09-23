@@ -68,6 +68,8 @@
     </form>
   </section>
 
+  
+
   <!-- Add New Ingredient Section -->
   <section id="newIngredientSection">
     <h2>Add New Ingredient</h2>
@@ -90,6 +92,29 @@
     </form>
   </section>
 
+  <!-- Threshold Settings -->
+<section id="thresholdSection">
+  <h2>Stock Threshold Settings</h2>
+  <div class="threshold-item">
+    <label for="thresholdInput_g">Grams (g):</label>
+    <input type="number" id="thresholdInput_g" min="1" step="1">
+    <button id="btnSetThreshold_g">Apply</button>
+  </div>
+  <div class="threshold-item">
+    <label for="thresholdInput_pcs">Pieces (pcs):</label>
+    <input type="number" id="thresholdInput_pcs" min="1" step="1">
+    <button id="btnSetThreshold_pcs">Apply</button>
+  </div>
+  <div class="threshold-item">
+    <label for="thresholdInput_ml">Milliliters (ml):</label>
+    <input type="number" id="thresholdInput_ml" min="1" step="1">
+    <button id="btnSetThreshold_ml">Apply</button>
+    <button id="btnResetThresholds">Reset Thresholds</button>
+
+  </div>
+</section>
+
+
   <!-- Search -->
   <div class="search-container">
     <input type="text" id="ingredientSearch" placeholder="Search ingredients by name...">
@@ -103,6 +128,8 @@
       <div class="ingredient-empty">Loading ingredients...</div>
     </div>
   </section>
+
+  
 
   <!-- Update Ingredient Modal -->
   <div id="updateIngredientModal" class="modal">

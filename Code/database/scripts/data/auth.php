@@ -12,3 +12,24 @@ insertData(
     ],
     ['email'] // ✅ Only insert if email is not already used
 );
+insertData(
+    $con,
+    'user',
+    ['first_name', 'middle_name', 'last_name'],
+    [
+        ['Juan', 'D.', 'Cruz']
+    ],
+    ['first_name', 'last_name'] 
+);
+
+$userId = getIdByFullName($con, 'user', 'Juan', 'Cruz');
+
+insertData(
+    $con,
+    'auth',
+    ['account_type', 'account_id', 'email', 'password_hash'],
+    [
+        ['user', $userId, 'user1@example.com', password_hash('userpass123', PASSWORD_DEFAULT)]
+    ],
+    ['email'] 
+);

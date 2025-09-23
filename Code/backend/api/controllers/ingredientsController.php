@@ -235,44 +235,6 @@ function addIngredientStock($con, $data) {
     }
 }
 
-function getLowStock($con) {
-    try {
-        // Get the global threshold
-        $thresholdRes = $con->query("SELECT global_threshold FROM inventory_settings ORDER BY id DESC LIMIT 1");
-        $thresholdRow = $thresholdRes->fetch_assoc();
-        $threshold = $thresholdRow['global_threshold'] ?? 0;
-
-        // Get ingredients below threshold
-        $sql = "SELECT id, name, stock_unit, quantity_in_stock 
-                FROM ingredient 
-                WHERE quantity_in_stock <= ?
-                ORDER BY name ASC";
-
-        $stmt = $con->prepare($sql);
-        $stmt->bind_param("d", $threshold);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-
-        echo json_encode([
-            "status" => true,
-            "data" => $data
-        ]);
-
-    } catch (Throwable $e) {
-        http_response_code(500);
-        echo json_encode([
-            "status" => false,
-            "message" => "Failed to load low stock ingredients",
-            "error" => $e->getMessage()
-        ]);
-    }
-}
-
 function createIngredient($con, $data) {
     try {
         if (empty($data['name'])) {

@@ -266,3 +266,12 @@ section {
 .suggestions div:hover {
   background-color: #f0f0f0;
 }
+.low-stock {
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+}
+.low-stock .warning {
+  color: #856404;
+  font-weight: bold;
+  margin-left: 8px;
+}

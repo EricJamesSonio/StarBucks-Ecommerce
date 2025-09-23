@@ -7,21 +7,40 @@ class IngredientManager {
     this.basePath = window.API_BASE_PATH.replace(/\/+$/, '');
     this.API_INGREDIENTS = `${this.basePath}/ingredients`;
 
-    // DOM elements
+    // Hardcoded thresholds with fallback from localStorage
+    this.thresholds = {
+      g: parseInt(localStorage.getItem("threshold_g")) || 500,
+      pcs: parseInt(localStorage.getItem("threshold_pcs")) || 10,
+      ml: parseInt(localStorage.getItem("threshold_ml")) || 200
+    };
+
+    // DOM references
     this.ingredientSelect = document.getElementById("ingredientSelect");
     this.unitSelect = document.getElementById("unitSelect");
-    this.addIngredientForm = document.getElementById("addIngredientForm"); // For adding stock
-    this.newIngredientForm = document.getElementById("newIngredientForm"); // For creating ingredient
+    this.addIngredientForm = document.getElementById("addIngredientForm");
+    this.newIngredientForm = document.getElementById("newIngredientForm");
     this.ingredientsContainer = document.getElementById("ingredientsContainer");
     this.lowIngredientContainer = document.getElementById("lowIngredientContainer");
-    this.btnRefreshIngredients = document.getElementById("btnRefreshIngredients");
 
-    // Update form elements
-    this.updateIngredientForm = document.getElementById("updateIngredientForm");
-    this.updateIngredientId = document.getElementById("updateIngredientId");
-    this.updateIngredientName = document.getElementById("updateIngredientName");
-    this.updateIngredientUnit = document.getElementById("updateIngredientUnit");
-    this.cancelUpdateBtn = document.getElementById("cancelUpdate");
+    // Threshold inputs
+    this.thresholdInputs = {
+      g: document.getElementById("thresholdInput_g"),
+      pcs: document.getElementById("thresholdInput_pcs"),
+      ml: document.getElementById("thresholdInput_ml"),
+    };
+
+    this.thresholdButtons = {
+      g: document.getElementById("btnSetThreshold_g"),
+      pcs: document.getElementById("btnSetThreshold_pcs"),
+      ml: document.getElementById("btnSetThreshold_ml"),
+    };
+
+    // Initialize inputs with saved values
+    Object.keys(this.thresholdInputs).forEach(unit => {
+      if (this.thresholdInputs[unit]) {
+        this.thresholdInputs[unit].value = this.thresholds[unit];
+      }
+    });
   }
 
   async init() {
@@ -29,7 +48,6 @@ class IngredientManager {
     await this.loadCurrentStock();
     this.bindEvents();
   }
-
   escapeHtml(str = "") {
     return String(str)
       .replaceAll("&", "&amp;")
@@ -155,180 +173,180 @@ class IngredientManager {
 }
 
 
-  /*********************
-   * Bind events
-   *********************/
-  bindEvents() {
-    // Create ingredient
-    this.newIngredientForm?.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("newIngredientName").value.trim();
-      const unit = document.getElementById("newIngredientUnit")?.value.trim() || null;
-      const supplierSelect = document.getElementById("newIngredientSupplier");
-      const supplierId = supplierSelect ? parseInt(supplierSelect.value) || null : null;
-
-      if (!name) {
-        this.showMessage("Please enter a valid ingredient name", "error");
-        return;
-      }
-
-      const payload = { name, stock_unit: unit, supplier_id: supplierId };
-      this.createIngredient(payload);
-    });
-
-    // Add stock
-    this.addIngredientForm?.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const ingredientId = parseInt(this.ingredientSelect.value);
-      const quantity = parseFloat(document.getElementById("stockQuantity").value);
-      const unit = this.unitSelect.value;
-
-      if (!ingredientId || !quantity || !unit) {
-        this.showMessage("Please select ingredient, quantity, and unit", "error");
-        return;
-      }
-
-      const payload = {
-        ingredient_id: ingredientId,
-        quantity_value: quantity,
-        quantity_unit: unit
-      };
-
-      this.addStock(payload);
-    });
-
-    // Refresh button
-    this.btnRefreshIngredients?.addEventListener('click', async () => {
-      await this.loadIngredients();
-      await this.loadCurrentStock();
-      this.showMessage("Ingredients refreshed!", "success");
-    });
-
-    // Remove ingredient
-    this.ingredientsContainer.addEventListener("click", async (e) => {
-      if (e.target.classList.contains("btn-remove")) {
-        const id = parseInt(e.target.dataset.id);
-        if (confirm("Are you sure you want to remove this ingredient?")) {
-          await this.removeIngredient(id);
-        }
-      }
-
-      // Update ingredient
-      if (e.target.classList.contains("btn-edit")) {
-        const id = parseInt(e.target.dataset.id);
-        const name = e.target.dataset.name;
-        const unit = e.target.dataset.unit || '';
-
-        // Show update form
-        this.updateIngredientForm.style.display = "block";
-        this.updateIngredientId.value = id;
-        this.updateIngredientName.value = name;
-        this.updateIngredientUnit.value = unit;
+bindEvents() {
+  // ✅ Threshold update buttons
+  Object.keys(this.thresholdButtons).forEach(unit => {
+    this.thresholdButtons[unit]?.addEventListener("click", () => {
+      const newVal = parseInt(this.thresholdInputs[unit].value);
+      if (!isNaN(newVal) && newVal > 0) {
+        this.thresholds[unit] = newVal;
+        localStorage.setItem(`threshold_${unit}`, newVal);
+        this.showMessage(`Threshold for ${unit} updated to ${newVal}`, "success");
+        this.loadCurrentStock(); // re-render with updated threshold
+      } else {
+        this.showMessage(`Invalid threshold for ${unit}`, "error");
       }
     });
+  });
 
-  const searchInput = document.getElementById("ingredientSearch");
-searchInput?.addEventListener('input', () => {
-  const query = searchInput.value.trim();
-  if (!query) {
-    this.loadCurrentStock(); // reload all ingredients
-    return;
-  }
+  // ✅ Create ingredient
+  this.newIngredientForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("newIngredientName").value.trim();
+    const unit = document.getElementById("newIngredientUnit")?.value.trim() || null;
+    const supplierSelect = document.getElementById("newIngredientSupplier");
+    const supplierId = supplierSelect ? parseInt(supplierSelect.value) || null : null;
 
-  clearTimeout(this.searchTimeout);
-  this.searchTimeout = setTimeout(() => {
-    this.searchIngredients(query);
-  }, 300); // small delay to reduce requests
-});
-
-
-    // Modal elements
-const modal = document.getElementById("updateIngredientModal");
-const closeModal = document.getElementById("closeUpdateModal");
-const cancelUpdateBtn = document.getElementById("cancelUpdate");
-
-// Open modal when edit clicked
-this.ingredientsContainer.addEventListener("click", (e) => {
-  if (e.target.classList.contains("btn-edit")) {
-    const id = parseInt(e.target.dataset.id);
-    const name = e.target.dataset.name;
-    const unit = e.target.dataset.unit || '';
-
-    document.getElementById("updateIngredientId").value = id;
-    document.getElementById("updateIngredientName").value = name;
-    document.getElementById("updateIngredientUnit").value = unit;
-
-    modal.style.display = "block";
-  }
-
-  if (e.target.classList.contains("btn-remove")) {
-    const id = parseInt(e.target.dataset.id);
-    if (confirm("Are you sure you want to remove this ingredient?")) {
-      this.removeIngredient(id);
+    if (!name) {
+      this.showMessage("Please enter a valid ingredient name", "error");
+      return;
     }
-  }
-});
 
-// Close modal when clicking X
-closeModal.addEventListener("click", () => modal.style.display = "none");
+    const payload = { name, stock_unit: unit, supplier_id: supplierId };
+    this.createIngredient(payload);
+  });
 
-// Close modal when clicking cancel
-cancelUpdateBtn.addEventListener("click", () => modal.style.display = "none");
+  // ✅ Add stock
+  this.addIngredientForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const ingredientId = parseInt(this.ingredientSelect.value);
+    const quantity = parseFloat(document.getElementById("stockQuantity").value);
+    const unit = this.unitSelect.value;
 
-// Close modal when clicking outside modal content
-window.addEventListener("click", (e) => {
-  if (e.target === modal) modal.style.display = "none";
-});
+    if (!ingredientId || !quantity || !unit) {
+      this.showMessage("Please select ingredient, quantity, and unit", "error");
+      return;
+    }
 
-// Submit update form
-document.getElementById("updateIngredientForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const id = parseInt(document.getElementById("updateIngredientId").value);
-  const name = document.getElementById("updateIngredientName").value.trim();
-  const unit = document.getElementById("updateIngredientUnit").value;
+    const payload = { ingredient_id: ingredientId, quantity_value: quantity, quantity_unit: unit };
+    this.addStock(payload);
+  });
 
-  if (!name || !unit) {
-    this.showMessage("Please fill in all fields", "error");
-    return;
-  }
+  // ✅ Refresh button
+  this.btnRefreshIngredients?.addEventListener("click", async () => {
+    await this.loadIngredients();
+    await this.loadCurrentStock();
+    this.showMessage("Ingredients refreshed!", "success");
+  });
 
-  await this.updateIngredient({ id, name, stock_unit: unit });
-  modal.style.display = "none"; // Close modal after update
-});
+  // ✅ Ingredient container click events (edit/remove)
+  this.ingredientsContainer.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("btn-remove")) {
+      const id = parseInt(e.target.dataset.id);
+      if (confirm("Are you sure you want to remove this ingredient?")) {
+        await this.removeIngredient(id);
+      }
+    }
 
-  }
+    if (e.target.classList.contains("btn-edit")) {
+      const id = parseInt(e.target.dataset.id);
+      const name = e.target.dataset.name;
+      const unit = e.target.dataset.unit || '';
+
+      this.updateIngredientForm.style.display = "block";
+      this.updateIngredientId.value = id;
+      this.updateIngredientName.value = name;
+      this.updateIngredientUnit.value = unit;
+    }
+  });
+
+  // ✅ Search box
+  const searchInput = document.getElementById("ingredientSearch");
+  searchInput?.addEventListener('input', () => {
+    const query = searchInput.value.trim();
+    if (!query) {
+      this.loadCurrentStock();
+      return;
+    }
+
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      this.searchIngredients(query);
+    }, 300);
+  });
+
+  // ✅ Modal logic
+  const modal = document.getElementById("updateIngredientModal");
+  const closeModal = document.getElementById("closeUpdateModal");
+  const cancelUpdateBtn = document.getElementById("cancelUpdate");
+
+  this.ingredientsContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("btn-edit")) {
+      const id = parseInt(e.target.dataset.id);
+      const name = e.target.dataset.name;
+      const unit = e.target.dataset.unit || '';
+
+      document.getElementById("updateIngredientId").value = id;
+      document.getElementById("updateIngredientName").value = name;
+      document.getElementById("updateIngredientUnit").value = unit;
+
+      modal.style.display = "block";
+    }
+  });
+
+  closeModal.addEventListener("click", () => modal.style.display = "none");
+  cancelUpdateBtn.addEventListener("click", () => modal.style.display = "none");
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+
+  document.getElementById("updateIngredientForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = parseInt(document.getElementById("updateIngredientId").value);
+    const name = document.getElementById("updateIngredientName").value.trim();
+    const unit = document.getElementById("updateIngredientUnit").value;
+
+    if (!name || !unit) {
+      this.showMessage("Please fill in all fields", "error");
+      return;
+    }
+
+    await this.updateIngredient({ id, name, stock_unit: unit });
+    modal.style.display = "none";
+  });
+
+// Reset thresholds to defaults
+document.getElementById("btnResetThresholds")?.addEventListener("click", () => {
+  this.thresholds = { g: 500, pcs: 10, ml: 200 };
+  Object.keys(this.thresholdInputs).forEach(unit => {
+    this.thresholdInputs[unit].value = this.thresholds[unit];
+    localStorage.setItem(`threshold_${unit}`, this.thresholds[unit]);
+  });
+  this.showMessage("Thresholds reset to defaults", "success");
+  this.loadCurrentStock();
+});}
+
+
 
   /*********************
    * Load current stock
    *********************/
-  async loadCurrentStock() {
+ async loadCurrentStock() {
     try {
       const res = await fetch(`${this.API_INGREDIENTS}?action=getStock`, { credentials: 'include' });
       const result = await res.json();
 
       if (!result.status || !Array.isArray(result.data)) throw new Error("Invalid stock data");
-      if (!this.ingredientsContainer) return;
 
-      if (result.data.length === 0) {
-        this.ingredientsContainer.innerHTML = `<div class="ingredient-empty">No ingredient stock available</div>`;
-        return;
-      }
+      this.ingredientsContainer.innerHTML = result.data.map(item => {
+        const threshold = this.thresholds[item.stock_unit] || 0;
+        const isLow = item.quantity_in_stock < threshold;
 
-      this.ingredientsContainer.innerHTML = result.data.map(item => `
-        <div class="ingredient-item" data-id="${item.id}">
-          <strong>${this.escapeHtml(item.name)}</strong>: ${item.quantity_in_stock} ${item.stock_unit || ''}
-          <button class="btn-edit" data-id="${item.id}" data-name="${this.escapeHtml(item.name)}" data-unit="${item.stock_unit || ''}">Edit</button>
-          <button class="btn-remove" data-id="${item.id}">Remove</button>
-        </div>
-      `).join("");
+        return `
+          <div class="ingredient-item ${isLow ? 'low-stock' : ''}" data-id="${item.id}">
+            <strong>${this.escapeHtml(item.name)}</strong>:
+            ${item.quantity_in_stock} ${item.stock_unit || ''}
+            ${isLow ? `<span class="warning">⚠ Low Stock (below ${threshold} ${item.stock_unit})</span>` : ""}
+            <button class="btn-edit" data-id="${item.id}" data-name="${this.escapeHtml(item.name)}" data-unit="${item.stock_unit || ''}">Edit</button>
+            <button class="btn-remove" data-id="${item.id}">Remove</button>
+          </div>
+        `;
+      }).join("");
     } catch (err) {
       console.error("Error loading current stock:", err);
       this.showMessage("Error loading current stock", "error");
     }
   }
-
   // Update ingredient
   async updateIngredient(payload) {
     try {
