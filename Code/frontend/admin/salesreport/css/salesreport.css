@@ -120,3 +120,27 @@ tr:hover {
     font-size: 0.9rem;
   }
 }
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+.modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal h2 { margin-top: 0; }
+.modal table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.modal table, .modal th, .modal td { border: 1px solid #ccc; }
+.modal th, .modal td { padding: 8px; text-align: left; }
+.modal button { margin-top: 15px; padding: 8px 16px; }
+

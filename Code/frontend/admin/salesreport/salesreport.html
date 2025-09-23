@@ -33,6 +33,18 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #000;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -43,12 +55,13 @@
     <button data-range="weekly">Weekly</button>
     <button data-range="monthly">Monthly</button>
     <button class="back-button" onclick="window.location.href='../panel/panel.html'">← Back to Admin Panel</button>
-
   </div>
 
-  <label>From: <input type="date" id="startDate"></label>
-  <label>To: <input type="date" id="endDate"></label>
-  <button id="loadReport">Load Report</button>
+  <div style="margin-top:10px;">
+    <label>From: <input type="date" id="startDate"></label>
+    <label>To: <input type="date" id="endDate"></label>
+    <button id="loadReport">Load Report</button>
+  </div>
 
   <div>
     <h3>Total Sales: <span id="totalSales">₱0.00</span></h3>
@@ -56,47 +69,33 @@
   </div>
 
   <h3>Top Selling Items</h3>
-<table border="1">
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th>Total Sold</th>
-      <th>Revenue</th> <!-- ✅ Added -->
-    </tr>
-  </thead>
-  <tbody id="topSellingTable"></tbody>
-</table>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Total Sold</th>
+        <th>Revenue</th>
+      </tr>
+    </thead>
+    <tbody id="topSellingTable"></tbody>
+  </table>
 
+  <h3>Orders</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="ordersTable"></tbody>
+  </table>
+
+  <!-- External scripts only -->
   <script type="module" src="../../js/config.js"></script>
-  <script src="./js/salesreport.js"></script>
-
-  <!-- Security overlay -->
-  <script>
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const userRole = loggedInUser ? loggedInUser.type : null;
-    const userName = localStorage.getItem("customer_name") || "Guest";
-
-    if (!userRole) {
-      // Not logged in
-      document.body.innerHTML = "";
-      const overlay = document.createElement("div");
-      overlay.id = "block-overlay";
-      overlay.textContent = "🚨 Security Alert: You must log in first to access the Sales Report.";
-      document.body.appendChild(overlay);
-    } else if (userRole !== "admin") {
-      // Logged in but not admin
-      document.body.innerHTML = "";
-      const overlay = document.createElement("div");
-      overlay.id = "block-overlay";
-      overlay.textContent = "⛔ Access Denied: Sales Report is restricted to Admins only.";
-      document.body.appendChild(overlay);
-    } else {
-      // If admin, insert welcome message below <h1>
-      const mainTitle = document.querySelector("h1");
-      if (mainTitle) {
-        mainTitle.insertAdjacentHTML("afterend", `<p id="welcome-msg">Welcome, ${userName} (Admin)!</p>`);
-      }
-    }
-  </script>
+  <script type="module" src="../salesreport/js/salesreport.js"></script>
 </body>
 </html>
