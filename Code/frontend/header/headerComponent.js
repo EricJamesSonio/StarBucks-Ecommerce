@@ -210,6 +210,7 @@ setupProfileModal() {
                     localStorage.removeItem("loggedInUser");
                     localStorage.removeItem("isLoggedIn");
                     localStorage.removeItem("profileImage");
+                    localStorage.clear();
                     window.location.reload();
                 };
             }

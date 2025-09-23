@@ -72,6 +72,14 @@
         welcomeEl.innerText = `Welcome, ${userName} (Admin)!`;
       }
     }
+
+  window.addEventListener("pageshow", function (event) {
+    // If page was restored from cache (back button), force reload
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+
   </script>
 </body>
 </html>
