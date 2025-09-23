@@ -1,11 +1,9 @@
 // headerComponent.js - Main HeaderComponent class
 import { headerHTML } from './headerTemplate.js';
 import { headerCSS } from './headerStyles.js';
-import { 
-  updateProfileImageInHeader, 
+import {  
   loadUserProfile, 
   ensureCSSVariables, 
-  uploadProfileImage,
   loadCountries,   // 🔹 add
   loadProvinces,   // 🔹 add
   loadCities       // 🔹 add
@@ -77,43 +75,15 @@ class HeaderComponent {
     }
 
     async loadProfileImage() {
-        try {
-            // Check if user is logged in
             const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
             if (!isLoggedIn) return;
 
-            // Try to get profile image from localStorage first (for performance)
-            const savedProfileImage = localStorage.getItem("profileImage");
-            if (savedProfileImage) {
-                this.updateProfileIcon(savedProfileImage);
-            }
 
             // Then try to fetch from API for the latest image
             const response = await fetch(`${API_BASE_PATH}/profile`, {
                 method: "GET",
                 credentials: "include"
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.status && data.user && data.user.image_url) {
-                    this.updateProfileIcon(data.user.image_url);
-                    // Save to localStorage for future use
-                    localStorage.setItem("profileImage", data.user.image_url);
-                }
-            }
-        } catch (error) {
-            console.error("Failed to load profile image:", error);
-        }
-    }
-
-    updateProfileIcon(imageUrl) {
-        const profileIcon = document.getElementById('profile-icon');
-        if (profileIcon && imageUrl) {
-            profileIcon.src = imageUrl;
-            // Add a border to make it look nice
-            profileIcon.style.border = '2px solid white';
-        }
     }
 
 setupProfileModal() {
@@ -169,22 +139,9 @@ setupProfileModal() {
       });
     }
 
-    // Listen for profile image updates
-    this.setupProfileImageUpdateListener();
   }, 100);
 }
 
-
-    setupProfileImageUpdateListener() {
-        // Create a custom event listener for profile image updates
-        document.addEventListener('profileImageUpdated', (event) => {
-            if (event.detail && event.detail.imageUrl) {
-                this.updateProfileIcon(event.detail.imageUrl);
-                // Save to localStorage
-                localStorage.setItem("profileImage", event.detail.imageUrl);
-            }
-        });
-    }
 
     initProfileModal() {
         const userData = localStorage.getItem("loggedInUser");
@@ -209,73 +166,11 @@ setupProfileModal() {
                 signUpButton.onclick = () => {
                     localStorage.removeItem("loggedInUser");
                     localStorage.removeItem("isLoggedIn");
-                    localStorage.removeItem("profileImage");
-                    localStorage.clear();
                     window.location.reload();
                 };
             }
         }
 
-        // File input for image selection (hidden)
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
-        fileInput.style.display = 'none';
-        document.body.appendChild(fileInput);
-
-        // Open file dialog when "Choose from Gallery" is clicked
-        const openImagePickerBtn = document.getElementById('open-image-picker');
-        if (openImagePickerBtn) {
-            openImagePickerBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                fileInput.click();
-            });
-        }
-
-        // Handle file selection
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Check if file is an image
-                if (!file.type.startsWith('image/')) {
-                    alert('Please select an image file');
-                    return;
-                }
-
-                // Check file size (max 5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Image size must be less than 5MB');
-                    return;
-                }
-
-                // Create a preview of the selected image
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageDataUrl = e.target.result;
-
-                    // Update profile image preview
-                    const profileImage = document.getElementById('profile-image');
-                    if (profileImage) {
-                        profileImage.src = imageDataUrl;
-                    }
-
-                    // Update the image URL field
-                    const profileImageUrl = document.getElementById('profile-image-url');
-                    if (profileImageUrl) {
-                        profileImageUrl.value = imageDataUrl;
-                    }
-
-                    // Update the header profile icon immediately
-                    if (typeof updateProfileImageInHeader === 'function') {
-                        updateProfileImageInHeader(imageDataUrl);
-                    }
-
-                    // Upload to server
-                    uploadProfileImage(file);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
 
         // Profile form submission
         const profileForm = document.getElementById('profile-form');
@@ -317,59 +212,8 @@ setupProfileModal() {
             });
         }
 
-        // Initialize drag and drop
-        this.setupDragAndDrop();
     }
-
-    setupDragAndDrop() {
-        const profileImage = document.getElementById('profile-image');
-        const dropZone = document.getElementById('open-image-picker');
-        const fileInput = document.querySelector('input[type="file"]');
-
-        if (profileImage && dropZone && fileInput) {
-            // Prevent default drag behaviors
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
-                document.body.addEventListener(eventName, preventDefaults, false);
-            });
-
-            // Highlight drop zone when item is dragged over it
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, unhighlight, false);
-            });
-
-            // Handle dropped files
-            dropZone.addEventListener('drop', handleDrop, false);
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            function highlight() {
-                dropZone.style.backgroundColor = '#004f1a';
-            }
-
-            function unhighlight() {
-                dropZone.style.backgroundColor = '#006241';
-            }
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    fileInput.dispatchEvent(new Event('change'));
-                }
-            }
-        }
-    }
-
-    
+  
 }
 
 

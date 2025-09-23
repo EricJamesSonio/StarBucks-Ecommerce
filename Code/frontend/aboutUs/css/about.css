@@ -1,6 +1,4 @@
-/* ================= GENERAL ================= */
-@import url("itemCard.css");
-@import url("homeSec.css");
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -100,9 +98,9 @@
 }
 
 .team-member img {
-    width: 100%;
+    width: 250px;
     border-radius: 50%;
-    height: auto;
+    height: 250px;
     object-fit: cover;
     margin-bottom: 1rem;
     border: 3px solid var(--main-color-green);

@@ -23,7 +23,7 @@ export const headerHTML = `
                     <img class="icon" id="profile-icon" src="../assets/user.png" alt="user">
                 </li>
                 <li>
-                    <button onclick="window.location.href='../login/login.html'">SIGN UP</button>
+                    <button onclick="window.location.href='../login/login.html'">LOG IN</button>
                 </li>
             </ul>
         </li>
@@ -34,12 +34,6 @@ export const headerHTML = `
     <div id="profile-modal" class="modal">
         <div class="modal-content">
             <span id="close-profile" class="close">&times;</span>
-            <h2>User Profile</h2>
-            <img id="profile-image" src="../assets/user.png" alt="Profile" width="100">
-            <label for="profile-image-url">Profile Image URL</label>
-            <input type="text" id="profile-image-url" placeholder="Enter image URL">
-            <button id="open-image-picker">Choose from Gallery</button>
-
             <form id="profile-form">
                 <label>First Name</label>
                 <input type="text" id="first_name" name="first_name">

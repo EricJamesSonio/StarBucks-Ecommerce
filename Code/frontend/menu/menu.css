@@ -31,6 +31,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
+  position: relative;
 }
 
 /* Left sidebar for categories */
@@ -39,6 +40,7 @@ body {
   background-color: var(--main-color-darkgreen);
   padding: 20px;
   border-right: 2px solid var(--main-color-green);
+  transition: transform 0.3s ease;
 }
 
 /* Right content area for products */
@@ -156,8 +158,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding: 1rem;
   gap: 1.5rem;
+  padding: 1rem;
 }
 
 
@@ -307,11 +309,10 @@ button:hover {
 
 /* Search Container */
 .search-container {
-  position: absolute;
+  position: relative;
   width: 300px;
   margin: 1rem auto 2rem auto;
-  display: inline-block;
-  left: 50vw;
+  display: block;
 }
 
 #searchInput {
@@ -362,167 +363,6 @@ button:hover {
   border-radius: 12px;
 }
 
-/* Navigation bar container */
-#head-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  list-style: none;
-  height: 15%;
-  width: 100%;
-  padding: 0 2rem;
-  background-color: var(--main-color-darkgreen);
-  box-shadow: 0 3px 8px rgba(0, 54, 31, 0.7);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* Logo */
-.logo {
-  height: 5rem;
-  width: 5rem;
-  filter: invert(1) brightness(1000%);
-  cursor: pointer;
-  user-select: none;
-}
-
-/* Nav container and links */
-.nav-list nav {
-  display: flex;
-  gap: 1.6rem;
-  align-items: center;
-}
-
-.nav-list nav a,
-.dropbtn {
-  font-size: 1rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  text-decoration: none;
-  color: var(--main-color-lightgreen);
-  padding: 0.6rem 1.5rem;
-  border-radius: 20px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  cursor: pointer;
-  user-select: none;
-  display: inline-block;
-  position: relative;
-}
-
-.nav-list nav a:hover,
-.dropbtn:hover {
-  background-color: var(--main-color-green);
-  color: #f0f4ef;
-}
-
-/* Dropdown container */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-/* Dropdown content */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: var(--main-color-darkgreen);
-  min-width: 180px;
-  box-shadow: 0 8px 16px rgba(0, 54, 31, 0.7);
-  border-radius: 10px;
-  padding: 0.5rem 0;
-  top: 100%;
-  left: 0;
-  z-index: 200;
-}
-
-/* Dropdown links */
-.dropdown-content a {
-  color: var(--main-color-lightgreen);
-  padding: 0.8rem 1.5rem;
-  text-decoration: none;
-  display: block;
-  font-weight: 600;
-  transition: background-color 0.25s ease;
-  user-select: none;
-}
-
-.dropdown-content a:hover {
-  background-color: var(--main-color-green);
-  color: #f0f4ef;
-  border-radius: 10px;
-}
-
-/* Show dropdown on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-/* Icon list styles */
-#icon-list {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  list-style: none;
-  gap: 0.8rem;
-}
-
-.icon {
-  filter: invert(1) brightness(1000%);
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  transition: filter 0.2s ease;
-  user-select: none;
-}
-
-.icon:hover {
-  filter: brightness(0.8) invert(1);
-}
-
-/* SIGN UP button styling */
-#icon-list button {
-  border-radius: 20px;
-  background-color: rgb(240, 240, 240);
-  padding: 0.35rem 1.6rem;
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: var(--main-color-darkgreen);
-  text-transform: uppercase;
-  border: none;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  cursor: pointer;
-  user-select: none;
-}
-
-#icon-list button:hover {
-  background-color: var(--main-color-lightgreen);
-  color: #f0f4ef;
-}
-
-.nav-list nav {
-    background-color: white;
-    padding: .6rem 1rem;
-    border-radius: 20px;
-}
-
-.nav-list nav a{
-    font-size: .9rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    text-decoration: none;
-    color: var(--main-color-darkgreen);
-    padding: .5rem 1.5rem;
-    border-radius: 20px;
-}
-
-.nav-list nav a:hover{
-    background-color: var(--main-color-darkgreen);
-    color: white;
-    font-weight: 600;
-    background-color: #00361f;
-}
-
 /* Responsive Tweaks */
 @media (max-width: 768px) {
   .container {
@@ -547,38 +387,5 @@ button:hover {
   .modal-content {
     padding: 2rem 1.5rem;
     max-width: 90vw;
-  }
-  
-  #head-nav {
-    flex-direction: column;
-    height: auto;
-    padding: 1rem 1.5rem;
-  }
-
-  .nav-list nav {
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    background-color: var(--main-color-darkgreen);
-    border-radius: 20px;
-    padding: 0.8rem 0;
-  }
-
-  .dropdown-content {
-    position: relative;
-    box-shadow: none;
-    background-color: transparent;
-    padding-left: 1rem;
-  }
-
-  .dropdown:hover .dropdown-content {
-    display: none; /* Disable hover dropdown on mobile */
-  }
-
-  #icon-list {
-    width: 100%;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
   }
 }
