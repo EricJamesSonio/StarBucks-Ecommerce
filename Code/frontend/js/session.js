@@ -11,7 +11,6 @@ class SessionManager {
         try {
             const res = await fetch(`${this.apiBasePath}/sizes`, { credentials: 'include' });
             this.sizes = await res.json();
-            console.log('Loaded sizes:', this.sizes);
         } catch (err) {
             console.error('Could not load sizes:', err);
         }

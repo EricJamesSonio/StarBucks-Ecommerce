@@ -97,16 +97,15 @@ section {
   padding: 12px;
   margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
-.ingredient-item strong { color: #2c3e50; }
-.ingredient-item.low { color: #e74c3c; }
+.ingredient-item strong { color: #2c3e50; width: 30%; background-color: rgb(233, 233, 233, .3);}
+.ingredient-item.low { color: #e74c3c;}
 
 /* Ingredient Item Buttons */
-.ingredient-item .btn-edit { background-color: #4CAF50; color: #fff; }
-.ingredient-item .btn-remove { background-color: #f44336; color: #fff; }
+.ingredient-item .btn-edit { background-color: #4CAF50; color: #fff;width: min(80px, 10%); margin-left: auto; }
+.ingredient-item .btn-remove { background-color: #f44336; color: #fff;width: min(80px, 10%); margin-left: 10px;}
 
 .ingredient-item .btn-edit:hover { background-color: #45a049; }
 .ingredient-item .btn-remove:hover { background-color: #da190b; }
