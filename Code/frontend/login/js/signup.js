@@ -177,42 +177,43 @@ class SignupManager {
             email: this.email.value.trim(),
             password: this.password.value,
             phone: this.phone.value.trim(),
-            street: document.querySelectorAll("input#street")[1]?.value.trim() || "",            
+            street: document.querySelectorAll("input#street")[1]?.value.trim() || "",
             city: this.selectedCity?.name || '',
             province: this.selectedProvince?.name || '',
             postal_code: document.getElementById('postalCode').value.trim(),
             country: this.selectedCountry?.name || ''
         };
 
-        // Check if OTP functionality is available
         if (this.otpModal) {
-            // Use OTP flow like the old signup.js
             try {
+                // 🔹 Show loading immediately
+                this.showOtpLoadingOverlay();
+
                 const res = await fetch(`${this.apiBasePath}/send-otp`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email: this.payload.email })
                 });
+
                 const data = await res.json();
 
-             if (data.success) {
-    this.showOtpLoadingOverlay();
-
-    // Wait 2 seconds, then open OTP modal
-    setTimeout(() => {
-        this.hideOtpLoadingOverlay();
-        this.openOtpModal();
-    }, 2000); // adjust delay if needed
-} else {
-    alert("Failed to send OTP. Try again.");
-}
-
+                if (data.success) {
+                    // Wait 2s to simulate loading before OTP modal
+                    setTimeout(() => {
+                        this.hideOtpLoadingOverlay();
+                        this.openOtpModal();
+                    }, 2000);
+                } else {
+                    this.hideOtpLoadingOverlay();
+                    alert("Failed to send OTP. Try again.");
+                }
             } catch (err) {
+                this.hideOtpLoadingOverlay();
                 console.error("Signup error:", err);
                 alert("Something went wrong. Please try again.");
             }
         } else {
-            // Use direct signup through auth.js (like the new signup.js)
+            // Normal signup without OTP
             await authSignup(this.payload);
         }
     }
