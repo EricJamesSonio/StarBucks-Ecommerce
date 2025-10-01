@@ -84,6 +84,14 @@ section {
   margin-bottom: 30px;
 }
 
+.threshold-item {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+.threshold-item label {
+  width: 90px;
+}
 /* Ingredient List */
 #ingredientsContainer,
 #lowIngredientContainer {
