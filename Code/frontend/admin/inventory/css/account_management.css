@@ -1,0 +1,164 @@
+/* Account Management Container */
+.account-management {
+  background-color: #ffffff;
+  padding: 30px 35px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  max-width: 980px;
+  margin: 0 auto 50px auto;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Section Header */
+.account-management h2 {
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  border-bottom: 2px solid #eaeff2;
+  padding-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* User Table */
+#userTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  table-layout: fixed;
+  background-color: #fff;
+}
+
+#userTable thead {
+  background-color: #f7f9fb;
+}
+
+#userTable th,
+#userTable td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e1e4e8;
+  color: #555;
+  word-wrap: break-word;
+}
+
+#userTable th {
+  font-weight: 600;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#userTable tbody tr {
+  transition: background 0.25s, transform 0.2s;
+}
+
+#userTable tbody tr:hover {
+  background-color: #f1f4f8;
+  transform: translateY(-2px);
+}
+
+/* Status Badges */
+.status-active {
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.status-inactive {
+  background-color: #e74c3c;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Action Buttons */
+.user-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.user-actions button {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 75px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.user-actions .btn-edit {
+  background: linear-gradient(145deg, #3498db, #2980b9);
+  color: #fff;
+}
+
+.user-actions .btn-edit:hover {
+  background: linear-gradient(145deg, #2980b9, #2471a3);
+  transform: translateY(-2px);
+}
+
+.user-actions .btn-block {
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
+  color: #fff;
+}
+
+.user-actions .btn-block:hover {
+  background: linear-gradient(145deg, #c0392b, #a93226);
+  transform: translateY(-2px);
+}
+
+.user-actions .btn-delete {
+  background: linear-gradient(145deg, #f39c12, #d68910);
+  color: #fff;
+}
+
+.user-actions .btn-delete:hover {
+  background: linear-gradient(145deg, #d68910, #b9770e);
+  transform: translateY(-2px);
+}
+
+/* Empty Table State */
+.user-empty {
+  text-align: center;
+  padding: 30px 0;
+  font-style: italic;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Back Button */
+.btn-back {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.btn-back:hover {
+  background-color: #95a5a6;
+  transform: translateY(-1px);
+}

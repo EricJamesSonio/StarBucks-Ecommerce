@@ -1,0 +1,10 @@
+.env
+
+
+# .env (this is the format)
+EMAIL_USER=""
+EMAIL_PASS=""   
+
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+EMAIL_FROM="Starbucks <youremail@gmail.com>"
