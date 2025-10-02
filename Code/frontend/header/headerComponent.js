@@ -188,7 +188,6 @@ if (signUpButton) {
         country: parseInt(document.getElementById("country").value) || null,
         province: parseInt(document.getElementById("province").value) || null,
         city: parseInt(document.getElementById("city").value) || null,
-        image_url: document.getElementById("profile-image").src
         };
 
         try {
