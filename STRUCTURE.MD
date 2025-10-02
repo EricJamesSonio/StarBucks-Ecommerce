@@ -111,6 +111,16 @@ Code/
 |   │   │   ├── css/
 |   │   │   ├── js/
 │   ├
+│   ├── header/ (used in home.html for notifcation and admin dashboard button)
+│   │   ├── headerComponents.js
+│   │   ├── headerTemplate.js
+│   │   ├── header.js
+│   │   ├── headerUtils.js
+
+│   │   ├── home.html
+│   ├── home/
+│   │   ├── home.html
+│   │   ├── login.html
 │   ├── js/
 │   │   ├── api.js
 │   │   ├── cart.js

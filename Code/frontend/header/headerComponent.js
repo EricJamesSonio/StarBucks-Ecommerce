@@ -239,21 +239,35 @@ class HeaderComponent {
     /**
      * ✅ Setup listener for low stock notifications from IngredientManager
      */
-    setupLowStockListener() {
-        document.addEventListener("lowStockNotification", (e) => {
-            const { item, threshold } = e.detail;
-            this.addNotification(item, threshold);
-        });
-    }
+setupLowStockListener() {
+    console.log("👂 HeaderComponent listening for lowStockNotification...");
+    
+    // 🔄 Listen on window instead of document
+    window.addEventListener("lowStockNotification", (e) => {
+        console.log("📥 HeaderComponent RECEIVED notification:", e.detail);
+        const { item, threshold } = e.detail;
+        this.addNotification(item, threshold);
+    });
+
+    window.addEventListener("updateLowStockList", (e) => {
+        const { currentLowStockIds } = e.detail;
+        this.clearResolvedNotifications(currentLowStockIds);
+    });
+}
+
 
     /**
      * ✅ Add notification to the notification list
      */
- addNotification(item, threshold) {
+addNotification(item, threshold) {
+    console.log("📝 Adding notification for:", item, "Threshold:", threshold);
     const notifList = document.getElementById("notification-list");
     const notifBadge = document.getElementById("notification-badge");
     
-    if (!notifList) return;
+    if (!notifList) {
+        console.warn("⚠ notification-list element not found in DOM");
+        return;
+    }
 
     // Check if notification already exists for this item
     const existingNotif = Array.from(notifList.children).find(li => 
@@ -352,6 +366,13 @@ class HeaderComponent {
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
     }
+
+    
+
+    
 }
+
+
+
 
 export { HeaderComponent };

@@ -333,34 +333,44 @@ class IngredientManager {
    * ✅ Notify Admin of Low Stock
    * Sends notification to HeaderComponent
    *********************/
-  notifyAdminLowStock(item, threshold) {
-    // ✅ Only notify once per item (unless stock changes or threshold changes)
+notifyAdminLowStock(item, threshold) {
     const notifKey = `${item.id}-${item.quantity_in_stock}`;
     if (this.notifiedItems.has(notifKey)) {
-      return; // Already notified for this item at this quantity
+        console.log(`ℹ Already notified: ${item.name} at ${item.quantity_in_stock} ${item.stock_unit}`);
+        return;
     }
 
     this.notifiedItems.add(notifKey);
 
-    // Dispatch custom event that HeaderComponent will listen to
-    const event = new CustomEvent("lowStockNotification", {
-      detail: { item, threshold }
-    });
-    document.dispatchEvent(event);
+    console.log(`📤 Dispatching lowStockNotification for:`, item, "Threshold:", threshold);
 
-    console.log(`🔔 Low stock notification sent for: ${item.name} (${item.quantity_in_stock} ${item.stock_unit})`);
-  }
+    // 🔄 Use window instead of document
+    window.dispatchEvent(new CustomEvent("lowStockNotification", {
+        detail: { item, threshold }
+    }));
+}
+
 
   /*********************
    * ✅ Load current stock and detect low stock
    *********************/
-  async loadCurrentStock() {
+async loadCurrentStock() {
     try {
-      const res = await fetch(`${this.API_INGREDIENTS}?action=getStock`, { credentials: 'include' });
-      const result = await res.json();
+        console.log("🔄 Checking current stock...");
+        const res = await fetch(`${this.API_INGREDIENTS}?action=getStock`, { credentials: 'include' });
+        const result = await res.json();
 
-      if (!result.status || !Array.isArray(result.data)) throw new Error("Invalid stock data");
+        if (!result.status || !Array.isArray(result.data)) throw new Error("Invalid stock data");
 
+        result.data.forEach(item => {
+            const threshold = this.thresholds[item.stock_unit] || 0;
+            const isLow = item.quantity_in_stock < threshold;
+            console.log(`   ➡ ${item.name}: ${item.quantity_in_stock} ${item.stock_unit} (Threshold ${threshold})`);
+            if (isLow) {
+                console.log(`   ⚠ LOW: ${item.name}`);
+                this.notifyAdminLowStock(item, threshold);
+            }
+        });
       // ✅ Clear notifications that are no longer low
       const currentLowStockIds = new Set();
 
@@ -387,9 +397,10 @@ class IngredientManager {
       }).join("");
 
       // ✅ Dispatch event to clear notifications for items no longer low
-      document.dispatchEvent(new CustomEvent("updateLowStockList", {
-        detail: { currentLowStockIds }
-      }));
+window.dispatchEvent(new CustomEvent("updateLowStockList", {
+  detail: { currentLowStockIds }
+}));
+
 
     } catch (err) {
       console.error("Error loading current stock:", err);
