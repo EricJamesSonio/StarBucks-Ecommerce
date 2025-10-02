@@ -1,4 +1,3 @@
-// headerTemplate.js - HTML template for the header component
 export const headerHTML = `
     <ul id="head-nav">
         <li class="logo-container">
@@ -19,6 +18,23 @@ export const headerHTML = `
                         <img class="icon" src="../assets/shopping-cart.png" alt="cart">
                     </a>
                 </li>
+                <!-- 🔹 Notification Icon (only visible for admin) -->
+            <!-- 🔹 Notification Icon (only visible for admin) -->
+            <li id="notification-container" style="display:none; position: relative;">
+                <img class="icon" id="notification-icon" src="../assets/notification.png" alt="notifications">
+                <span id="notification-badge" style="
+                    display:none;
+                    position:absolute;
+                    top:-5px;
+                    right:-5px;
+                    background:red;
+                    color:white;
+                    border-radius:50%;
+                    padding:2px 6px;
+                    font-size:12px;
+                ">0</span>
+            </li>
+
                 <li>
                     <img class="icon" id="profile-icon" src="../assets/user.png" alt="user">
                 </li>
@@ -28,7 +44,6 @@ export const headerHTML = `
             </ul>
         </li>
     </ul>
-
 
     <!-- Profile Modal -->
     <div id="profile-modal" class="modal">
@@ -51,6 +66,17 @@ export const headerHTML = `
                 <select id="city"></select>
                 <button type="submit">Save Changes</button>
             </form>
+        </div>
+    </div>
+
+    <!-- 🔹 Notifications Modal (only for admin) -->
+    <div id="notification-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-notification" class="close">&times;</span>
+            <h2>Admin Notifications</h2>
+            <ul id="notification-list">
+                <!-- Notifications will be dynamically inserted here -->
+            </ul>
         </div>
     </div>
 `;

@@ -224,6 +224,11 @@ export const headerCSS = `
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0, 98, 65, 0.3);
     }
+    .ingredient-item.highlight {
+  background-color: yellow;
+  transition: background-color 0.5s ease;
+}
+
 
     /* ===== SCROLLBAR STYLE ===== */
     .modal-content::-webkit-scrollbar { width: 8px; }
