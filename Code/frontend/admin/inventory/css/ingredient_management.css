@@ -9,7 +9,7 @@
 body {
   background-color: #f4f6f8;
   color: #333;
-  padding: 40px;
+  padding: 20px;
   min-height: 100vh;
 }
 
@@ -88,10 +88,12 @@ section {
   width: 100%;
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 .threshold-item label {
   width: 90px;
 }
+
 /* Ingredient List */
 #ingredientsContainer,
 #lowIngredientContainer {
@@ -106,14 +108,31 @@ section {
   margin-bottom: 10px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.ingredient-item strong { color: #2c3e50; width: 30%; background-color: rgb(233, 233, 233, .3);}
+.ingredient-item strong { 
+  color: #2c3e50; 
+  flex: 1;
+  min-width: 150px;
+  background-color: rgba(233, 233, 233, 0.3);
+  padding: 5px;
+  border-radius: 4px;
+}
 .ingredient-item.low { color: #e74c3c;}
 
 /* Ingredient Item Buttons */
-.ingredient-item .btn-edit { background-color: #4CAF50; color: #fff;width: min(80px, 10%); margin-left: auto; }
-.ingredient-item .btn-remove { background-color: #f44336; color: #fff;width: min(80px, 10%); margin-left: 10px;}
+.ingredient-item .btn-edit { 
+  background-color: #4CAF50; 
+  color: #fff;
+  min-width: 80px;
+}
+.ingredient-item .btn-remove { 
+  background-color: #f44336; 
+  color: #fff;
+  min-width: 80px;
+}
 
 .ingredient-item .btn-edit:hover { background-color: #45a049; }
 .ingredient-item .btn-remove:hover { background-color: #da190b; }
@@ -127,18 +146,26 @@ section {
 }
 
 /* Search */
-#searchInput {
+.search-container {
+  position: relative;
   width: 100%;
-  padding: 10px 14px;
-  border: 2px solid #ccc;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+#ingredientSearch {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
   border-radius: 25px;
-  outline: none;
-  background: #fff;
+  font-size: 16px;
   transition: all 0.3s ease;
 }
-#searchInput:focus {
-  border-color: #00bb68;
-  box-shadow: 0 0 5px rgba(0,187,104,0.3);
+
+#ingredientSearch:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
 }
 
 .suggestions {
@@ -154,6 +181,7 @@ section {
   overflow-y: auto;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   z-index: 10;
+  display: none;
 }
 .suggestions div {
   padding: 10px;
@@ -205,7 +233,8 @@ section {
   margin: 10% auto;
   padding: 20px;
   border-radius: 8px;
-  width: 400px;
+  width: 90%;
+  max-width: 400px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -217,62 +246,6 @@ section {
   cursor: pointer;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header-controls { flex-direction: column; align-items: flex-start; }
-  form { flex-direction: column; }
-}
-
-/* Container styling */
-.search-container {
-  position: relative;
-  width: 300px; /* Adjust width as needed */
-  margin: 20px auto; /* Center horizontally */
-}
-
-/* Search input styling */
-#ingredientSearch {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-#ingredientSearch:focus {
-  border-color: #007BFF;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none;
-}
-
-/* Suggestions box styling */
-.suggestions {
-  position: absolute;
-  top: 110%; /* Slightly below the input */
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-top: none; /* Avoid double border */
-  border-radius: 0 0 10px 10px;
-  max-height: 200px;
-  overflow-y: auto;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  z-index: 1000;
-  display: none; /* Hidden by default */
-}
-
-/* Each suggestion item */
-.suggestions div {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.suggestions div:hover {
-  background-color: #f0f0f0;
-}
 .low-stock {
   background: #fff3cd;
   border: 1px solid #ffeeba;
@@ -281,4 +254,84 @@ section {
   color: #856404;
   font-weight: bold;
   margin-left: 8px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+  
+  h1 { font-size: 26px; }
+  h2 { font-size: 20px; }
+  
+  .header-controls { 
+    flex-direction: column; 
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .header-controls button {
+    width: 100%;
+  }
+  
+  section {
+    padding: 15px;
+  }
+  
+  .ingredient-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .ingredient-item strong {
+    min-width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .ingredient-item .btn-edit,
+  .ingredient-item .btn-remove {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+  
+  .threshold-item label {
+    width: 100%;
+  }
+  
+  .modal-content {
+    margin: 20% auto;
+    width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; }
+  
+  section {
+    padding: 10px;
+  }
+  
+  .ingredient-item {
+    padding: 10px;
+  }
+  
+  form input,
+  form select,
+  form textarea {
+    padding: 8px 12px;
+  }
+  
+  button,
+  form button,
+  .ingredient-item button {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
 }
