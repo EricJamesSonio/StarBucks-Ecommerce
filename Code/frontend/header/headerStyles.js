@@ -230,6 +230,82 @@ export const headerCSS = `
 }
 
 
+/* 🔹 General Modal Overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Make sure it overlays above everything */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if content is too tall */
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+}
+
+/* 🔹 Shared Modal Box Style */
+.modal-content {
+    background-color: #fff;
+    margin: 8% auto;
+    padding: 20px 25px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s ease-out;
+    font-family: Arial, sans-serif;
+}
+
+/* 🔹 Close Button (X) */
+.close {
+    color: #666;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover {
+    color: #000;
+}
+
+/* 🔹 Notification Modal Specific */
+#notification-modal h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+}
+
+/* 🔹 Notification List */
+#notification-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px; /* Scrollable if too many notifications */
+    overflow-y: auto;
+}
+
+/* 🔹 Each Notification Item */
+#notification-list li {
+    padding: 12px 10px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    font-size: 14px;
+    border-left: 4px solid #00754a; /* Starbucks green accent */
+    transition: background 0.2s;
+}
+#notification-list li:hover {
+    background: #f1f1f1;
+}
+
+/* 🔹 Animation */
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+
     /* ===== SCROLLBAR STYLE ===== */
     .modal-content::-webkit-scrollbar { width: 8px; }
     .modal-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }

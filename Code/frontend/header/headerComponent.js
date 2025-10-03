@@ -2,6 +2,7 @@
 import { headerHTML } from './headerTemplate.js';
 import { headerCSS } from './headerStyles.js';
 import { logout } from "../../frontend/login/js/auth.js";
+import { notifyAdminLowStock } from "../admin/inventory/js/ingredient_management.js";
 
 import {  
   loadUserProfile, 
@@ -167,74 +168,81 @@ class HeaderComponent {
         }, 100);
     }
 
-    initProfileModal() {
-        const userData = localStorage.getItem("loggedInUser");
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+initProfileModal() {
+    const userData = localStorage.getItem("loggedInUser");
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-        if (isLoggedIn && userData) {
-            const user = JSON.parse(userData);
+    if (isLoggedIn && userData) {
+        const user = JSON.parse(userData);
 
-            // Check if user.type is admin
-            if (user.type && user.type.toLowerCase() === "admin") {
-                const adminLink = document.getElementById("admin-link");
-                const notifIcon = document.getElementById("notification-container");
+        // ✅ Check if user.type is admin
+        if (user.type && user.type.toLowerCase() === "admin") {
+            const adminLink = document.getElementById("admin-link");
+            const notifIcon = document.getElementById("notification-container");
 
-                if (adminLink) {
-                    adminLink.style.display = "inline-block";
-                }
-                if (notifIcon) {
-                    notifIcon.style.display = "inline-block";
-                }
+            if (adminLink) {
+                adminLink.style.display = "inline-block";
             }
 
-            // Update sign up button to logout
-            const signUpButton = document.querySelector('#icon-list button');
-            if (signUpButton) {
-                signUpButton.textContent = "LOGOUT";
-                signUpButton.onclick = () => {
-                    logout();
-                };
+            if (notifIcon) {
+                // ✅ Only show notification icon on home.html
+                const currentPage = window.location.pathname.split("/").pop();
+                if (currentPage === "home.html") {
+                    notifIcon.style.display = "inline-block";
+                } else {
+                    notifIcon.style.display = "none"; // hide on other pages
+                }
             }
         }
 
-        // Profile form submission
-        const profileForm = document.getElementById('profile-form');
-        if (profileForm) {
-            profileForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                const payload = {
-                    first_name: document.getElementById("first_name").value,
-                    middle_name: document.getElementById("middle_name").value,
-                    last_name: document.getElementById("last_name").value,
-                    street: document.getElementById("street").value,
-                    country: parseInt(document.getElementById("country").value) || null,
-                    province: parseInt(document.getElementById("province").value) || null,
-                    city: parseInt(document.getElementById("city").value) || null,
-                };
-
-                try {
-                    const response = await fetch(`${API_BASE_PATH}/profile`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        credentials: "include",
-                        body: JSON.stringify(payload)
-                    });
-
-                    const data = await response.json();
-                    if (data.status) {
-                        alert(data.message || "Profile updated successfully!");
-                        document.getElementById("profile-modal").style.display = "none";
-                    } else {
-                        alert(data.message || "Failed to update profile.");
-                    }
-                } catch (error) {
-                    console.error("Error updating profile:", error);
-                    alert("Error updating profile");
-                }
-            });
+        // ✅ Change login button → logout
+        const signUpButton = document.querySelector('#icon-list button');
+        if (signUpButton) {
+            signUpButton.textContent = "LOGOUT";
+            signUpButton.onclick = () => {
+                logout();
+            };
         }
     }
+
+    // ✅ Profile form submission
+    const profileForm = document.getElementById('profile-form');
+    if (profileForm) {
+        profileForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const payload = {
+                first_name: document.getElementById("first_name").value,
+                middle_name: document.getElementById("middle_name").value,
+                last_name: document.getElementById("last_name").value,
+                street: document.getElementById("street").value,
+                country: parseInt(document.getElementById("country").value) || null,
+                province: parseInt(document.getElementById("province").value) || null,
+                city: parseInt(document.getElementById("city").value) || null,
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_PATH}/profile`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (data.status) {
+                    alert(data.message || "Profile updated successfully!");
+                    document.getElementById("profile-modal").style.display = "none";
+                } else {
+                    alert(data.message || "Failed to update profile.");
+                }
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert("Error updating profile");
+            }
+        });
+    }
+}
 
     /**
      * ✅ Setup listener for low stock notifications from IngredientManager
@@ -251,7 +259,6 @@ setupLowStockListener() {
 
     window.addEventListener("updateLowStockList", (e) => {
         const { currentLowStockIds } = e.detail;
-        this.clearResolvedNotifications(currentLowStockIds);
     });
 }
 
@@ -338,41 +345,14 @@ addNotification(item, threshold) {
         }
     }
 }
-
-    /**
-     * ✅ Clear all notifications
-     */
-    clearNotifications() {
-        const notifList = document.getElementById("notification-list");
-        const notifBadge = document.getElementById("notification-badge");
-        
-        if (notifList) {
-            notifList.innerHTML = '<li>No notifications</li>';
-        }
-        
-        if (notifBadge) {
-            notifBadge.textContent = "0";
-            notifBadge.style.display = "none";
-        }
-        
-        this.lowStockItems = [];
-    }
-
-    escapeHtml(str = "") {
-        return String(str)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
-    }
-
-    
-
-    
+escapeHtml(text) {
+    if (typeof text !== "string") return text;
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
-
-
-
-
+}
 export { HeaderComponent };
