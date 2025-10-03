@@ -139,7 +139,6 @@ class CategoryUI {
         const container = document.getElementById('subcategoryButtons');
         container.innerHTML = '';
         
-        // Add subcategory buttons only (no "View All" button)
         subcategories.forEach(subcat => {
             const btn = document.createElement('button');
             btn.className = 'category-btn';
@@ -149,14 +148,27 @@ class CategoryUI {
         });
     }
 
-    displayItems(items, subcategoryName = '') {
+    async displayItems(items, subcategoryName = '') {
         const itemList = document.getElementById('itemList');
-        itemList.innerHTML = '';
+        itemList.innerHTML = 'Loading items...';
 
         if (items.length === 0) {
             itemList.innerHTML = '<p>No items found in this category.</p>';
             return;
         }
+
+        // Filter items by availability
+        const availabilityChecks = await Promise.all(
+            items.map(item => checkItemAvailability(item))
+        );
+        const availableItems = items.filter((_, idx) => availabilityChecks[idx]);
+
+        if (availableItems.length === 0) {
+            itemList.innerHTML = '<p>No items available right now.</p>';
+            return;
+        }
+
+        itemList.innerHTML = '';
 
         // Add subcategory title if provided
         if (subcategoryName) {
@@ -166,7 +178,7 @@ class CategoryUI {
             itemList.appendChild(title);
         }
 
-        items.forEach(item => {
+        availableItems.forEach(item => {
             const imageUrl = this.imageManager.getImage(item.image_url);
             const card = document.createElement('div');
             card.className = 'item-card';
@@ -182,9 +194,9 @@ class CategoryUI {
         });
     }
 
-    displayItemsGroupedBySubcategory(items, subcategories) {
+    async displayItemsGroupedBySubcategory(items, subcategories) {
         const itemList = document.getElementById('itemList');
-        itemList.innerHTML = '';
+        itemList.innerHTML = 'Loading items...';
 
         if (items.length === 0) {
             itemList.innerHTML = '<p>No items found in this category.</p>';
@@ -200,40 +212,51 @@ class CategoryUI {
             itemsBySubcategory[item.subcategory_id].push(item);
         });
 
-        // Create sections for each subcategory
-        subcategories.forEach(subcat => {
-            const subcatItems = itemsBySubcategory[subcat.id] || [];
-            
-            if (subcatItems.length > 0) {
-                // Create subcategory header
-                const subcatHeader = document.createElement('h2');
-                subcatHeader.className = 'subcategory-title';
-                subcatHeader.textContent = subcat.name;
-                itemList.appendChild(subcatHeader);
+        itemList.innerHTML = '';
 
-                // Create container for items in this subcategory
-                const subcatContainer = document.createElement('div');
-                subcatContainer.className = 'subcategory-items';
-                
-                // Add items to the container
-                subcatItems.forEach(item => {
-                    const imageUrl = this.imageManager.getImage(item.image_url);
-                    const card = document.createElement('div');
-                    card.className = 'item-card';
-                    card.onclick = () => openModal(item);
+        // Iterate over subcategories
+        for (const subcat of subcategories) {
+            let subcatItems = itemsBySubcategory[subcat.id] || [];
 
-                    card.innerHTML = `
-                        <img src="${imageUrl}" class="item-img" alt="${item.name}">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-description">${item.description}</div>
-                        <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
-                    `;
-                    subcatContainer.appendChild(card);
-                });
-                
-                itemList.appendChild(subcatContainer);
-            }
-        });
+            // Filter available items
+            const availabilityChecks = await Promise.all(
+                subcatItems.map(item => checkItemAvailability(item))
+            );
+            subcatItems = subcatItems.filter((_, idx) => availabilityChecks[idx]);
+
+            if (subcatItems.length === 0) continue; // skip empty
+
+            // Subcategory header
+            const subcatHeader = document.createElement('h2');
+            subcatHeader.className = 'subcategory-title';
+            subcatHeader.textContent = subcat.name;
+            itemList.appendChild(subcatHeader);
+
+            // Subcategory container
+            const subcatContainer = document.createElement('div');
+            subcatContainer.className = 'subcategory-items';
+
+            subcatItems.forEach(item => {
+                const imageUrl = this.imageManager.getImage(item.image_url);
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.onclick = () => openModal(item);
+
+                card.innerHTML = `
+                    <img src="${imageUrl}" class="item-img" alt="${item.name}">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-description">${item.description}</div>
+                    <div class="item-price">₱${parseFloat(item.price).toFixed(2)}</div>
+                `;
+                subcatContainer.appendChild(card);
+            });
+
+            itemList.appendChild(subcatContainer);
+        }
+
+        if (itemList.innerHTML.trim() === '') {
+            itemList.innerHTML = '<p>No items available right now.</p>';
+        }
     }
 
     showError(targetId, message) {
@@ -375,7 +398,40 @@ class CategoryController {
             return null;
         }
     }
+
+
+
 }
+
+async function checkItemAvailability(item) {
+    try {
+        // Determine item_type like in addToCart
+        const itemType = item.category_id === 3 || item.item_type === 'merchandise'
+            ? 'merchandise'
+            : 'starbucksitem';
+
+        const payload = {
+            item_id: item.id,
+            item_type: itemType,
+            quantity: 1,
+            size_id: null // no size selected in the category listing
+        };
+
+        const res = await fetch(`${API_BASE_PATH}/check_ingredients`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        return data.status; // true = available, false = not enough stock
+    } catch (err) {
+        console.error('Failed to check item availability:', err);
+        return false; // fail-safe: hide item if check fails
+    }
+}
+
 
 // =========================
 // Initialization
