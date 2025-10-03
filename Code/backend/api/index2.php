@@ -119,7 +119,11 @@ switch ($route) {
         require __DIR__ . '/routes/profile.php';
         break;
 
-
+    case 'check_ingredients':
+        require __DIR__ . '/routes/check_ingredients.php';
+        break;
+    case 'init_guest':
+        break;
 
 
     default:

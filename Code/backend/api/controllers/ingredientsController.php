@@ -385,3 +385,61 @@ function searchIngredients($con, $query) {
         ]);
     }
 }
+
+function checkIngredientsAvailability($con, $itemId, $quantity) {
+    try {
+        $sql = "
+            SELECT 
+                ii.ingredient_id,
+                i.name AS ingredient_name,
+                ii.quantity_value,
+                ii.quantity_unit,
+                i.quantity_in_stock,
+                i.stock_unit
+            FROM item_ingredient ii
+            INNER JOIN ingredient i ON ii.ingredient_id = i.id
+            WHERE ii.item_id = ?
+        ";
+
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            echo json_encode([
+                "status" => true,
+                "message" => "No ingredients required for this item"
+            ]);
+            return;
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            $needed = floatval($row['quantity_value']) * floatval($quantity);
+            $available = floatval($row['quantity_in_stock']);
+            $unit_needed = $row['quantity_unit'] ?? '';
+            $unit_available = $row['stock_unit'] ?? '';
+
+            if ($available < $needed) {
+                echo json_encode([
+                    "status" => false,
+                    "message" => "Not enough ingredient"
+                ]);
+                return;
+            }
+        }
+
+        echo json_encode([
+            "status" => true,
+            "message" => "Sufficient ingredients available"
+        ]);
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "status" => false,
+            "message" => "Failed to check ingredients",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+

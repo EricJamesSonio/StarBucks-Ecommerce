@@ -1,4 +1,3 @@
-// modal.js
 import { getSizes, ensureGuestToken } from './session.js';
 import { API_BASE_PATH } from './config.js';
 
@@ -28,24 +27,18 @@ class Modal {
 
     async populateSizes(itemId) {
         this.sizeSelect.innerHTML = '';
-        
         try {
-            // Determine item type for size fetching
-            const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise' ? 'merchandise' : 'starbucksitem';
-            
-            // Fetch sizes specific to this item
-            const res = await fetch(`${this.apiBasePath}/sizes?item_id=${itemId}&item_type=${itemType}`, { 
-                credentials: 'include' 
+            const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise'
+                ? 'merchandise'
+                : 'starbucksitem';
+
+            const res = await fetch(`${this.apiBasePath}/sizes?item_id=${itemId}&item_type=${itemType}`, {
+                credentials: 'include'
             });
-            
-            if (!res.ok) {
-                throw new Error('Failed to fetch sizes');
-            }
-            
+            if (!res.ok) throw new Error('Failed to fetch sizes');
+
             const response = await res.json();
-            
             if (response.status && response.data && response.data.length > 0) {
-                // Use item-specific sizes
                 response.data.forEach(size => {
                     const opt = document.createElement('option');
                     opt.value = size.id;
@@ -54,7 +47,6 @@ class Modal {
                     this.sizeSelect.appendChild(opt);
                 });
             } else {
-                // Fallback: show default size only
                 const opt = document.createElement('option');
                 opt.value = '';
                 opt.textContent = 'Default Size';
@@ -63,7 +55,6 @@ class Modal {
             }
         } catch (err) {
             console.error('Failed to fetch item sizes:', err);
-            // Fallback: show default size only
             const opt = document.createElement('option');
             opt.value = '';
             opt.textContent = 'Default Size';
@@ -73,9 +64,7 @@ class Modal {
     }
 
     async initGuestIfNeeded() {
-        // Only call backend if guest token not registered yet
         const guestToken = ensureGuestToken();
-
         try {
             const res = await fetch(`${this.apiBasePath}/init_guest`, {
                 method: 'POST',
@@ -83,84 +72,94 @@ class Modal {
                 credentials: 'include',
                 body: JSON.stringify({ guest_token: guestToken })
             });
-
-            if (!res.ok) {
-                console.warn('Failed to register guest token:', await res.text());
-            }
+            if (!res.ok) console.warn('Failed to register guest token:', await res.text());
         } catch (err) {
             console.warn('Could not initialize guest token:', err);
         }
-
         return guestToken;
     }
 
     async addToCart() {
         const userData = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
         if (userData.type && userData.type.toLowerCase() === "admin") {
-            alert("❌ Could not add to cart : ❌ Admins cannot add items to the cart.");
+            alert("❌ Admins cannot add items to the cart.");
             this.close();
             return;
         }
-            const qty = parseInt(this.quantityInput.value, 10);
-            if (qty < 1) return;
 
-            const selectedOption = this.sizeSelect.options[this.sizeSelect.selectedIndex];
-            const sizeId = selectedOption.value || null; // Handle empty value for default size
-            const mod = parseFloat(selectedOption.dataset.modifier || '0.00');
-            const unitPrice = parseFloat(this.currentItem.price) + mod;
+        const qty = parseInt(this.quantityInput.value, 10);
+        if (qty < 1) return;
 
-            const guestToken = await this.initGuestIfNeeded();
+        const selectedOption = this.sizeSelect.options[this.sizeSelect.selectedIndex];
+        const sizeId = selectedOption.value || null;
+        const mod = parseFloat(selectedOption.dataset.modifier || '0.00');
+        const unitPrice = parseFloat(this.currentItem.price) + mod;
+        const guestToken = await this.initGuestIfNeeded();
 
-            // Determine item type based on the current item's category or other properties
-            const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise' ? 'merchandise' : 'starbucksitem';
+        const itemType = this.currentItem.category_id === 3 || this.currentItem.item_type === 'merchandise'
+            ? 'merchandise'
+            : 'starbucksitem';
 
-            const payload = {
-                item_id: this.currentItem.id,
-                item_type: itemType,
-                quantity: qty,
-                guest_token: guestToken
-            };
+        const payload = {
+            item_id: this.currentItem.id,
+            item_type: itemType,
+            quantity: qty,
+            guest_token: guestToken
+        };
+        if (sizeId) payload.size_id = sizeId;
 
-            // Only add size_id if it's not empty/null
-            if (sizeId) {
-                payload.size_id = sizeId;
+        try {
+            // 🔹 Step 1: Check ingredients
+            const checkRes = await fetch(`${this.apiBasePath}/check_ingredients`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    item_id: payload.item_id,
+                    item_type: payload.item_type,
+                    quantity: payload.quantity,
+                    size_id: payload.size_id || null
+                })
+            });
+
+            let checkData = {};
+            try { checkData = await checkRes.json(); } catch { console.warn('No JSON returned from /check_ingredients'); }
+
+            if (!checkRes.ok || !checkData.status) {
+                alert(`❌ Cannot add to cart: ${checkData.message || 'Not enough ingredients'}`);
+                return;
             }
 
-            try {
-                const res = await fetch(`${this.apiBasePath}/cart`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+            // 🔹 Step 2: Add to cart
+            const res = await fetch(`${this.apiBasePath}/cart`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-                let data = {};
-                try { data = await res.json(); } catch { console.warn('No JSON returned from /cart'); }
+            let data = {};
+            try { data = await res.json(); } catch { console.warn('No JSON returned from /cart'); }
 
-                if (!res.ok) throw new Error(data.error || data.message || res.statusText);
+            if (!res.ok) throw new Error(data.error || data.message || res.statusText);
 
-                alert(`✅ Added ${this.currentItem.name} ×${qty} to your cart.`);
-            } catch (err) {
-                console.error("Cart sync failed:", err);
-                alert(`❌ Could not add to cart: ${err.message}`);
-            }
-
-            this.close();
+            alert(`✅ Added ${this.currentItem.name} ×${qty} to your cart.`);
+        } catch (err) {
+            console.error("Cart sync failed:", err);
+            alert(`❌ Could not add to cart: ${err.message}`);
         }
 
-        show() {
-            this.modalElement.style.display = 'flex';
-        }
-
-        hide() {
-            this.modalElement.style.display = 'none';
-        }
+        this.close();
     }
+
+    show() { this.modalElement.style.display = 'flex'; }
+    hide() { this.modalElement.style.display = 'none'; }
+}
 
 // ===== Singleton Export =====
 export const modal = new Modal(API_BASE_PATH);
 
-// Legacy function names
+// Legacy functions
 export function openModal(item) { modal.open(item); }
 export function closeModal() { modal.close(); }
 export async function addToCart() { await modal.addToCart(); }
