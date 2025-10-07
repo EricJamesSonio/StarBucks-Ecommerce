@@ -383,3 +383,31 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
+
+.view-receipt-btn {
+  background-color: #007bff; /* primary blue */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.view-receipt-btn:hover {
+  background-color: #0056b3; /* darker blue on hover */
+  transform: translateY(-1px);
+}
+
+.view-receipt-btn:active {
+  background-color: #005085;
+  transform: translateY(0);
+}
+
+.view-receipt-btn:disabled {
+  background-color: #b8d1f3;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
