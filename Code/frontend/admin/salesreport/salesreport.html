@@ -60,7 +60,9 @@
   <div style="margin-top:10px;">
     <label>From: <input type="date" id="startDate"></label>
     <label>To: <input type="date" id="endDate"></label>
-    <button id="loadReport">Load Report</button>
+        <button id="loadReport">Load Report</button>
+
+    <button id="exportExcel">Export to Excel</button> 
   </div>
 
   <div>
@@ -95,6 +97,8 @@
   </table>
 
   <!-- External scripts only -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <script type="module" src="../../js/config.js"></script>
   <script type="module" src="../salesreport/js/salesreport.js"></script>
 </body>

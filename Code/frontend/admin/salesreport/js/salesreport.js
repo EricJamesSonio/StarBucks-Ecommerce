@@ -82,7 +82,7 @@ class SalesReportController {
         // ✅ New orders table element
         this.ordersTableEl = document.getElementById('ordersTable');
 
-        this.loadReportBtn = document.getElementById('loadReport');
+
         this.rangeButtons = document.querySelectorAll('button[data-range]');
     }
 
@@ -92,43 +92,53 @@ class SalesReportController {
         this.fetchAndRender();
     }
 
-    bindEvents() {
-        this.loadReportBtn.addEventListener('click', () => {
-            const start = this.startDateEl.value;
-            const end = this.endDateEl.value;
-            this.fetchAndRender(start, end);
-        });
+  bindEvents() {
 
-        this.rangeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const range = btn.getAttribute('data-range');
-                const { start, end } = DateRangeHelper.getDateRange(range);
-                this.startDateEl.value = start;
-                this.endDateEl.value = end;
-                this.fetchAndRender(start, end);
-            });
-        });
+    this.rangeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const range = btn.getAttribute('data-range');
+        const { start, end } = DateRangeHelper.getDateRange(range);
+        this.startDateEl.value = start;
+        this.endDateEl.value = end;
+        this.fetchAndRender(start, end);
+      });
+    });
+
+    // ✅ Added here
+    const exportBtn = document.getElementById('exportExcel');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        if (!this.latestReportData) {
+          alert("Please load a report first!");
+          return;
+        }
+        this.exportToExcel(this.latestReportData);
+      });
     }
+  }
+
 
     resetDateInputs() {
         this.startDateEl.value = '';
         this.endDateEl.value = '';
     }
 
-    async fetchAndRender(start = '', end = '') {
-        const data = await this.service.loadReport(start, end);
-
-        if (!data.status) {
-            alert(data.message || "Failed to load sales report");
-            return;
-        }
-
-        this.totalSalesEl.textContent = MoneyFormatter.format(data.total_sales);
-        this.totalOrdersEl.textContent = data.total_orders;
-
-        this.renderTopSelling(data.top_selling);
-        this.renderOrders(data.orders || []); // ✅ render orders
+  async fetchAndRender(start = '', end = '') {
+    const data = await this.service.loadReport(start, end);
+    if (!data.status) {
+      alert(data.message || "Failed to load sales report");
+      return;
     }
+
+    // Store for export
+    this.latestReportData = data;
+
+    this.totalSalesEl.textContent = MoneyFormatter.format(data.total_sales);
+    this.totalOrdersEl.textContent = data.total_orders;
+    this.renderTopSelling(data.top_selling);
+    this.renderOrders(data.orders || []);
+  }
+
 
     renderTopSelling(items) {
         this.topSellingTableEl.innerHTML = "";
@@ -230,8 +240,80 @@ showOrderDetails(orderId) {
   });
 }
 
+async exportToExcel(data) {
+  const wb = XLSX.utils.book_new();
+  const detailedOrders = [];
+
+  // ✅ Fetch full details for each order using the same API as "View Details"
+  for (const order of data.orders || []) {
+    try {
+      const details = await this.service.loadOrderDetails(order.id);
+      if (!details.status) continue;
+
+      const receipt = details.receipt || {};
+      const items = details.items || [];
+
+      if (items.length === 0) {
+        detailedOrders.push({
+          "Order ID": order.id,
+          "Customer": receipt.customer || order.customer || "-",
+          "Date": receipt.issued_at || order.placed_at || "-",
+          "Receipt Code": receipt.receipt_code || "-",
+          "Item Name": "-",
+          "Size": "-",
+          "Type": "-",
+          "Quantity": "-",
+          "Unit Price": "-",
+          "Item Total": "-",
+          "Discount Type": receipt.discount_type || "none",
+          "Discount Value (%)": receipt.discount_value || 0,
+          "Discount Amount": receipt.discount_amount || 0,
+          "Final Amount": receipt.final_amount || 0,
+          "Paid": receipt.payment_amount || 0,
+          "Change": receipt.change_amount || 0,
+        });
+      } else {
+        items.forEach(it => {
+          detailedOrders.push({
+            "Order ID": order.id,
+            "Customer": receipt.customer || order.customer || "-",
+            "Date": receipt.issued_at || order.placed_at || "-",
+            "Receipt Code": receipt.receipt_code || "-",
+            "Item Name": it.item_name,
+            "Size": it.size_name || "-",
+            "Type": it.item_type || "-",
+            "Quantity": it.quantity,
+            "Unit Price": it.unit_price,
+            "Item Total": it.total_price,
+            "Discount Type": receipt.discount_type || "none",
+            "Discount Value (%)": receipt.discount_value || 0,
+            "Discount Amount": receipt.discount_amount || 0,
+            "Final Amount": receipt.final_amount || 0,
+            "Paid": receipt.payment_amount || 0,
+            "Change": receipt.change_amount || 0,
+          });
+        });
+      }
+
+    } catch (err) {
+      console.error(`Failed to load details for order #${order.id}:`, err);
+    }
+  }
+
+  // ✅ Create Excel sheet
+  const ordersSheet = XLSX.utils.json_to_sheet(detailedOrders);
+  XLSX.utils.book_append_sheet(wb, ordersSheet, "SALES REPORT");
+
+  // ✅ Save Excel file
+  XLSX.writeFile(wb, "SALES_REPORT.xlsx");
+}
+
+  
 
 }
+
+
+
 
 // ===== Initialization =====
 window.addEventListener('DOMContentLoaded', () => {
