@@ -73,9 +73,10 @@ public function updateItem($id, $name, $price, $description, $image_url = null) 
             SET name=?, price=?, description=?, image_url=? 
             WHERE id=?";
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("sds si", $name, $price, $description, $image_url, $id);
+    $stmt->bind_param("sdssi", $name, $price, $description, $image_url, $id);
     return $stmt->execute();
 }
+
 
 
 public function deleteItem($id) {

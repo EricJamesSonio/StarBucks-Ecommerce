@@ -343,18 +343,42 @@ class ItemManager {
         body: JSON.stringify(data),
         credentials: 'include'
       });
-      const result = await res.json();
+
+      if (!res.ok) {
+        console.error(`HTTP Error: ${res.status}`);
+        this.showMessage(`Server error: ${res.status}`, "error");
+        return;
+      }
+
+      const text = await res.text();
+      if (!text) {
+        console.error("Empty response from server");
+        this.showMessage("Empty server response", "error");
+        return;
+      }
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (e) {
+        console.error("Invalid JSON:", text);
+        this.showMessage("Invalid server response", "error");
+        return;
+      }
+
       if (result.status) {
         this.showMessage("Item updated successfully!", "success");
         this.loadItems();
       } else {
         this.showMessage(result.message || "Failed to update item", "error");
       }
+
     } catch (err) {
       console.error("Error updating item:", err);
-      this.showMessage("Error updating item", "error");
+      this.showMessage("Network error updating item", "error");
     }
   }
+
 
   async deleteItem(id) {
     try {
