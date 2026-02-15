@@ -83,10 +83,19 @@ class Checkout {
                 })
             });
 
-            const data = await (res.ok ? res.json() : res.text().then(txt => { throw new Error(txt) }));
+            const text = await res.text();
 
-            if (!data.orderId || !data.receiptId) {
-                throw new Error(data.error || "Payment failed");
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                data = { error: text || "Invalid JSON response from server" };
+            }
+
+            console.log(data);
+
+            if (!res.ok) {
+                throw new Error(data.error || data.message || "Payment failed");
             }
 
             alert(`✅ Paid! Change: ₱${formatMoney(change)}`);
@@ -96,7 +105,7 @@ class Checkout {
                 name: item.name + (item.size_name ? ` (${item.size_name})` : ""),
                 quantity: item.quantity,
                 price: parseFloat(item.price),
-                total: (parseFloat(item.price) * item.quantity)
+                total: parseFloat(item.price) * item.quantity
             }));
 
             this.showReceipt({
