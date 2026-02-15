@@ -1,7 +1,7 @@
 <?php
-$HOSTNAME = 'localhost';
+$HOSTNAME = 'mysql_master';
 $USERNAME = 'root';
-$PASSWORD = ''; 
+$PASSWORD = 'root'; 
 $DATABASE = 'softeng';
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
